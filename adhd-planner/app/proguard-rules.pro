@@ -1,0 +1,3 @@
+-dontwarn java.beans.**
+-dontwarn org.slf4j.**
+-keep class com.groundcontrol.planner.data.** { *; }

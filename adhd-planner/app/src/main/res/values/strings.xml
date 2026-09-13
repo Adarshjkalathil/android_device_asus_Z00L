@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Ground Control</string>
+    <string name="share_label">File in Ground Control</string>
+    <string name="widget_label">Next up</string>
+</resources>

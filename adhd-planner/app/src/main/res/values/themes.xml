@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.GroundControl" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#E7EAF0</item>
+        <item name="android:navigationBarColor">#E7EAF0</item>
+        <item name="android:windowBackground">#E7EAF0</item>
+    </style>
+    <style name="Theme.GroundControl.Invisible" parent="android:Theme.Translucent.NoTitleBar" />
+</resources>
