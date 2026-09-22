@@ -62,12 +62,9 @@ is present, and each player's best is kept on their own device.
 ## Voice
 
 Not possible inside an artifact: it has no audio transport, and its
-content policy blocks connections to outside servers. It needs a server.
-https://kerala.dhilber.com shows the working pattern: its own WebSocket
-server for game state, LiveKit for voice, and each remote voice routed
-through a Web Audio `PannerNode` (HRTF, inverse distance) so voices fade
-and pan with position. Porting this world to that setup means a small
-Node server plus a LiveKit project.
+content policy blocks connections to outside servers. `server/` runs the
+same world on your own host with proximity voice over LiveKit — see
+[server/README.md](server/README.md) for the 15-minute setup.
 
 ## Sources and licences
 

@@ -1,0 +1,19 @@
+# One-click deploy of the Nedumkunnam world to Render (render.com).
+services:
+  - type: web
+    name: nedumkunnam-world
+    runtime: node
+    plan: free
+    rootDir: nedumkunnam-world/server
+    buildCommand: npm ci
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: LIVEKIT_URL
+        sync: false
+      - key: LIVEKIT_API_KEY
+        sync: false
+      - key: LIVEKIT_API_SECRET
+        sync: false

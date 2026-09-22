@@ -1,0 +1,14 @@
+{
+  "name": "nedumkunnam-world-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multiplayer and proximity voice server for the Nedumkunnam world",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "livekit-client": "^2.5.0",
+    "livekit-server-sdk": "^2.6.0",
+    "ws": "^8.18.0"
+  }
+}
