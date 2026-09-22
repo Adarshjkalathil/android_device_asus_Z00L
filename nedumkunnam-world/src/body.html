@@ -1,0 +1,73 @@
+<div id="app"><canvas id="gl"></canvas></div>
+
+<div id="plate">
+  <div class="eyebrow">Nedumkunnam &middot; Kottayam &middot; Kerala</div>
+  <h1>Nedumkunnam</h1>
+  <div class="geo">9.50518&deg; N, 76.65731&deg; E &middot; 2.3 km of real terrain</div>
+</div>
+
+<div id="retic"></div>
+<div id="focus"><div class="nm"></div><div class="mt"></div></div>
+
+<div id="map"><canvas id="mapc" width="264" height="264"></canvas></div>
+
+<div id="rail">
+  <span class="kbdonly"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk</span>
+  <span class="kbdonly"><kbd>Shift</kbd> run</span>
+  <span class="kbdonly">drag mouse, or <kbd>&larr;</kbd><kbd>&rarr;</kbd>, to look</span>
+  <span class="kbdonly"><kbd>Space</kbd> jump</span>
+  <span class="kbdonly"><kbd>1</kbd>&ndash;<kbd>4</kbd> emotes</span>
+  <span class="kbdonly"><kbd>N</kbd> weather</span>
+  
+  <span class="touchonly" style="display:none">drag anywhere to look</span>
+  <span class="sp"></span>
+  <span>Buildings &amp; roads from <a href="https://www.openstreetmap.org/#map=18/9.50518/76.65731" target="_blank" rel="noopener">OpenStreetMap</a> &copy; contributors, ODbL</span>
+</div>
+
+<div id="stick"><div id="nub"></div></div>
+
+<div id="nearby">no one nearby</div>
+<div id="scores"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="hud">
+  <div id="emorow">
+    <button class="hb" id="em-wave" type="button">Wave</button>
+    <button class="hb" id="em-namaskaram" type="button">Namaskaram</button>
+    <button class="hb" id="em-dance" type="button">Dance</button>
+    <button class="hb" id="em-sit" type="button">Sit</button>
+  </div>
+  <div class="row">
+    <button class="hb" id="wx" type="button" title="Weather (N)">Day</button>
+    <button class="hb" id="emobtn" type="button" title="Emotes (1-4)">Emote</button>
+    <button class="hb" id="jumpbtn" type="button">Jump</button>
+  </div>
+</div>
+<div id="chatwrap">
+  <div id="chatlog"></div>
+  <input id="chatin" type="text" maxlength="90" autocomplete="off"
+         placeholder="Press T to talk to people near you">
+</div>
+
+<div id="gate"><div class="card">
+  <div class="eyebrow">Kottayam district &middot; Kerala</div>
+  <h2>Walk the village</h2>
+  <p>Real ground: 107 m of elevation across 2.3 km, every building and road where it actually stands. Collect mangoes, chakka and chembarathi flowers around the homesteads, wave to whoever you meet, and climb the church steps.</p>
+  <div class="field">
+    <label for="who">Your name</label>
+    <input id="who" type="text" maxlength="22" autocomplete="off" placeholder="e.g. Adarsh">
+  </div>
+  <div class="maker">
+    <div class="cols">
+      <div class="field"><label>Shirt</label><div class="swatches" id="sw-s"></div></div>
+      <div class="field"><label>Mundu / trousers</label><div class="swatches" id="sw-t"></div></div>
+      <div class="field"><label>Skin</label><div class="swatches" id="sw-k"></div></div>
+    </div>
+    <canvas id="avprev" width="192" height="264"></canvas>
+  </div>
+  <button id="go" style="margin-top:20px">Enter the campus</button>
+  <div id="err" role="status" aria-live="polite"></div>
+  <div class="meta">
+    <b>123</b> buildings &middot; <b>51</b> roads &middot; <b>31</b> streams &middot; <b>2.3 km</b> square<br>
+    Terrain from SRTM 30 m &middot; ground truth from OpenStreetMap
+  </div>
+</div></div>
