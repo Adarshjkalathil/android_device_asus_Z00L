@@ -116,7 +116,7 @@ textarea:focus,input[type="text"]:focus{outline:none;border-color:var(--accent);
 .warm{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:center}
 .ring{position:relative;width:150px;height:150px}
 .ring svg{width:150px;height:150px;transform:rotate(-90deg)}
-.ring .rt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring .rt{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .ring .rt b{font-size:40px;line-height:1;font-weight:700}
 .ring .rt span{font-size:13px;color:var(--muted);max-width:110px;line-height:1.2;margin-top:4px}
 .moves{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -263,8 +263,57 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
 .lines li i{color:var(--muted);font-style:normal;font-size:14px;display:block}
 .foot{font-size:13.5px;color:var(--muted);text-align:center}
 
+/* loud routine, table topics, plan, settings */
+:root{--light-green:#1E8E4E;--light-amber:#F2B01E;--light-red:#C8372A;--light-idle:#5B6478}
+.substeps{display:flex;gap:6px;flex-wrap:wrap}
+.substep{font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.substep.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.substep.done{background:var(--good-wash);color:var(--good);border-color:transparent}
+.loud-stage{display:flex;flex-direction:column;gap:14px}
+.hold-timer{font-size:46px;font-weight:700;line-height:1}
+.holds{display:flex;gap:6px;flex-wrap:wrap}
+.dots{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.dots i{width:14px;height:14px;border-radius:50%;background:var(--seg-off);display:block}
+.dots i.on{background:var(--accent)}
+.slide-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;background:var(--surface-2)}
+.slide-row b{min-width:110px}
+.phrase{font-family:var(--f-display);font-stretch:108%;font-size:28px;font-weight:800;line-height:1.2;padding:22px;border-radius:12px;background:var(--surface-2);text-wrap:balance;margin:0}
+.meter-box{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:12px;background:var(--surface-2)}
+details.own summary{cursor:pointer;font-weight:700;color:var(--accent)}
+details.own[open]{display:flex;flex-direction:column;gap:8px}
+.plan-banner{display:flex;gap:6px 12px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:15px}
+.plan-banner b{font-family:var(--f-display);font-stretch:108%}
+.tt-q{font-family:var(--f-display);font-stretch:108%;font-size:28px;font-weight:800;line-height:1.2;text-wrap:balance;margin:0}
+.tt-light{border-radius:14px;padding:20px 22px;display:flex;flex-direction:column;gap:4px;background:var(--light-idle);color:#FFFFFF}
+.tt-light.green{background:var(--light-green);color:#FFFFFF}
+.tt-light.amber{background:var(--light-amber);color:#1B1300}
+.tt-light.red{background:var(--light-red);color:#FFFFFF}
+.tt-light .tt-clock{font-size:60px;font-weight:700;line-height:1}
+.tt-light .tt-say{font-size:17px;font-weight:700}
+.countdown{font-size:84px;font-weight:700;line-height:1;color:var(--accent)}
+.yn{display:flex;flex-direction:column;gap:8px}
+.yn-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:15.5px}
+.yn-row .pills{flex-wrap:nowrap}
+.breath{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px;border-radius:12px;background:var(--surface-2);text-align:center}
+.breath .orb{width:130px;height:130px;border-radius:50%;background:var(--accent-wash);border:3px solid var(--accent);transform:scale(.6);transition-property:transform;transition-timing-function:ease-in-out}
+.breath .bl{font-size:19px;font-weight:700;min-height:2.6em}
+.tally{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tally .btn.big{font-size:18px;min-height:56px;padding:12px 22px}
+.stages{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stage{padding:12px;border-radius:10px;background:var(--surface-2);display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--ink-2);border:2px solid transparent}
+.stage b{font-size:15.5px;color:var(--ink)}
+.stage .cue{font-family:var(--f-mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.stage.now{background:var(--accent-wash);border-color:var(--accent)}
+.settings-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input[type="time"],input[type="password"]{font-size:16px;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink)}
+input[type="password"]{flex:1 1 220px;min-width:0}
+.ok-msg{font-size:15px;color:var(--good)}
+.ok-msg:empty{display:none}
+
 @media (max-width:620px){
   .card{padding:18px;gap:16px}
+  .stages{grid-template-columns:1fr 1fr}
+  .tt-q,.phrase{font-size:23px}
   h1{font-size:26px}
   .warm{grid-template-columns:1fr;justify-items:center}
   .moves{width:100%}
@@ -275,7 +324,8 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
   .read-line{font-size:21px;padding:14px 16px}
   .prompt{font-size:20px}
   .tstep .ts{display:none}
-  .tabs button{padding:10px 8px;font-size:14px}
+  .tabs{gap:2px}
+  .tabs button{padding:10px 4px;font-size:13.5px}
 }
 @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important;transition:none!important} }
 </style>
@@ -301,7 +351,8 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
 
   <nav class="tabs" role="tablist" aria-label="Sections">
     <button role="tab" id="tabbtn-practice" aria-controls="tab-practice" aria-selected="true">Practice</button>
-    <button role="tab" id="tabbtn-voice" aria-controls="tab-voice" aria-selected="false" tabindex="-1">Voice check</button>
+    <button role="tab" id="tabbtn-topics" aria-controls="tab-topics" aria-selected="false" tabindex="-1">Topics</button>
+    <button role="tab" id="tabbtn-voice" aria-controls="tab-voice" aria-selected="false" tabindex="-1">Voice</button>
     <button role="tab" id="tabbtn-progress" aria-controls="tab-progress" aria-selected="false" tabindex="-1">Progress</button>
     <button role="tab" id="tabbtn-playbook" aria-controls="tab-playbook" aria-selected="false" tabindex="-1">Playbook</button>
   </nav>
@@ -309,15 +360,21 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
   <main>
   <!-- PRACTICE -->
   <section class="panel" id="tab-practice" role="tabpanel" aria-labelledby="tabbtn-practice">
+    <div class="plan-banner" id="planBanner" hidden></div>
     <div class="track" id="track" aria-label="Today's steps"></div>
 
     <!-- Step 1 -->
     <article class="card step" id="step-0">
       <div class="step-head">
-        <p class="eyebrow">Step 1 · about 1 minute</p>
-        <h2>Warm up your voice</h2>
-        <p class="sub">A quiet voice usually comes from shallow breathing and a tight jaw. Loosen both before you speak. Do each move out loud.</p>
+        <p class="eyebrow">Step 1 · 1 to 5 minutes</p>
+        <h2>Warm up and think loud</h2>
+        <p class="sub">Quiet speakers usually feel loud when they aren't. The loud routine is modeled on LSVT LOUD, the best-tested voice therapy for soft voices: one cue, high effort, every day.</p>
       </div>
+      <div class="pills" id="warmMode" role="radiogroup" aria-label="Warm-up type">
+        <button class="pill" type="button" role="radio" data-mode="quick" aria-checked="true">Quick warm-up · 1 min</button>
+        <button class="pill" type="button" role="radio" data-mode="loud" aria-checked="false">Loud routine · 5 min</button>
+      </div>
+      <div id="warmQuick">
       <div class="warm">
         <div class="ring" aria-hidden="true">
           <svg viewBox="0 0 100 100">
@@ -331,6 +388,22 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
       <p class="form-msg" id="warmMsg" role="status" style="color:var(--good)"></p>
       <div class="actions">
         <button class="btn" id="warmBtn">Start warm-up</button>
+      </div>
+      </div>
+      <div id="warmLoud" class="loud-stage" hidden>
+        <div class="substeps" id="loudSteps" aria-hidden="true"></div>
+        <div class="meter-box" id="kBox" hidden>
+          <div class="lmeter" id="kmeter" aria-hidden="true"></div>
+          <div class="lread"><span class="mono" id="kdb">– dB</span><span class="chip" id="kzone">Meter off</span><button class="btn ghost sm" type="button" id="kBtn">Turn on the mic meter</button></div>
+          <p class="note">Trust the meter, not the feeling. Keep the bar in the green zone from start to finish.</p>
+        </div>
+        <div class="loud-stage" id="loudStage" aria-live="polite"></div>
+        <details class="own">
+          <summary>Use your own phrases</summary>
+          <label class="lbl" for="ownPhrases">One phrase per line, up to 10. Use things you really say at work or at home.</label>
+          <textarea id="ownPhrases" rows="5"></textarea>
+          <div class="actions"><button class="btn ghost sm" type="button" id="savePhrases">Save phrases</button><span class="ok-msg" id="phrasesMsg" role="status"></span></div>
+        </details>
       </div>
       <div class="actions nav">
         <span></span>
@@ -347,7 +420,7 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
       </div>
       <ol class="howto">
         <li>Tap the box below, then tap the <b>microphone on your keyboard</b>. On a computer: <b>Win + H</b> on Windows, or press <b>Fn</b> twice on a Mac.</li>
-        <li>Read the sentence <b>once</b>, at volume 4 out of 5. Don't correct what it types.</li>
+        <li>Read the sentence <b>once</b>, at volume 4 out of 5, and <b>overenunciate each word</b>. Research found that cue changes speech more than "speak clearly". Don't correct what it types.</li>
         <li>Press <b>Score it</b>.</li>
       </ol>
       <blockquote class="read-line" id="sentence" aria-live="polite"></blockquote>
@@ -427,6 +500,12 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
         <div class="habits" id="habits" role="radiogroup" aria-labelledby="habitLbl"></div>
       </div>
       <div>
+        <h3 id="sitLbl" style="margin-bottom:10px">Make it an if-then plan</h3>
+        <div class="pills" id="sits" role="radiogroup" aria-labelledby="sitLbl"></div>
+        <p class="prompter" id="ifThen" style="margin-top:10px"></p>
+        <p class="note" style="margin-top:6px">In a meta-analysis of 94 studies, plans in this "if this happens, then I'll do that" form made people much more likely to follow through than just intending to.</p>
+      </div>
+      <div>
         <h3 id="feelLbl" style="margin-bottom:10px">How clear did you feel today?</h3>
         <div class="feel" id="feel" role="radiogroup" aria-labelledby="feelLbl"></div>
       </div>
@@ -438,6 +517,54 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
         <button class="btn ghost" data-goto="0">Start over</button>
       </div>
     </article>
+  </section>
+
+  <!-- TABLE TOPICS -->
+  <section class="panel" id="tab-topics" role="tabpanel" aria-labelledby="tabbtn-topics" hidden>
+    <div class="card">
+      <div class="step-head">
+        <p class="eyebrow">Toastmasters-style impromptu speaking</p>
+        <h2>Table Topics</h2>
+        <p class="sub">A surprise question, 10 seconds to think, then 1 to 2 minutes to answer. It's the closest practice there is to a real interview question.</p>
+      </div>
+      <div class="actions"><button class="btn ghost sm" type="button" id="resetOpen">Nervous? 1-minute reset first</button></div>
+      <div class="breath" id="resetBox" hidden>
+        <div class="orb" id="orb" aria-hidden="true"></div>
+        <p class="bl" id="breathLine" aria-live="polite">Cyclic sighing: two breaths in through the nose, one long breath out.</p>
+        <p class="note" id="breathCount"></p>
+        <div class="actions"><button class="btn" type="button" id="resetGo">Start</button><button class="btn ghost" type="button" id="resetClose">Close</button></div>
+      </div>
+
+      <div id="ttIdle">
+        <div class="pills" id="ttCats" role="group" aria-label="Question type"></div>
+        <div class="actions" style="margin-top:14px"><button class="btn" type="button" id="ttStart">Give me a surprise question</button></div>
+        <ul class="howto" style="margin-top:14px">
+          <li><b>Timing lights</b> like a Toastmasters club: green at 1:00, amber at 1:30, red at 2:00.</li>
+          <li><b>Point first.</b> Start with a one-sentence answer, then support it.</li>
+          <li>Lost your thread? Say <b>"The short version is…"</b> and restate your point.</li>
+        </ul>
+      </div>
+
+      <div id="ttThink" hidden>
+        <p class="eyebrow" id="ttThinkCat"></p>
+        <p class="tt-q" id="ttQ1"></p>
+        <div class="score-row"><span class="countdown mono" id="ttCount">10</span><span class="note">seconds to think. Try the <b id="ttFw"></b> shape: <span id="ttSeq"></span></span></div>
+        <div class="actions"><button class="btn" type="button" id="ttGo">Start talking now</button></div>
+      </div>
+
+      <div id="ttSpeak" hidden>
+        <p class="tt-q" id="ttQ2" style="font-size:21px"></p>
+        <div class="tt-light" id="ttLight" aria-live="polite"><span class="tt-clock mono" id="ttClock">0:00</span><span class="tt-say" id="ttSay">Keep going. Point first.</span></div>
+        <div>
+          <label class="lbl" for="ttTalk">What you said (optional: use voice typing to get an Ah-Counter report)</label>
+          <textarea id="ttTalk" rows="4" placeholder="Tap here and press the mic on your keyboard before you start talking."></textarea>
+        </div>
+        <div class="listen-row"><button class="btn ghost sm" id="listen3" hidden>Start listening</button><span class="listen-status" id="listen3Status" aria-live="polite"></span></div>
+        <div class="actions"><button class="btn" type="button" id="ttDone">I'm done</button></div>
+      </div>
+
+      <div id="ttReview" hidden aria-live="polite"></div>
+    </div>
   </section>
 
   <!-- VOICE -->
@@ -470,6 +597,26 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
   <section class="panel" id="tab-progress" role="tabpanel" aria-labelledby="tabbtn-progress" hidden>
     <div class="card">
       <div class="step-head">
+        <h2>"Sorry, what?" counter</h2>
+        <p class="sub">The number that matters most: how often people ask you to repeat yourself. Tap once each time it happens. It should fall week by week.</p>
+      </div>
+      <div class="tally">
+        <button class="btn big" type="button" id="tallyAdd">+1 Asked to repeat</button>
+        <button class="btn ghost sm" type="button" id="tallyUndo">Undo</button>
+      </div>
+      <div class="tiles three" id="tallyTiles"></div>
+    </div>
+    <div class="card" id="planCard">
+      <div class="step-head">
+        <h2>8-week plan</h2>
+        <p class="sub" id="planSub">One focus every two weeks, built from the research: volume first, then clarity, then structure, then real life.</p>
+      </div>
+      <div class="stages" id="stages"></div>
+      <div id="planNow"></div>
+      <div class="actions"><button class="btn" type="button" id="planStart">Start the 8-week plan today</button></div>
+    </div>
+    <div class="card">
+      <div class="step-head">
         <h2>Progress</h2>
         <p class="sub">Small daily reps beat one long session. Watch the lines move toward the green bands.</p>
       </div>
@@ -494,10 +641,49 @@ table.log td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--
         <div class="table-wrap"><table class="log"><thead><tr><th>When</th><th>Drill</th><th>Result</th></tr></thead><tbody id="logBody"></tbody></table></div>
       </div>
     </div>
+    <div class="card" id="appSettings" hidden>
+      <div class="step-head">
+        <h2>App settings</h2>
+        <p class="sub">These settings are stored only on this phone.</p>
+      </div>
+      <div id="remBox" hidden>
+        <h3 style="margin-bottom:8px">Daily reminder</h3>
+        <div class="settings-row">
+          <label class="lbl" for="remTime" style="margin:0">Remind me at</label>
+          <input type="time" id="remTime" value="08:30">
+          <button class="btn sm" type="button" id="remSave">Turn on reminder</button>
+          <button class="btn ghost sm" type="button" id="remOff">Turn off</button>
+        </div>
+        <p class="ok-msg" id="remMsg" role="status" style="margin-top:6px"></p>
+      </div>
+      <div id="keyBox" hidden>
+        <h3 style="margin-bottom:8px">Coach feedback</h3>
+        <p class="note" style="margin-bottom:8px">The coach in step 3 uses Claude through Anthropic's API. Paste an API key from console.anthropic.com. Usage is billed to that API account.</p>
+        <div class="settings-row">
+          <input type="password" id="apiKey" autocomplete="off" placeholder="sk-ant-…" aria-label="Anthropic API key">
+          <button class="btn sm" type="button" id="keySave">Save key</button>
+          <button class="btn ghost sm" type="button" id="keyClear">Remove</button>
+        </div>
+        <p class="ok-msg" id="keyMsg" role="status" style="margin-top:6px"></p>
+      </div>
+    </div>
   </section>
 
   <!-- PLAYBOOK -->
   <section class="panel" id="tab-playbook" role="tabpanel" aria-labelledby="tabbtn-playbook" hidden>
+    <div class="card">
+      <div class="step-head">
+        <h2>Before you speak: 60 seconds</h2>
+        <p class="sub">Nerves shrink the voice. These three have the best evidence for the moment right before an interview, a meeting or a call.</p>
+      </div>
+      <ul class="rules">
+        <li><b>Cyclic sighing</b><span>Two breaths in through the nose, one long breath out through the mouth. Five minutes a day improved mood more than meditation in a randomized study.</span></li>
+        <li><b>Say "I am excited"</b><span>Out loud. People who relabeled nerves as excitement spoke longer and were rated more confident than people who said "I am calm".</span></li>
+        <li><b>Coach yourself by name</b><span>"[Your name], you know this. Point first." Talking to yourself in the third person made speeches feel less threatening and improved rated performance.</span></li>
+        <li><b>Don't bother with</b><span>Power poses (hormone effects didn't replicate) or the "words are only 7%" rule (a misread study).</span></li>
+      </ul>
+      <div class="actions"><button class="btn" type="button" id="resetFromPlaybook">Start the 1-minute reset</button><a class="btn ghost" href="https://claude.ai/artifact/L74aDwNDn6d9PcSDvo7bMX" target="_blank" rel="noopener">Read the research behind this app</a></div>
+    </div>
     <div class="card">
       <div class="step-head">
         <h2>Five habits of being heard the first time</h2>
@@ -728,6 +914,13 @@ const store={
     this.emit();
     return entry;
   },
+  remove(id){
+    const e=this.entries.find(x=>x.id===id); if(!e) return;
+    this.entries=this.entries.filter(x=>x.id!==id);
+    LS.set('sio.log',this.entries.slice(-800));
+    if(this.db&&this.uid){ const month=dayKey(e.t).slice(0,7); this.queue=this.queue.then(()=>this.writeMonth(month)).catch(()=>{}); }
+    this.emit();
+  },
   async writeMonth(month){
     const list=this.entries.filter(e=>dayKey(e.t).slice(0,7)===month).slice(-900);
     const ref=this.db.collection('data/users/'+this.uid).doc('log-'+month);
@@ -744,7 +937,7 @@ const store={
 function renderStorageNote(){
   const n=$('#storageNote');
   if(store.mode==='account') n.textContent=store.failed?'Saving to your account failed just now. Your history is still kept in this browser.':'Your practice history is saved to your Claude account, visible only to you.';
-  else n.textContent='Your practice history is saved in this browser only.';
+  else n.textContent=window.AndroidApp?'Your practice history is saved on this phone.':'Your practice history is saved in this browser only.';
 }
 
 /* ---------- capabilities (only inside Claude) ---------- */
@@ -761,7 +954,7 @@ async function initCaps(){
 }
 
 /* ---------- tabs ---------- */
-const TABS=['practice','voice','progress','playbook'];
+const TABS=['practice','topics','voice','progress','playbook'];
 function showTab(name,focus){
   TABS.forEach(t=>{
     const on=t===name;
@@ -790,8 +983,10 @@ function streakOf(list){
   while(days.has(dayKey(d))){ n++; d.setDate(d.getDate()-1); }
   return {n,today};
 }
+const NON_PRACTICE=['repeat','plan'];
+function practiceEntries(){ return store.real().filter(e=>NON_PRACTICE.indexOf(e.type)<0); }
 function renderStreak(){
-  const s=streakOf(store.real()); const el=$('#streak'); el.replaceChildren();
+  const s=streakOf(practiceEntries()); const el=$('#streak'); el.replaceChildren();
   if(!s.n){ el.append('Start your streak today'); return; }
   el.append(h('b',{text:String(s.n)}),s.n===1?'day in a row':'days in a row');
   if(!s.today) el.append(h('span',{class:'dim',text:'· practice today to keep it'}));
@@ -799,7 +994,7 @@ function renderStreak(){
 
 /* ---------- step tracker ---------- */
 const STEP_NAMES=['Warm up','Be heard','Point first','Take it live'];
-const STEP_TIME=['1 min','2 min','3 min','30 sec'];
+const STEP_TIME=['1–5 min','2 min','3 min','30 sec'];
 let step=clamp(LS.get('sio.step',0)|0,0,3);
 (function buildTrack(){
   const tr=$('#track');
@@ -811,7 +1006,7 @@ let step=clamp(LS.get('sio.step',0)|0,0,3);
 })();
 function doneToday(){
   const tk=dayKey(); const ents=store.real().filter(e=>dayKey(e.t)===tk);
-  return [LS.get('sio.warm','')===tk, ents.some(e=>e.type==='clarity'), ents.some(e=>e.type==='structure'), ents.some(e=>e.type==='session')];
+  return [LS.get('sio.warm','')===tk||ents.some(e=>e.type==='loud'), ents.some(e=>e.type==='clarity'), ents.some(e=>e.type==='structure'), ents.some(e=>e.type==='session')];
 }
 function renderTrack(){
   const done=doneToday();
@@ -887,17 +1082,44 @@ function makeTracker(ta){
   };
 }
 
-/* ---------- live listening (only where the browser allows the mic) ---------- */
+/* ---------- live listening and the microphone ---------- */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const policy=document.featurePolicy||document.permissionsPolicy;
 const micPolicyOK=!(policy&&typeof policy.allowsFeature==='function'&&!policy.allowsFeature('microphone'));
-const CAN_STT=!!SR&&micPolicyOK;
+// In the Android app, speech-to-text comes from Android's own recognizer through a bridge.
+const NATIVE_STT=!!(window.AndroidSpeech&&typeof window.AndroidSpeech.start==='function'&&window.AndroidSpeech.available());
+const CAN_STT=NATIVE_STT||(!!SR&&micPolicyOK);
 const CAN_MIC=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)&&micPolicyOK;
+const LISTEN_LABEL='Start listening';
+let nativeOwner=null;
+window.__sioSpeech=function(ev){ if(!nativeOwner) return; try{ nativeOwner.handle(typeof ev==='string'?JSON.parse(ev):ev); }catch(e){} };
 function attachListener(btn,status,ta,tracker){
   if(!CAN_STT) return;
-  btn.hidden=false;
+  btn.hidden=false; btn.textContent=LISTEN_LABEL;
   let rec=null,on=false,t0=0;
-  const lang=(navigator.language||'en-US').toLowerCase().startsWith('en')?navigator.language:'en-US';
+  const lang=(navigator.language||'en-US').toLowerCase().indexOf('en')===0?navigator.language:'en-US';
+  const setIdle=()=>{ on=false; btn.textContent=LISTEN_LABEL; };
+  const addFinal=txt=>{
+    txt=String(txt||'').trim(); if(!txt) return;
+    ta.value=(ta.value.trim()+' '+txt).trim(); ta.dispatchEvent(new Event('input'));
+    if(!t0) t0=performance.now()-1500; tracker.live((performance.now()-t0)/1000);
+  };
+  if(NATIVE_STT){
+    const me={setIdle,handle(ev){
+      if(ev.type==='speechstart'){ if(!t0) t0=performance.now(); }
+      else if(ev.type==='partial'){ if(ev.text) status.textContent='Hearing: '+ev.text; }
+      else if(ev.type==='final'){ addFinal(ev.text); status.textContent='Listening…'; }
+      else if(ev.type==='error'){ status.textContent=ev.message||'Listening stopped.'; }
+      else if(ev.type==='end'){ setIdle(); if(nativeOwner===me) nativeOwner=null; if(/^(Listening|Hearing)/.test(status.textContent)) status.textContent='Stopped.'; }
+    }};
+    btn.addEventListener('click',()=>{
+      if(on){ window.AndroidSpeech.stop(); return; }
+      if(nativeOwner&&nativeOwner!==me) nativeOwner.setIdle();
+      nativeOwner=me; t0=0; on=true; btn.textContent='Stop listening'; status.textContent='Listening…';
+      window.AndroidSpeech.start(lang);
+    });
+    return;
+  }
   const stop=()=>{ if(rec) try{ rec.stop(); }catch(e){} };
   btn.addEventListener('click',()=>{
     if(on){ stop(); return; }
@@ -908,8 +1130,7 @@ function attachListener(btn,status,ta,tracker){
         let interim='';
         for(let i=e.resultIndex;i<e.results.length;i++){
           const r=e.results[i];
-          if(r.isFinal){ ta.value=(ta.value.trim()+' '+r[0].transcript.trim()).trim(); ta.dispatchEvent(new Event('input')); if(!t0) t0=performance.now()-1500; tracker.live((performance.now()-t0)/1000); }
-          else interim+=r[0].transcript;
+          if(r.isFinal) addFinal(r[0].transcript); else interim+=r[0].transcript;
         }
         status.textContent=interim?'Hearing: '+interim:'Listening…';
       };
@@ -918,11 +1139,119 @@ function attachListener(btn,status,ta,tracker){
         else if(ev.error==='no-speech') status.textContent='No speech heard. Try again, a little louder.';
         else status.textContent='Listening stopped ('+ev.error+').';
       };
-      rec.onend=()=>{ on=false; btn.textContent='Listen with this page'; if(status.textContent.startsWith('Listening')||status.textContent.startsWith('Hearing')) status.textContent='Stopped.'; };
+      rec.onend=()=>{ setIdle(); if(/^(Listening|Hearing)/.test(status.textContent)) status.textContent='Stopped.'; };
       rec.start(); on=true; btn.textContent='Stop listening'; status.textContent='Listening…';
     }catch(err){ status.textContent="Live listening isn't available here. Use your keyboard's mic button."; btn.hidden=true; }
   });
 }
+
+/* one shared microphone level feed, used by the loud routine meter and the live voice check */
+const mic={stream:null,ctx:null,iv:0,subs:[],
+  async start(){
+    if(this.stream) return true;
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+      const AC=window.AudioContext||window.webkitAudioContext; const ctx=new AC();
+      if(ctx.state==='suspended'){ try{ await ctx.resume(); }catch(e){} }
+      const an=ctx.createAnalyser(); an.fftSize=2048; ctx.createMediaStreamSource(stream).connect(an);
+      const buf=new Float32Array(an.fftSize);
+      this.stream=stream; this.ctx=ctx;
+      this.iv=setInterval(()=>{
+        an.getFloatTimeDomainData(buf); let s=0; for(let i=0;i<buf.length;i++) s+=buf[i]*buf[i];
+        const rms=Math.sqrt(s/buf.length); const v=rms>0?Math.max(-90,20*Math.log10(rms)):-90;
+        this.subs.slice().forEach(f=>{ try{ f(v); }catch(e){} });
+      },50);
+      return true;
+    }catch(e){ return false; }
+  },
+  on(fn){ this.subs.push(fn); return ()=>{ this.subs=this.subs.filter(x=>x!==fn); if(!this.subs.length) this.stop(); }; },
+  stop(){ if(!this.stream) return; clearInterval(this.iv); this.stream.getTracks().forEach(t=>t.stop()); try{ this.ctx.close(); }catch(e){} this.stream=null; this.ctx=null; }
+};
+function buildMeter(el){ for(let i=0;i<30;i++){ const v=-60+i*2; el.append(h('i',{class:v>=-30&&v<-12?'band':''})); } }
+function paintMeter(p,dbv){
+  const on=clamp(Math.round((dbv+60)/2),0,30);
+  $$('#'+p+'meter i').forEach((seg,i)=>{ const v=-60+i*2; seg.classList.toggle('on',i<on); seg.classList.toggle('z',i<on&&v>=-30&&v<-12); seg.classList.toggle('hot',i<on&&v>=-12); });
+  $('#'+p+'db').textContent=(dbv<-85?'–':dbv.toFixed(0))+' dB';
+  const z=$('#'+p+'zone'); const b=dbv<-50?['','Silence']:dbv<-38?['bad','Too quiet']:dbv<-30?['warn','Quiet']:dbv<-12?['good','Clear']:['warn','Very loud'];
+  z.className='chip '+b[0]; z.textContent=b[1];
+}
+function resetMeter(p,label){ paintMeter(p,-90); const z=$('#'+p+'zone'); z.className='chip'; z.textContent=label; }
+
+/* ---------- step 1b: loud routine, modeled on LSVT LOUD's daily exercises ---------- */
+const DEFAULT_PHRASES=['Good morning, everyone.','Can I add something here?','My main point is this.','Could you say that again, please?','I have a question about the plan.','Let me explain how it works.','I finished that yesterday.','Thanks, that was really helpful.','I see it differently, and here is why.','Let me start with the main point.'];
+const LOUD_STAGES=['Long "ah" × 5','Pitch slides','10 loud phrases'];
+let warmMode=LS.get('sio.warmMode','quick'); if(warmMode!=='quick'&&warmMode!=='loud') warmMode='quick';
+const loud={stage:0,holds:[],holdOn:false,t0:0,iv:0,dbs:[],up:0,down:0,phr:0,done:false,best:0};
+let kOff=null;
+function myPhrases(){ const c=String(LS.get('sio.phrases','')||'').split('\n').map(x=>x.trim()).filter(Boolean); return c.length?c.slice(0,10):DEFAULT_PHRASES; }
+function dots(n,total){ const d=h('span',{class:'dots','aria-hidden':'true'}); for(let i=0;i<total;i++) d.append(h('i',{class:i<n?'on':''})); return d; }
+function renderWarmMode(){
+  $$('#warmMode .pill').forEach(b=>{ const on=b.getAttribute('data-mode')===warmMode; b.setAttribute('aria-checked',on?'true':'false'); b.tabIndex=on?0:-1; });
+  $('#warmQuick').hidden=warmMode!=='quick'; $('#warmLoud').hidden=warmMode!=='loud';
+  if(warmMode==='loud') renderLoud();
+}
+function renderLoud(){
+  $('#loudSteps').replaceChildren(...LOUD_STAGES.map((n,i)=>h('span',{class:'substep'+(loud.done||i<loud.stage?' done':i===loud.stage?' on':''),text:(i+1)+'. '+n})));
+  const box=$('#loudStage'); box.replaceChildren();
+  if(loud.done){
+    box.append(h('div',{class:'done-box'},h('b',{text:'Loud routine done.'}),h('p',{text:'Best "ah": '+loud.best.toFixed(1)+' seconds. Your normal voice may now feel a little quiet. That feeling is the point: keep this level for the next step.'})),
+      h('div',{class:'actions'},h('button',{class:'btn',type:'button',onclick:()=>showStep(1,true)},'Next: Be heard'),
+        h('button',{class:'btn ghost',type:'button',onclick:()=>{ Object.assign(loud,{stage:0,holds:[],up:0,down:0,phr:0,done:false,best:0}); renderLoud(); }},'Do it again')));
+    return;
+  }
+  if(loud.stage===0){
+    const n=loud.holds.length;
+    box.append(
+      h('p',{class:'sub',text:'Take a full breath. Say "ah" at a strong, healthy volume, loud but not shouting, and hold it steady for as long as is comfortable. Rest between holds.'}),
+      h('div',{class:'score-row'},h('span',{class:'hold-timer mono',id:'holdTimer',text:'0.0s'}),h('span',{class:'note',text:'"Ah" '+Math.min(n+1,5)+' of 5'})),
+      h('div',{class:'actions'},h('button',{class:'btn',type:'button',onclick:toggleHold},loud.holdOn?'Stop':'Start "ah" '+(n+1))),
+      n?h('div',{class:'holds'},loud.holds.map((x,i)=>h('span',{class:'chip',text:'#'+(i+1)+' · '+x.s.toFixed(1)+'s'+(x.db!=null?' · '+x.db.toFixed(0)+' dB':'')}))):null,
+      h('p',{class:'note',text:'Many adults reach 15 to 25 seconds. Keeping the volume steady to the very end matters more than the number.'}));
+  }else if(loud.stage===1){
+    const row=(label,key)=>h('div',{class:'slide-row'},h('b',{text:label}),dots(loud[key],5),
+      h('button',{class:'btn sm',type:'button',disabled:loud[key]>=5,onclick:()=>{ loud[key]=Math.min(5,loud[key]+1); if(loud.up>=5&&loud.down>=5) loud.stage=2; renderLoud(); }},'Did one'));
+    box.append(h('p',{class:'sub',text:'On a loud "ah", slide from your lowest comfortable note up to your highest. Then slide from high to low. Five of each. A wider pitch range makes you sound more thoughtful to listeners.'}),row('Low → high','up'),row('High → low','down'));
+  }else{
+    const list=myPhrases(); const i=Math.min(loud.phr,list.length-1);
+    box.append(h('p',{class:'sub',text:'Say each phrase out loud at your loud level, as if to someone across the room. Land the last word.'}),
+      h('p',{class:'phrase',text:list[i]}),
+      h('div',{class:'dots'},dots(i+1,list.length),h('span',{class:'note',text:(i+1)+' of '+list.length})),
+      h('div',{class:'actions'},h('button',{class:'btn',type:'button',onclick:()=>{ if(i<list.length-1){ loud.phr=i+1; renderLoud(); } else finishLoud(); }},i<list.length-1?'Next phrase':'Finish routine')));
+  }
+}
+function toggleHold(){
+  if(!loud.holdOn){
+    loud.holdOn=true; loud.t0=performance.now(); loud.dbs=[];
+    loud.iv=setInterval(()=>{ const el=$('#holdTimer'); if(el) el.textContent=((performance.now()-loud.t0)/1000).toFixed(1)+'s'; },100);
+    renderLoud(); return;
+  }
+  clearInterval(loud.iv); loud.holdOn=false;
+  const secs=(performance.now()-loud.t0)/1000;
+  if(secs>=1){ loud.holds.push({s:secs,db:loud.dbs.length>5?mean(loud.dbs):null}); loud.best=Math.max(loud.best,secs); }
+  if(loud.holds.length>=5) loud.stage=1;
+  renderLoud();
+}
+function finishLoud(){
+  loud.done=true; LS.set('sio.warm',dayKey());
+  const d=loud.holds.filter(x=>x.db!=null).map(x=>x.db);
+  store.add({type:'loud',holds:loud.holds.map(x=>+x.s.toFixed(1)),best:+loud.best.toFixed(1),db:d.length?+mean(d).toFixed(1):undefined});
+  renderLoud(); renderTrack();
+}
+$$('#warmMode .pill').forEach(b=>b.addEventListener('click',()=>{ warmMode=b.getAttribute('data-mode'); LS.set('sio.warmMode',warmMode); renderWarmMode(); }));
+$('#ownPhrases').value=String(LS.get('sio.phrases','')||'');
+$('#savePhrases').addEventListener('click',()=>{
+  const v=$('#ownPhrases').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,10).join('\n');
+  LS.set('sio.phrases',v); $('#ownPhrases').value=v;
+  $('#phrasesMsg').textContent=v?'Saved. The routine will use your phrases.':'Cleared. The routine will use the default phrases.';
+  loud.phr=Math.min(loud.phr,myPhrases().length-1); renderLoud();
+});
+if(CAN_MIC){ $('#kBox').hidden=false; buildMeter($('#kmeter')); }
+$('#kBtn').addEventListener('click',async()=>{
+  if(kOff){ kOff(); kOff=null; $('#kBtn').textContent='Turn on the mic meter'; resetMeter('k','Meter off'); return; }
+  const ok=await mic.start(); if(!ok){ $('#kBox').hidden=true; return; }
+  kOff=mic.on(v=>{ paintMeter('k',v); if(loud.holdOn&&v>-50) loud.dbs.push(v); });
+  $('#kBtn').textContent='Turn off the meter';
+});
 
 /* ---------- step 2: clarity (phone test) ---------- */
 let sentIdx=LS.get('sio.sent',-1);
@@ -1064,7 +1393,7 @@ function sentencesOf(text){
   const parts=(text.replace(/\s+/g,' ').trim().match(/[^.!?]+[.!?]*/g)||[]).map(x=>x.trim()).filter(x=>words(x).length);
   return parts;
 }
-function analyzeTalk(text){
+function analyzeTalk(text,key){
   const w=words(text); const lower=' '+text.toLowerCase().replace(/[‘’]/g,"'")+' ';
   const sents=sentencesOf(text);
   const noPunct=sents.length<=1&&w.length>30;
@@ -1073,7 +1402,7 @@ function analyzeTalk(text){
   const firstLen=noPunct?null:words(firstText).length;
   const fillers=[]; let fillerCount=0;
   FILLERS.forEach(([name,re])=>{ const m=lower.match(re); if(m&&m.length){ fillers.push(name+' ×'+m.length); fillerCount+=m.length; } });
-  const f=FW[fwKey];
+  const f=FW[key||fwKey];
   const tailStart=Math.floor(w.length*0.6); const tailText=' '+w.slice(tailStart).join(' ')+' ';
   const wholeText=' '+w.join(' ')+' ';
   const parts=f.parts.map(p=>{
@@ -1131,12 +1460,34 @@ $('#checkBtn').addEventListener('click',()=>{
   store.add({type:'structure',fw:fwKey,words:a.w,wpm:wpm||undefined,fillers:a.fillerCount,parts:found+'/'+a.parts.length,first:a.firstLen||undefined,q:PROMPTS[pIdx].q.slice(0,90)});
 });
 
-/* ---------- AI coach (only when this page runs inside Claude) ---------- */
+/* ---------- AI coach: inside Claude, or in the Android app with the user's API key ---------- */
 let coachCtl=null;
+const NATIVE_COACH=!!(window.AndroidCoach&&typeof window.AndroidCoach.ask==='function');
+let coachSeq=0; const coachWaits={};
+window.__sioCoach=function(id,payload){
+  const w=coachWaits[id]; if(!w) return; delete coachWaits[id];
+  let r=null; try{ r=typeof payload==='string'?JSON.parse(payload):payload; }catch(e){}
+  if(r&&r.ok) w.res(String(r.text||'')); else w.rej({code:(r&&r.code)||'upstream_error',message:(r&&r.message)||''});
+};
+function nativeAsk(prompt,signal){
+  return new Promise((res,rej)=>{
+    const id=String(++coachSeq); coachWaits[id]={res,rej};
+    if(signal) signal.addEventListener('abort',()=>{ if(coachWaits[id]){ delete coachWaits[id]; try{ window.AndroidCoach.cancel(id); }catch(e){} rej({code:'cancelled'}); } });
+    window.AndroidCoach.ask(id,prompt);
+  });
+}
+function parseJsonLoose(text){
+  try{ return JSON.parse(text); }catch(e){}
+  const m=text.match(/```(?:json)?\s*([\s\S]*?)```/); if(m){ try{ return JSON.parse(m[1]); }catch(e){} }
+  const a=text.indexOf('{'), b=text.lastIndexOf('}'); if(a>=0&&b>a){ try{ return JSON.parse(text.slice(a,b+1)); }catch(e){} }
+  throw {code:'invalid_json'};
+}
+function coachReady(){ return !!sampleFn||(NATIVE_COACH&&window.AndroidCoach.hasKey()); }
 function refreshCoachButton(){
   const area=$('#coachArea'); if(!area||area.dataset.state==='busy'||area.dataset.state==='done') return;
   area.replaceChildren();
-  if(!sampleFn||!lastTalk) return;
+  if(!lastTalk) return;
+  if(!coachReady()){ if(NATIVE_COACH) area.append(h('p',{class:'note',text:'Want coach feedback on this answer? Add an Anthropic API key in Progress → App settings.'})); return; }
   area.append(h('div',{class:'coach'},
     h('div',{class:'coach-head'},h('h3',{text:'Get coach feedback'}),h('span',{class:'note',text:'Claude reads your answer and writes a cleaner version for you to say aloud.'})),
     h('div',{class:'actions'},h('button',{class:'btn',type:'button',onclick:runCoach},'Coach me on this answer'))));
@@ -1160,7 +1511,7 @@ function coachPrompt(t){
     +' "rewrite": "a model answer of 60 to 100 words that uses ONLY their own ideas and facts, in the '+f.name+' order, first person, short sentences of at most 15 words, plain everyday words that are easy to say aloud"}';
 }
 async function runCoach(){
-  const area=$('#coachArea'); if(!area||!lastTalk||!sampleFn) return;
+  const area=$('#coachArea'); if(!area||!lastTalk||!coachReady()) return;
   area.dataset.state='busy'; area.replaceChildren();
   coachCtl=new AbortController();
   const status=h('p',{class:'thinking',text:'Thinking… this takes a few seconds.'});
@@ -1169,14 +1520,21 @@ async function runCoach(){
   area.append(card);
   const t=lastTalk;
   try{
-    const r=await sampleFn.json(coachPrompt(t),{modelTier:'quick',signal:coachCtl.signal});
+    const prompt=coachPrompt(t);
+    const r=sampleFn?await sampleFn.json(prompt,{modelTier:'quick',signal:coachCtl.signal}):parseJsonLoose(await nativeAsk(prompt,coachCtl.signal));
     area.dataset.state='done'; renderCoach(card,r,t);
   }catch(e){
     area.dataset.state='';
     const code=e&&e.code;
     if(code==='cancelled'){ refreshCoachButton(); return; }
     if(['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(code)){ sampleFn=null; area.replaceChildren(h('p',{class:'note',text:'Coach feedback is turned off for this page. The checks above still work.'})); return; }
-    const copy=code==='rate_limited'?'Too many requests right now. Wait a minute, then try again.':code==='session_expired'?'Your Claude session expired. Sign in again, then retry.':code==='refused'||code==='empty_completion'?"The coach couldn't respond to this answer. Try a different answer.":code==='invalid_json'?'The reply came back garbled. Try again.':"Couldn't reach the coach. Try again.";
+    const copy=code==='rate_limited'?'Too many requests right now. Wait a minute, then try again.'
+      :code==='session_expired'?'Your Claude session expired. Sign in again, then retry.'
+      :code==='no_key'?'Add your Anthropic API key in Progress → App settings, then try again.'
+      :code==='auth'?'The API key was rejected. Check it in Progress → App settings.'
+      :code==='network'?"No internet connection. Try again when you're online."
+      :code==='refused'||code==='empty_completion'?"The coach couldn't respond to this answer. Try a different answer."
+      :code==='invalid_json'?'The reply came back garbled. Try again.':"Couldn't reach the coach. Try again.";
     area.replaceChildren(h('div',{class:'coach'},h('p',{text:copy}),h('div',{class:'actions'},h('button',{class:'btn ghost sm',type:'button',onclick:runCoach},'Try again'))));
   }finally{ coachCtl=null; }
 }
@@ -1205,6 +1563,10 @@ function renderCoach(card,r,t){
 
 /* ---------- step 4: take it live ---------- */
 let habitSel=null, feelSel=null;
+const HABIT_ACT={point:'say my main point in the first sentence',vol:'speak at volume 4, one step louder than feels normal',end:'keep my voice up to the very last word',pause:'close my mouth and pause instead of saying "um"',one:'finish each idea and start a new sentence',jaw:'open my mouth and overenunciate each word'};
+const SITUATIONS=['someone asks me a question','I speak up in a meeting','I start a phone call','I introduce myself','I explain a problem'];
+let sitSel=LS.get('sio.sit',SITUATIONS[0]); if(SITUATIONS.indexOf(sitSel)<0) sitSel=SITUATIONS[0];
+function ifThenText(){ return 'If '+sitSel+', then I will '+(HABIT_ACT[habitSel]||'')+'.'; }
 function suggestHabit(ents){
   const cl=ents.filter(e=>e.type==='clarity'); const st=ents.filter(e=>e.type==='structure'); const vo=ents.filter(e=>e.type==='voice');
   if(vo.length&&vo[vo.length-1].level<-30) return 'vol';
@@ -1213,24 +1575,27 @@ function suggestHabit(ents){
   if(st.some(e=>e.fillers>=4)) return 'pause';
   if(cl.length&&Math.max(...cl.map(e=>e.score))<0.9) return 'end';
   if(st.length) return 'point';
-  return null;
+  return planHabit();
 }
 function renderWrap(){
   const tk=dayKey(); const ents=store.real().filter(e=>dayKey(e.t)===tk);
   const ul=$('#todaySummary'); ul.replaceChildren();
-  const cl=ents.filter(e=>e.type==='clarity'), st=ents.filter(e=>e.type==='structure'), vo=ents.filter(e=>e.type==='voice');
+  const cl=ents.filter(e=>e.type==='clarity'), st=ents.filter(e=>e.type==='structure'), vo=ents.filter(e=>e.type==='voice'), ld=ents.filter(e=>e.type==='loud'), tp=ents.filter(e=>e.type==='topics');
   const wp=ents.filter(e=>e.wpm).map(e=>e.wpm);
   const row=(a,b)=>ul.append(h('li',null,h('span',{text:a}),h('span',{text:b})));
-  row('Warm-up',LS.get('sio.warm','')===tk?'Done':'Not yet');
+  row('Warm-up',ld.length?'Loud routine, best "ah" '+Math.max(...ld.map(e=>e.best)).toFixed(1)+'s':LS.get('sio.warm','')===tk?'Done':'Not yet');
   row('Phone test',cl.length?'Best '+Math.round(Math.max(...cl.map(e=>e.score))*100)+'% ('+cl.length+(cl.length===1?' try)':' tries)'):'Not yet');
   row('Structured answers',st.length?st.length+' ('+[...new Set(st.map(e=>FW[e.fw]?FW[e.fw].name:e.fw))].join(', ')+')':'Not yet');
+  if(tp.length) row('Table Topics',tp.length+(tp.length===1?' answer':' answers'));
   if(wp.length) row('Average pace',Math.round(wp.reduce((a,b)=>a+b,0)/wp.length)+' wpm');
   if(vo.length) row('Voice level',vo[vo.length-1].level.toFixed(0)+' dBFS');
   const sug=suggestHabit(ents);
   if(!habitSel) habitSel=sug||LS.get('sio.habit',null);
   const hb=$('#habits'); hb.replaceChildren();
   HABITS.forEach(x=>hb.append(h('button',{class:'habit',type:'button',role:'radio','aria-checked':habitSel===x.k?'true':'false',onclick:()=>{ habitSel=x.k; LS.set('sio.habit',x.k); renderWrap(); }},
-    x.k===sug?h('span',{class:'sugg',text:"Suggested from today's drills"}):null,h('b',{text:x.name}),h('span',{text:x.how}))));
+    x.k===sug?h('span',{class:'sugg',text:"Suggested for you today"}):null,h('b',{text:x.name}),h('span',{text:x.how}))));
+  $('#sits').replaceChildren(...SITUATIONS.map(x=>h('button',{class:'pill',type:'button',role:'radio','aria-checked':x===sitSel?'true':'false',onclick:()=>{ sitSel=x; LS.set('sio.sit',x); renderWrap(); }},x)));
+  $('#ifThen').textContent=habitSel?ifThenText():'Choose a habit above to build your plan.';
   const fe=$('#feel'); fe.replaceChildren();
   fe.append(h('span',{class:'fl',text:'Mumbled'}));
   for(let i=1;i<=5;i++) fe.append(h('button',{type:'button',role:'radio','aria-checked':feelSel===i?'true':'false','aria-label':i+' of 5',onclick:()=>{ feelSel=i; renderWrap(); }},String(i)));
@@ -1239,15 +1604,215 @@ function renderWrap(){
 $('#finishBtn').addEventListener('click',()=>{
   const msg=$('#finishMsg'); msg.textContent='';
   if(!habitSel){ msg.textContent='Choose one habit first.'; return; }
-  const hb=HABITS.find(x=>x.k===habitSel);
-  store.add({type:'session',habit:habitSel,feel:feelSel||undefined});
-  const s=streakOf(store.real());
+  const plan=ifThenText();
+  store.add({type:'session',habit:habitSel,feel:feelSel||undefined,plan});
+  const s=streakOf(practiceEntries());
   const box=$('#doneBox'); box.replaceChildren(h('div',{class:'done-box'},
     h('b',{text:'Session saved. '+s.n+(s.n===1?' day':' days')+' in a row.'}),
-    h('p',null,'Your habit for today: ',h('b',{text:hb.name}),'. '+hb.how),
+    h('p',null,'Your plan for today: ',h('b',{text:plan})),
     h('p',{class:'note',text:'Try it in your very next conversation, even a small one. Come back tomorrow for the next set.'})));
   box.hidden=false; renderTrack();
 });
+
+/* ---------- table topics ---------- */
+const TOPICS=[
+  {c:'Everyday',q:'What is the best advice you have ever received?',fw:'prep'},
+  {c:'Everyday',q:'Describe a place that makes you feel calm.',fw:'h3'},
+  {c:'Everyday',q:'If you could learn one skill instantly, what would it be?',fw:'prep'},
+  {c:'Everyday',q:'Tell us about a time you got lost.',fw:'star'},
+  {c:'Everyday',q:'What would you change about your town or city?',fw:'prep'},
+  {c:'Everyday',q:'Describe your perfect weekend.',fw:'h3'},
+  {c:'Everyday',q:'What small thing always makes your day better?',fw:'prep'},
+  {c:'Everyday',q:'Tell us about someone who taught you something important.',fw:'star'},
+  {c:'Everyday',q:'Is it better to be a morning person or a night person?',fw:'prep'},
+  {c:'Everyday',q:'What is a habit you are proud of?',fw:'prep'},
+  {c:'Work',q:'What makes a meeting worth attending?',fw:'h3'},
+  {c:'Work',q:'Describe a mistake that taught you something at work.',fw:'star'},
+  {c:'Work',q:'How do you stay focused when work gets boring?',fw:'h3'},
+  {c:'Work',q:'What is one tool or app you could not work without?',fw:'prep'},
+  {c:'Work',q:'Explain your job to someone who has never heard of it.',fw:'h3'},
+  {c:'Work',q:'What would you do in your first week at a new job?',fw:'h3'},
+  {c:'Work',q:'Your project is behind schedule. Update your manager.',fw:'wsn'},
+  {c:'Interview',q:'Tell me about yourself.',fw:'h3'},
+  {c:'Interview',q:'What is your biggest weakness?',fw:'star'},
+  {c:'Interview',q:'Where do you see yourself in five years?',fw:'h3'},
+  {c:'Interview',q:'Why are you leaving your current role?',fw:'prep'},
+  {c:'Interview',q:'Describe a time you handled pressure well.',fw:'star'},
+  {c:'Interview',q:'What would your last manager say about you?',fw:'h3'},
+  {c:'Interview',q:'Why should we choose you over other candidates?',fw:'h3'}
+];
+const TT_CATS=['All','Everyday','Work','Interview'];
+let ttCat=LS.get('sio.ttcat','All'); if(TT_CATS.indexOf(ttCat)<0) ttCat='All';
+const tt={q:null,cdIv:0,iv:0,t0:0,secs:0,last:-1,checks:{}};
+const ttTalk=$('#ttTalk'); const ttT=makeTracker(ttTalk);
+attachListener($('#listen3'),$('#listen3Status'),ttTalk,ttT);
+function ttShow(which){ ['ttIdle','ttThink','ttSpeak','ttReview'].forEach(id=>{ $('#'+id).hidden=id!==which; }); }
+function renderTtCats(){ $('#ttCats').replaceChildren(...TT_CATS.map(c=>h('button',{class:'pill',type:'button','aria-pressed':c===ttCat?'true':'false',onclick:()=>{ ttCat=c; LS.set('sio.ttcat',c); renderTtCats(); }},c))); }
+function ttStart(sameQ){
+  if(!sameQ||!tt.q){ const pool=TOPICS.map((x,i)=>i).filter(i=>(ttCat==='All'||TOPICS[i].c===ttCat)&&i!==tt.last); const i=pool.length?pick(pool):0; tt.last=i; tt.q=TOPICS[i]; }
+  const f=FW[tt.q.fw];
+  $('#ttThinkCat').textContent=tt.q.c+' topic';
+  $('#ttQ1').textContent=tt.q.q; $('#ttQ2').textContent=tt.q.q;
+  $('#ttFw').textContent=f.name; $('#ttSeq').textContent=f.seq;
+  ttTalk.value=''; ttT.reset(); $('#listen3Status').textContent='';
+  ttShow('ttThink');
+  let left=10; $('#ttCount').textContent=String(left);
+  clearInterval(tt.cdIv); clearInterval(tt.iv);
+  tt.cdIv=setInterval(()=>{ left--; $('#ttCount').textContent=String(Math.max(0,left)); if(left<=0) ttSpeak(); },1000);
+  $('#tab-topics').scrollIntoView({block:'start'});
+}
+function ttSpeak(){
+  clearInterval(tt.cdIv); ttShow('ttSpeak'); tt.t0=performance.now(); tt.secs=0; clearInterval(tt.iv);
+  const paint=()=>{
+    const secs=(performance.now()-tt.t0)/1000; tt.secs=secs; $('#ttClock').textContent=fmtClock(secs);
+    const st=secs>=120?['red','Red: finish your sentence and stop.']:secs>=90?['amber','Amber: start wrapping up. Restate your point.']:secs>=60?['green','Green: you can wrap up anytime.']:['','Keep going. Point first.'];
+    const L=$('#ttLight'); const cls='tt-light'+(st[0]?' '+st[0]:''); if(L.className!==cls) L.className=cls;
+    const say=$('#ttSay'); if(say.textContent!==st[1]) say.textContent=st[1];
+  };
+  paint(); tt.iv=setInterval(paint,250);
+}
+function ttDone(){
+  clearInterval(tt.iv);
+  if(NATIVE_STT&&nativeOwner) window.AndroidSpeech.stop();
+  const secs=Math.round(tt.secs);
+  const txt=ttTalk.value.trim(); const a=words(txt).length>=8?analyzeTalk(txt,tt.q.fw):null;
+  const timeChip=secs<60?h('span',{class:'chip warn',text:'! Under a minute'}):secs<=150?h('span',{class:'chip good',text:'✓ In the window'}):h('span',{class:'chip warn',text:'! Over time'});
+  const CHECKS=[['first','Did you say your point in the first sentence?'],['loud','Did you keep your volume up to the last word?'],['close','Did you finish by restating your point?']];
+  tt.checks={};
+  const box=$('#ttReview'); box.replaceChildren();
+  box.append(h('p',{class:'eyebrow',text:'Your answer'}),h('p',{class:'tt-q',style:'font-size:21px',text:tt.q.q}),
+    h('div',{class:'score-row'},h('span',{class:'score mono',text:fmtClock(secs)}),h('div',{class:'score-cap'},timeChip,h('span',{class:'note',text:'Table Topics answers run 1 to 2 minutes.'}))));
+  const yn=h('div',{class:'yn'});
+  const drawYn=()=>{ yn.replaceChildren(...CHECKS.map(([k,q])=>h('div',{class:'yn-row'},h('span',{text:q}),h('span',{class:'pills',role:'radiogroup','aria-label':q},
+    h('button',{class:'pill',type:'button',role:'radio','aria-checked':tt.checks[k]===true?'true':'false',onclick:()=>{ tt.checks[k]=true; drawYn(); }},'Yes'),
+    h('button',{class:'pill',type:'button',role:'radio','aria-checked':tt.checks[k]===false?'true':'false',onclick:()=>{ tt.checks[k]=false; drawYn(); }},'Not yet'))))); };
+  drawYn();
+  box.append(h('h3',{text:'Quick self-check'}),yn);
+  if(a){
+    box.append(h('div',null,h('h3',{text:'Ah-Counter report',style:'margin-bottom:6px'}),
+      h('p',{text:a.fillerCount?'Filler words: '+a.fillers.join(', ')+'.':'No filler words found. Voice typing may drop "um" and "uh", so listen for those yourself.'}),
+      h('p',{class:'first-line',style:'margin-top:8px'},'Your first sentence: ',h('mark',{text:a.firstText}))));
+  }else box.append(h('p',{class:'note',text:'Tip: turn on voice typing before you talk next time to get an Ah-Counter report on your filler words.'}));
+  const fix=secs<60?'You stopped early. Next time, add one example: "For example…"'
+    :secs>150?'You ran long. When the light turns amber, restate your point and stop.'
+    :a&&a.fillerCount>=4?'Swap filler words for a silent breath.'
+    :a&&a.firstLen>25?'Your opening ran long. Start with one short sentence that answers the question.'
+    :'Good timing. Next, try a harder category.';
+  box.append(h('div',{class:'fix'},h('span',{class:'eyebrow',text:'Fix one thing'}),h('p',{text:fix})));
+  box.append(h('div',{class:'actions'},
+    h('button',{class:'btn',type:'button',onclick:()=>ttStart(false)},'Next question'),
+    h('button',{class:'btn ghost',type:'button',onclick:()=>ttStart(true)},'Same question again'),
+    h('button',{class:'btn ghost',type:'button',onclick:()=>ttShow('ttIdle')},'Stop for now')));
+  ttShow('ttReview');
+  store.add({type:'topics',secs,fillers:a?a.fillerCount:undefined,words:a?a.w:undefined,q:tt.q.q.slice(0,90)});
+}
+$('#ttStart').addEventListener('click',()=>ttStart(false));
+$('#ttGo').addEventListener('click',ttSpeak);
+$('#ttDone').addEventListener('click',ttDone);
+
+/* 1-minute reset: cyclic sighing, then reappraisal and third-person self-talk */
+const BREATH=[{t:'Breathe in through your nose',d:2000,s:.9},{t:'A second short sip of air in',d:1000,s:1},{t:'Long, slow breath out through your mouth',d:5000,s:.55}];
+const rs={on:false,cycle:0,ph:0,tm:0};
+const REDUCED=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+function openReset(){ $('#resetBox').hidden=false; $('#resetBox').scrollIntoView({block:'nearest'}); }
+function stopReset(){ rs.on=false; clearTimeout(rs.tm); $('#resetGo').textContent='Start'; }
+function breathStep(){
+  if(!rs.on) return;
+  const orb=$('#orb');
+  if(rs.cycle>=6){
+    stopReset(); $('#resetGo').textContent='Again';
+    $('#breathLine').textContent='Now say out loud: "I am excited." Then coach yourself by name: "[Your name], you know this. Point first."';
+    $('#breathCount').textContent=''; orb.style.transitionDuration='1000ms'; orb.style.transform='scale(.6)'; return;
+  }
+  const p=BREATH[rs.ph];
+  $('#breathLine').textContent=p.t; $('#breathCount').textContent='Breath '+(rs.cycle+1)+' of 6';
+  if(!REDUCED){ orb.style.transitionDuration=p.d+'ms'; orb.style.transform='scale('+p.s+')'; }
+  rs.tm=setTimeout(()=>{ rs.ph++; if(rs.ph>=BREATH.length){ rs.ph=0; rs.cycle++; } breathStep(); },p.d);
+}
+$('#resetOpen').addEventListener('click',openReset);
+$('#resetClose').addEventListener('click',()=>{ stopReset(); $('#resetBox').hidden=true; });
+$('#resetGo').addEventListener('click',()=>{ if(rs.on){ stopReset(); return; } rs.on=true; rs.cycle=0; rs.ph=0; $('#resetGo').textContent='Stop'; breathStep(); });
+$('#resetFromPlaybook').addEventListener('click',()=>{ showTab('topics'); openReset(); });
+
+/* ---------- 8-week plan and the "Sorry, what?" counter ---------- */
+const STAGES=[
+  {w:'Weeks 1–2',name:'Volume',cue:'Think loud',habit:'vol',daily:'The loud routine in step 1, then one voice check.',weekly:'Visit a Toastmasters club as a guest. Just listen.'},
+  {w:'Weeks 3–4',name:'Clarity',cue:'Overenunciate',habit:'jaw',daily:'Quick warm-up, then five phone tests. Read a paragraph aloud, pausing at every full stop.',weekly:'Say one thing in a meeting or class, loud and slow.'},
+  {w:'Weeks 5–6',name:'Structure',cue:'Point first',habit:'point',daily:'One structured answer in step 3, then read the coach version aloud twice.',weekly:'Three Table Topics in a row, or join a club.'},
+  {w:'Weeks 7–8',name:'Transfer',cue:'If-then plans',habit:'point',daily:'Short warm-up, then rehearse a real conversation you have coming up.',weekly:'Give a 2-minute talk and ask one person for one specific note.'}
+];
+function planInfo(){
+  const ps=store.real().filter(e=>e.type==='plan'); if(!ps.length) return null;
+  const d0=new Date(ps[ps.length-1].start||ps[ps.length-1].t); d0.setHours(0,0,0,0);
+  const week=Math.floor((Date.now()-d0.getTime())/(7*864e5))+1;
+  return {week,stage:week>8?-1:Math.floor((week-1)/2)};
+}
+function planHabit(){ const p=planInfo(); return p&&p.stage>=0?STAGES[p.stage].habit:null; }
+let planConfirm=0;
+function renderPlan(){
+  const p=planInfo();
+  $('#stages').replaceChildren(...STAGES.map((s,i)=>h('div',{class:'stage'+(p&&p.stage===i?' now':'')},h('span',{class:'cue',text:s.w}),h('b',{text:s.name}),h('span',{text:'Cue: "'+s.cue+'"'}))));
+  const now=$('#planNow'); now.replaceChildren();
+  const btn=$('#planStart');
+  if(!p) btn.textContent='Start the 8-week plan today';
+  else if(p.stage<0){ now.append(h('div',{class:'done-box'},h('b',{text:'Plan complete.'}),h('p',{text:'You finished all 8 weeks. Start again to keep the habits sharp.'}))); btn.textContent='Start a new 8 weeks'; }
+  else{ const s=STAGES[p.stage]; now.append(h('div',{class:'fix'},h('span',{class:'eyebrow',text:'Week '+p.week+' of 8 · '+s.name}),h('p',{text:'Daily: '+s.daily}),h('p',{style:'font-weight:400',text:'This week: '+s.weekly}))); btn.textContent='Restart from week 1'; }
+  const ban=$('#planBanner');
+  if(p&&p.stage>=0){ const s=STAGES[p.stage]; ban.replaceChildren(h('span',{class:'eyebrow',text:'Week '+p.week+' of 8'}),h('b',{text:s.name}),h('span',{text:"Today's cue: \""+s.cue+'"'})); ban.hidden=false; }
+  else ban.hidden=true;
+}
+$('#planStart').addEventListener('click',()=>{
+  const p=planInfo();
+  if(p&&p.stage>=0&&Date.now()-planConfirm>4000){ planConfirm=Date.now(); $('#planStart').textContent='Tap again to restart from week 1'; return; }
+  planConfirm=0; store.add({type:'plan',start:Date.now()}); renderPlan();
+});
+function weekStart(t){ const x=new Date(t); x.setHours(0,0,0,0); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x.getTime(); }
+function renderTally(){
+  const r=store.real().filter(e=>e.type==='repeat'); const tk=dayKey(); const w0=weekStart(Date.now()), w1=w0-7*864e5;
+  const today=r.filter(e=>dayKey(e.t)===tk).length, week=r.filter(e=>e.t>=w0).length, last=r.filter(e=>e.t>=w1&&e.t<w0).length;
+  const cmp=!last?h('span',{class:'td',text:'Compared with last week once you have one'}):week<last?h('span',{class:'chip good',text:'✓ Fewer than last week'}):h('span',{class:'chip warn',text:week===last?'Same as last week':'! More than last week'});
+  $('#tallyTiles').replaceChildren(
+    h('div',{class:'tile'},h('span',{class:'tl',text:'Today'}),h('span',{class:'tv',text:String(today)}),h('span',{class:'td',text:today===1?'time':'times'})),
+    h('div',{class:'tile'},h('span',{class:'tl',text:'This week so far'}),h('span',{class:'tv',text:String(week)}),cmp),
+    h('div',{class:'tile'},h('span',{class:'tl',text:'Last week'}),h('span',{class:'tv',text:String(last)}),h('span',{class:'td',text:'Monday to Sunday'})));
+  $('#tallyUndo').disabled=!today;
+}
+$('#tallyAdd').addEventListener('click',()=>{ store.add({type:'repeat'}); const b=$('#tallyAdd'); b.textContent='Counted'; setTimeout(()=>{ b.textContent='+1 Asked to repeat'; },900); });
+$('#tallyUndo').addEventListener('click',()=>{ const tk=dayKey(); const r=store.real().filter(e=>e.type==='repeat'&&dayKey(e.t)===tk); if(r.length) store.remove(r[r.length-1].id); });
+
+/* ---------- Android app settings (only inside the app) ---------- */
+const APP=(window.AndroidApp&&typeof window.AndroidApp.getReminder==='function')?window.AndroidApp:null;
+function initAppSettings(){
+  if(!APP&&!NATIVE_COACH) return;
+  $('#appSettings').hidden=false;
+  if(APP){
+    $('#remBox').hidden=false;
+    let cur={}; try{ cur=JSON.parse(APP.getReminder()||'{}'); }catch(e){}
+    if(cur.hour!=null) $('#remTime').value=pad2(cur.hour)+':'+pad2(cur.minute||0);
+    const m=$('#remMsg'); m.textContent=cur.enabled?'Reminder on, every day at '+$('#remTime').value+'.':'';
+    $('#remSave').addEventListener('click',()=>{
+      const v=($('#remTime').value||'08:30').split(':');
+      const ok=APP.setReminder(true,parseInt(v[0],10)||0,parseInt(v[1],10)||0);
+      m.style.color=ok?'':'var(--bad)';
+      m.textContent=ok?'Reminder on, every day at '+$('#remTime').value+'.':'Allow notifications for Say It Once in Android settings, then try again.';
+    });
+    $('#remOff').addEventListener('click',()=>{ APP.setReminder(false,0,0); m.style.color=''; m.textContent='Reminder off.'; });
+  }
+  if(NATIVE_COACH){
+    $('#keyBox').hidden=false;
+    const m=$('#keyMsg');
+    const show=()=>{ m.style.color=''; m.textContent=window.AndroidCoach.hasKey()?'Coach is on. Your key is saved on this phone.':'No key saved yet, so the coach is off.'; };
+    show();
+    $('#keySave').addEventListener('click',()=>{
+      const k=$('#apiKey').value.trim();
+      if(!k){ m.style.color='var(--bad)'; m.textContent='Paste your key first.'; return; }
+      const ok=window.AndroidCoach.setKey(k); $('#apiKey').value='';
+      if(ok) show(); else { m.style.color='var(--bad)'; m.textContent="That doesn't look like an Anthropic API key. It starts with sk-ant-."; }
+      refreshCoachButton();
+    });
+    $('#keyClear').addEventListener('click',()=>{ window.AndroidCoach.clearKey(); show(); refreshCoachButton(); });
+  }
+}
 
 /* ---------- charts ---------- */
 const tipEl=$('#tip');
@@ -1450,35 +2015,24 @@ $('#audioFile').addEventListener('change',async e=>{
   finally{ e.target.value=''; }
 });
 
-/* live meter (shown only where the browser allows the microphone) */
-let live=null;
-(function(){ const m=$('#lmeter'); for(let i=0;i<30;i++){ const dbv=-60+i*2; m.append(h('i',{class:dbv>=-30&&dbv<-12?'band':''})); } })();
-function paintLive(dbv){
-  const on=clamp(Math.round((dbv+60)/2),0,30);
-  $$('#lmeter i').forEach((seg,i)=>{ const v=-60+i*2; seg.classList.toggle('on',i<on); seg.classList.toggle('z',i<on&&v>=-30&&v<-12); seg.classList.toggle('hot',i<on&&v>=-12); });
-  $('#ldb').textContent=(dbv<-85?'–':dbv.toFixed(0))+' dB';
-  const z=$('#lzone'); const b=dbv<-50?['','Silence']:dbv<-38?['bad','Too quiet']:dbv<-30?['warn','Quiet']:dbv<-12?['good','Clear']:['warn','Very loud'];
-  z.className='chip '+b[0]; z.textContent=b[1];
-}
+/* live check (shown only where the page may use the microphone) */
+let liveRec=null;
+buildMeter($('#lmeter'));
 if(CAN_MIC){
   $('#livePanel').hidden=false;
   $('#liveBtn').addEventListener('click',async()=>{
     const btn=$('#liveBtn'), msg=$('#voiceMsg');
-    if(live){
-      clearInterval(live.iv); live.stream.getTracks().forEach(t=>t.stop()); try{ live.ctx.close(); }catch(e){}
-      const frames=live.frames; live=null; btn.textContent='Start live check'; paintLive(-90); $('#lzone').className='chip'; $('#lzone').textContent='Not listening';
+    if(liveRec){
+      const frames=liveRec.frames; liveRec.off(); liveRec=null; btn.textContent='Start live check'; resetMeter('l','Not listening');
       if(frames.length<200){ msg.style.color=''; msg.textContent='Talk for at least 10 seconds before stopping.'; return; }
       const res=analyzeFrames(frames); if(!res){ msg.style.color=''; msg.textContent="Couldn't hear speech. Check your microphone, then try again."; return; }
       msg.textContent=''; renderVoice(res,{source:'live check'}); logVoice(res); return;
     }
-    try{
-      const stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
-      const AC=window.AudioContext||window.webkitAudioContext; const ctx=new AC();
-      const an=ctx.createAnalyser(); an.fftSize=2048; ctx.createMediaStreamSource(stream).connect(an);
-      const buf=new Float32Array(an.fftSize); const frames=[];
-      const iv=setInterval(()=>{ an.getFloatTimeDomainData(buf); let s=0; for(let i=0;i<buf.length;i++) s+=buf[i]*buf[i]; const rms=Math.sqrt(s/buf.length); const v=rms>0?Math.max(-90,20*Math.log10(rms)):-90; frames.push(v); paintLive(v); if(frames.length>=2400) btn.click(); },50);
-      live={stream,ctx,iv,frames}; btn.textContent='Stop and analyze'; msg.textContent='';
-    }catch(err){ msg.style.color=''; msg.textContent='The microphone is blocked here. Upload a recording instead.'; $('#livePanel').hidden=true; }
+    const ok=await mic.start();
+    if(!ok){ msg.style.color=''; msg.textContent='The microphone is blocked here. Upload a recording instead.'; $('#livePanel').hidden=true; return; }
+    const frames=[];
+    const off=mic.on(v=>{ frames.push(v); paintMeter('l',v); if(frames.length>=2400&&liveRec) btn.click(); });
+    liveRec={frames,off}; btn.textContent='Stop and analyze'; msg.textContent='';
   });
 }
 
@@ -1494,16 +2048,20 @@ function exampleEntries(){
   });
   return out;
 }
-const DRILL={clarity:'Phone test',structure:'Structured answer',voice:'Voice check',session:'Session'};
+const DRILL={clarity:'Phone test',structure:'Structured answer',voice:'Voice check',session:'Session',loud:'Loud routine',topics:'Table Topics',repeat:'Asked to repeat'};
 function entryResult(e){
   if(e.type==='clarity') return Math.round(e.score*100)+'% heard'+(e.wpm?' · '+e.wpm+' wpm':'');
   if(e.type==='structure') return (FW[e.fw]?FW[e.fw].name:'')+' · '+e.parts+' parts · '+e.fillers+' fillers'+(e.wpm?' · '+e.wpm+' wpm':'');
   if(e.type==='voice') return e.level.toFixed(0)+' dBFS · endings -'+Math.max(0,e.drop).toFixed(0)+' dB';
   if(e.type==='session'){ const hb=HABITS.find(x=>x.k===e.habit); return 'Habit: '+(hb?hb.name:'')+(e.feel?' · felt '+e.feel+'/5':''); }
+  if(e.type==='loud') return 'Best "ah" '+e.best+'s'+(e.db!=null?' · '+Math.round(e.db)+' dB':'');
+  if(e.type==='topics') return fmtClock(e.secs)+(e.fillers!=null?' · '+e.fillers+' fillers':'');
+  if(e.type==='repeat') return '+1';
   return '';
 }
 function renderProgress(){
-  const real=store.real(); const isEx=real.length===0; const ents=(isEx?exampleEntries():real).slice().sort((a,b)=>a.t-b.t);
+  renderTally(); renderPlan();
+  const real=store.real().filter(e=>e.type!=='plan'&&e.type!=='repeat'); const isEx=real.length===0; const ents=(isEx?exampleEntries():real).slice().sort((a,b)=>a.t-b.t);
   $('#progExample').hidden=!isEx;
   const s=streakOf(ents); const wk=ents.filter(e=>e.t>Date.now()-7*864e5&&e.type!=='session').length;
   const cl=ents.filter(e=>e.type==='clarity'); const recent=cl.slice(-5);
@@ -1526,10 +2084,10 @@ function renderProgress(){
 }
 
 /* ---------- boot ---------- */
-store.on(()=>{ renderStreak(); renderTrack(); if(!$('#tab-progress').hidden) renderProgress(); if(step===3&&!$('#tab-practice').hidden) renderWrap(); });
+store.on(()=>{ renderStreak(); renderTrack(); renderPlan(); if(!$('#tab-progress').hidden) renderProgress(); if(step===3&&!$('#tab-practice').hidden) renderWrap(); });
 renderSentence(null);
 renderCats(); renderPrompt(); renderFw(); renderTimer();
-renderWarm(); renderStreak(); showStep(step,false);
+renderWarm(); renderWarmMode(); renderTtCats(); renderPlan(); initAppSettings(); renderStreak(); showStep(step,false);
 const hash=(location.hash||'').slice(1);
 showTab(TABS.includes(hash)?hash:LS.get('sio.tab','practice'));
 renderStorageNote();

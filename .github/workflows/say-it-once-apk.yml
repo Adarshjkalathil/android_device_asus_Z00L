@@ -1,0 +1,27 @@
+name: Say It Once APK
+
+on:
+  push:
+    paths:
+      - 'speech-practice/**'
+      - '.github/workflows/say-it-once-apk.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: speech-practice/android
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Unit tests and debug APK
+        run: ./gradlew --no-daemon testDebugUnitTest assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: say-it-once-debug-apk
+          path: speech-practice/android/app/build/outputs/apk/debug/app-debug.apk
