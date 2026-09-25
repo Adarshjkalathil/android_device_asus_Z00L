@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="page">#ECEFF5</color>
+    <color name="brand">#2143D1</color>
+    <color name="icon_bar">#FFFFFF</color>
+    <color name="icon_bar_dim">#8FA2EE</color>
+</resources>

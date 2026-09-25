@@ -1,0 +1,62 @@
+plugins {
+    id 'com.android.application'
+}
+
+// The app ships the same page as the web version. The single source of truth is
+// speech-practice/say-it-once.html; it is copied into the APK as assets/index.html.
+def webSource = file('../../say-it-once.html')
+def webAssets = layout.buildDirectory.dir('generated/webassets')
+def copyWebApp = tasks.register('copyWebApp', Copy) {
+    from(webSource)
+    into(webAssets)
+    rename { 'index.html' }
+}
+
+android {
+    namespace 'app.sayitonce'
+    compileSdk 35
+    buildToolsVersion '35.0.0'
+
+    defaultConfig {
+        applicationId 'app.sayitonce'
+        minSdk 26
+        targetSdk 35
+        versionCode 2
+        versionName '1.1'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main {
+            assets.srcDir(webAssets)
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += [
+                'META-INF/DEPENDENCIES', 'META-INF/LICENSE*', 'META-INF/NOTICE*',
+                'META-INF/*.kotlin_module', 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
+            ]
+        }
+    }
+}
+
+tasks.named('preBuild') { dependsOn copyWebApp }
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+    implementation 'com.anthropic:anthropic-java:2.34.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+}
