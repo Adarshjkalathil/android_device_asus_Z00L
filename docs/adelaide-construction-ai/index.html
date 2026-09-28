@@ -1,0 +1,998 @@
+<title>Adelaide Construction AI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: a drawing-set report. Title-block header like an architect's sheet, a sticky sheet index on wide screens, one reading column on phones. */
+:root {
+  --paper: #eef2f4;      /* bluestone-tinted ground */
+  --sheet: #ffffff;
+  --ink: #16232b;
+  --ink-2: #3f4e57;
+  --ink-3: #66747d;
+  --rule: #cfd8dd;
+  --rule-strong: #16232b;
+  --accent: #8f530a;     /* survey ochre, text-safe */
+  --hivis: #e9a23b;      /* hi-vis amber, fills only */
+  --link: #245479;
+  --tint: #f7f3ea;       /* soft amber tint for callouts */
+  --ok: #276b43;
+  --watch: #7a5c00;
+  --risk: #a3352a;
+  --ok-bg: #e3f1e8;
+  --watch-bg: #f6efd6;
+  --risk-bg: #f8e3e0;
+  --bar: #2f6a92;
+  --f-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10171b; --sheet: #172127; --ink: #e4eaed; --ink-2: #b3bfc6; --ink-3: #8795a0;
+    --rule: #2b3a42; --rule-strong: #c9d3d8; --accent: #f0b35c; --hivis: #e9a23b; --link: #8fbde0;
+    --tint: #211d15; --ok: #74d09c; --watch: #e4c65c; --risk: #f39486;
+    --ok-bg: #16301f; --watch-bg: #2c2710; --risk-bg: #36191a; --bar: #6fa8d4;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10171b; --sheet: #172127; --ink: #e4eaed; --ink-2: #b3bfc6; --ink-3: #8795a0;
+  --rule: #2b3a42; --rule-strong: #c9d3d8; --accent: #f0b35c; --hivis: #e9a23b; --link: #8fbde0;
+  --tint: #211d15; --ok: #74d09c; --watch: #e4c65c; --risk: #f39486;
+  --ok-bg: #16301f; --watch-bg: #2c2710; --risk-bg: #36191a; --bar: #6fa8d4;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.6;
+  padding-inline: 18px;
+  padding-block: 28px 64px;
+}
+a { color: var(--link); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--hivis); outline-offset: 2px; }
+
+.wrap { max-width: 1240px; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; }
+@media (min-width: 1100px) { .wrap { grid-template-columns: 220px minmax(0, 1fr); gap: 56px; } }
+
+/* sheet index */
+.toc { display: none; }
+@media (min-width: 1100px) {
+  .toc { display: block; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start; max-height: calc(100vh - 48px); overflow-y: auto; }
+}
+.toc-label, .eyebrow, th, .lbl {
+  font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); font-weight: 500;
+}
+.toc ol { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 2px; font-family: var(--f-display); font-size: 0.9rem; }
+.toc a { display: grid; grid-template-columns: 2.2em 1fr; padding: 5px 0; color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.toc a:hover { color: var(--ink); }
+.toc a span { font-family: var(--f-mono); font-size: 0.75rem; color: var(--accent); padding-top: 2px; }
+.toc-m { margin-bottom: 8px; border: 1px solid var(--rule); background: var(--sheet); padding: 10px 14px; }
+.toc-m summary { cursor: pointer; font-family: var(--f-display); font-weight: 600; }
+.toc-m ol { margin: 8px 0 4px; padding-left: 1.4em; font-family: var(--f-display); font-size: 0.95rem; }
+@media (min-width: 1100px) { .toc-m { display: none; } }
+
+main { min-width: 0; display: grid; gap: 64px; }
+section { min-width: 0; display: grid; gap: 18px; scroll-margin-top: 20px; }
+
+/* title block */
+.titleblock { background: var(--sheet); border: 1.5px solid var(--rule-strong); border-top: 7px solid var(--hivis); display: grid; grid-template-columns: minmax(0, 1fr); }
+.tb-main { padding: 26px 24px 22px; display: grid; gap: 12px; }
+.tb-main h1 {
+  font-family: var(--f-display); font-stretch: 72%; font-weight: 800; font-size: clamp(2.3rem, 6vw, 3.9rem);
+  line-height: 0.98; letter-spacing: -0.01em; margin: 0; text-wrap: balance;
+}
+.tb-main p { margin: 0; max-width: 62ch; color: var(--ink-2); font-size: 1.08rem; }
+.tb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1.5px solid var(--rule-strong); }
+.tb-cell:last-child { grid-column: 1 / -1; }
+@media (min-width: 720px) { .tb-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } .tb-cell:last-child { grid-column: auto; } }
+.tb-cell { padding: 10px 14px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; gap: 2px; min-width: 0; }
+.tb-cell b { font-family: var(--f-display); font-weight: 600; font-size: 0.95rem; }
+
+h2 {
+  font-family: var(--f-display); font-stretch: 80%; font-weight: 750; font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  line-height: 1.05; margin: 0; text-wrap: balance; display: grid; gap: 6px;
+}
+h2 .num { font-family: var(--f-mono); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; color: var(--accent); }
+h3 { font-family: var(--f-display); font-weight: 700; font-size: 1.22rem; line-height: 1.2; margin: 14px 0 0; text-wrap: balance; }
+h4 { font-family: var(--f-display); font-weight: 650; font-size: 1.02rem; margin: 0; }
+p, li { max-width: 70ch; }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 1.25em; display: grid; gap: 6px; }
+.lede { font-size: 1.12rem; color: var(--ink-2); }
+.small { font-size: 0.88rem; color: var(--ink-2); }
+.ref { font-family: var(--f-mono); font-size: 0.72em; text-decoration: none; vertical-align: super; line-height: 0; padding-left: 1px; }
+
+/* stat tiles */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 22px 24px; }
+.stat { border-top: 2px solid var(--rule-strong); padding-top: 10px; display: grid; gap: 4px; align-content: start; }
+.stat .v { font-family: var(--f-display); font-stretch: 78%; font-weight: 750; font-size: 2.35rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.stat .c { font-size: 0.9rem; color: var(--ink-2); line-height: 1.4; }
+
+/* callouts */
+.callout { background: var(--tint); border: 1px solid var(--rule); padding: 18px 20px; display: grid; gap: 10px; }
+.callout .lbl { color: var(--accent); display: flex; align-items: center; gap: 8px; }
+.callout .lbl::before { content: ""; width: 10px; height: 10px; background: var(--hivis); display: inline-block; }
+.callout h3 { margin: 0; }
+
+/* tables */
+.tbl { overflow-x: auto; border: 1px solid var(--rule); background: var(--sheet); }
+table { border-collapse: collapse; width: 100%; font-family: var(--f-display); font-size: 0.9rem; line-height: 1.4; }
+th { text-align: left; padding: 10px 12px; border-bottom: 1.5px solid var(--rule-strong); background: var(--sheet); vertical-align: bottom; white-space: nowrap; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td b { font-weight: 650; }
+.w-wide { min-width: 860px; }
+.w-mid { min-width: 680px; }
+
+/* chips */
+.chip { display: inline-flex; align-items: center; gap: 5px; font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 3px; white-space: nowrap; font-weight: 500; }
+.chip.ok { color: var(--ok); background: var(--ok-bg); }
+.chip.watch { color: var(--watch); background: var(--watch-bg); }
+.chip.risk { color: var(--risk); background: var(--risk-bg); }
+.chip.pri { color: var(--ink); background: transparent; border: 1px solid var(--rule-strong); }
+
+/* stage flow */
+.flow { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--f-display); font-size: 0.85rem; }
+.flow span { border: 1px solid var(--rule-strong); padding: 4px 10px; background: var(--sheet); }
+.flow i { font-style: normal; color: var(--ink-3); align-self: center; }
+
+/* product cards */
+.products { display: grid; gap: 22px; }
+.product { background: var(--sheet); border: 1px solid var(--rule); display: grid; }
+.p-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; padding: 16px 20px 12px; border-bottom: 1px solid var(--rule); }
+.p-code { font-family: var(--f-mono); font-size: 0.8rem; color: var(--accent); }
+.p-head h3 { margin: 0; font-size: 1.35rem; }
+.p-head .chip { margin-left: auto; }
+.p-body { padding: 16px 20px 20px; display: grid; gap: 14px; }
+.p-body dl { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px 28px; }
+@media (min-width: 760px) { .p-body dl { grid-template-columns: 160px minmax(0, 1fr); } }
+.p-body dt { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); padding-top: 4px; }
+.p-body dd { margin: 0; min-width: 0; }
+.p-body dd ul { gap: 4px; }
+
+/* two-column blocks */
+.cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+@media (min-width: 820px) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cols > * { min-width: 0; }
+.panel { background: var(--sheet); border: 1px solid var(--rule); padding: 16px 18px; display: grid; gap: 10px; align-content: start; }
+
+/* mock screens */
+.screen { background: var(--sheet); border: 1.5px solid var(--rule-strong); display: grid; min-width: 0; }
+.screen-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; padding: 8px 14px; border-bottom: 1px solid var(--rule); font-family: var(--f-mono); font-size: 0.74rem; color: var(--ink-3); }
+.screen-bar b { color: var(--ink); font-weight: 500; }
+.screen .tbl { border: 0; }
+.note { font-family: var(--f-body); font-size: 0.95rem; line-height: 1.55; padding: 14px 16px; white-space: normal; }
+.transcript { font-family: var(--f-mono); font-size: 0.82rem; line-height: 1.55; color: var(--ink-2); padding: 12px 16px; border-bottom: 1px dashed var(--rule); }
+
+/* architecture diagram */
+.arch { display: grid; gap: 8px; font-family: var(--f-display); }
+.arch-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-items: stretch; }
+@media (min-width: 760px) { .arch-row { grid-template-columns: 150px minmax(0, 1fr); } }
+.arch-name { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 10px; }
+.arch-boxes { display: flex; flex-wrap: wrap; gap: 6px; }
+.arch-boxes span { border: 1px solid var(--rule-strong); background: var(--sheet); padding: 7px 10px; font-size: 0.88rem; }
+.arch-arrow { text-align: center; color: var(--ink-3); font-family: var(--f-mono); font-size: 0.8rem; }
+
+/* ROI calculator */
+.calc { background: var(--sheet); border: 1.5px solid var(--rule-strong); display: grid; }
+.calc-inputs { padding: 18px 20px; display: grid; gap: 18px; border-bottom: 1px solid var(--rule); }
+.calc-group { display: grid; gap: 10px; }
+.calc-group h4 { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 18px; }
+.field { display: grid; gap: 4px; }
+.field label { font-family: var(--f-display); font-size: 0.86rem; color: var(--ink-2); line-height: 1.3; }
+.field input { font-family: var(--f-mono); font-size: 0.95rem; padding: 7px 9px; border: 1px solid var(--rule-strong); background: var(--paper); color: var(--ink); border-radius: 2px; width: 100%; font-variant-numeric: tabular-nums; }
+.calc-out { padding: 18px 20px 20px; display: grid; gap: 16px; }
+.bars { display: grid; gap: 10px; font-family: var(--f-display); font-size: 0.9rem; }
+.barrow { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+@media (min-width: 700px) { .barrow { grid-template-columns: 250px minmax(0, 1fr) 110px; gap: 12px; align-items: center; } }
+.track { height: 14px; background: var(--paper); border: 1px solid var(--rule); position: relative; }
+.fill { position: absolute; inset: 0 auto 0 0; background: var(--bar); border-radius: 0 3px 3px 0; }
+.barrow .amt { font-family: var(--f-mono); font-variant-numeric: tabular-nums; text-align: right; }
+.totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; }
+.btn { font-family: var(--f-display); font-weight: 600; font-size: 0.9rem; padding: 7px 14px; border: 1.5px solid var(--rule-strong); background: transparent; color: var(--ink); cursor: pointer; border-radius: 2px; justify-self: start; }
+.btn:hover { background: var(--paper); }
+
+/* sources */
+.sources { font-size: 0.86rem; line-height: 1.45; display: grid; gap: 5px; padding-left: 2.4em; }
+.sources li { max-width: none; overflow-wrap: anywhere; }
+.sources li::marker { font-family: var(--f-mono); color: var(--ink-3); }
+.plan { display: grid; gap: 0; border: 1px solid var(--rule); background: var(--sheet); }
+.plan-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 20px; padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+.plan-row:last-child { border-bottom: 0; }
+@media (min-width: 720px) { .plan-row { grid-template-columns: 150px minmax(0, 1fr); } }
+.plan-row .when { font-family: var(--f-mono); font-size: 0.8rem; color: var(--accent); padding-top: 3px; }
+footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); border-top: 1px solid var(--rule); padding-top: 14px; }
+</style>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Sheet index">
+    <div class="toc-label">Sheet index</div>
+    <ol>
+      <li><a href="#summary"><span>00</span>Summary</a></li>
+      <li><a href="#market"><span>01</span>The Adelaide market</a></li>
+      <li><a href="#players"><span>02</span>Who builds Adelaide</a></li>
+      <li><a href="#gaps"><span>03</span>Where time and money leak</a></li>
+      <li><a href="#landscape"><span>04</span>What AI can do today</a></li>
+      <li><a href="#products"><span>05</span>Products to build</a></li>
+      <li><a href="#demo"><span>06</span>The demo</a></li>
+      <li><a href="#data"><span>07</span>Data you can use</a></li>
+      <li><a href="#roi"><span>08</span>ROI model</a></li>
+      <li><a href="#gtm"><span>09</span>Selling in Adelaide</a></li>
+      <li><a href="#risks"><span>10</span>Legal and risk</a></li>
+      <li><a href="#roadmap"><span>11</span>Roadmap</a></li>
+      <li><a href="#sources"><span>12</span>Sources</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="titleblock">
+      <div class="tb-main">
+        <div class="eyebrow">Strategy &amp; research brief</div>
+        <h1>Adelaide Construction AI Playbook</h1>
+        <p>How to speed up building in Adelaide and save builders money by wiring existing AI into the way they already work. Covers the market, the gaps, the products to build, a demo that sells, and the plan to win the first paying builder.</p>
+      </div>
+      <div class="tb-grid">
+        <div class="tb-cell"><span class="lbl">Project</span><b>AI for Adelaide builders</b></div>
+        <div class="tb-cell"><span class="lbl">Sheet</span><b>A-00 Strategy</b></div>
+        <div class="tb-cell"><span class="lbl">Date</span><b>28 Sep 2026</b></div>
+        <div class="tb-cell"><span class="lbl">Revision</span><b>A — first issue</b></div>
+        <div class="tb-cell"><span class="lbl">Status</span><b>For discussion</b></div>
+      </div>
+    </header>
+
+    <details class="toc-m">
+      <summary>Sheet index</summary>
+      <ol start="0">
+        <li><a href="#summary">Summary</a></li>
+        <li><a href="#market">The Adelaide market</a></li>
+        <li><a href="#players">Who builds Adelaide</a></li>
+        <li><a href="#gaps">Where time and money leak</a></li>
+        <li><a href="#landscape">What AI can do today</a></li>
+        <li><a href="#products">Products to build</a></li>
+        <li><a href="#demo">The demo</a></li>
+        <li><a href="#data">Data you can use</a></li>
+        <li><a href="#roi">ROI model</a></li>
+        <li><a href="#gtm">Selling in Adelaide</a></li>
+        <li><a href="#risks">Legal and risk</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </details>
+
+    <!-- 00 SUMMARY -->
+    <section id="summary">
+      <h2><span class="num">00</span>Summary</h2>
+      <p class="lede">South Australia is building more homes than at any time in 40 years, but the industry is short of trades and supervisors, each home takes far longer than it did a decade ago, and builders are failing on thin margins. Demand is not the constraint. The constraint is how many jobs each supervisor, estimator and office worker can push through. That is where AI pays.</p>
+      <ul>
+        <li><b>Record volume.</b> 15,308 dwellings approved in the 12 months to July 2026 and 14,130 completed in the year to March 2026, above the government's 13,500-a-year target.<a class="ref" href="#s2">[2]</a> SA construction work done grew 11.5% in the year to June 2026, against 2.7% nationally.<a class="ref" href="#s4">[4]</a></li>
+        <li><b>Capacity is the bottleneck.</b> Adelaide's trade availability index was −0.79 in the June quarter 2026, among the worst capitals, and trade prices rose 5.1% in six months.<a class="ref" href="#s7">[7]</a> An SA home took 13.7 months from approval to completion in 2024-25, 74% longer than in 2014.<a class="ref" href="#s9">[9]</a></li>
+        <li><b>Megaprojects will compete for the same people.</b> The $8.5bn Osborne submarine yard started construction this month and could need about 4,000 workers at peak.<a class="ref" href="#s12">[12]</a><a class="ref" href="#s13">[13]</a> The $15.4bn T2D tunnels and the $3.2bn Women's and Children's Hospital run at the same time.<a class="ref" href="#s14">[14]</a><a class="ref" href="#s16">[16]</a></li>
+        <li><b>Failure is visible and costly.</b> Qattro left 200+ jobs worth $110m unfinished. Adelaide Designer Homes and JAC Homes followed.<a class="ref" href="#s27">[27]</a><a class="ref" href="#s28">[28]</a><a class="ref" href="#s29">[29]</a> Since 15 January 2026, penalties reach $550,000 for companies, and engaging an unlicensed subcontractor is now an offence.<a class="ref" href="#s31">[31]</a><a class="ref" href="#s32">[32]</a></li>
+        <li><b>Builders already own AI. They haven't connected it.</b> In Deloitte's 2026 survey of construction businesses in Australia and Asia-Pacific, 46% use AI tools, but only 16% have advanced digital capability and a quarter still run mainly on paper.<a class="ref" href="#s42">[42]</a> The gap is integration: AI connected to the systems builders already run (ClickHome, Databuild, Xero, spreadsheets) and to SA rules (the Planning and Design Code, CBS licensing, building indemnity insurance).</li>
+      </ul>
+      <div class="callout">
+        <div class="lbl">Recommendation</div>
+        <h3>Be the local AI integration partner for Adelaide builders, and lead with one product that shows results in eight weeks</h3>
+        <ol>
+          <li>Build <b>Build Command</b>, a demo over synthetic job data enriched with real SA planning zones and Bureau of Meteorology weather. Personalise it with each prospect's own published home designs and estates (<a href="#demo">§06</a>).</li>
+          <li>Sell a paid <b>pilot of SiteVoice</b>, a supervisor voice diary plus drafted homeowner updates, to a builder doing 100–400 starts a year. It uses data they already have, it shows results in weeks, and people approve every AI output before it goes out (<a href="#products">§05</a>).</li>
+          <li>Offer <b>Sub Check</b> (subcontractor licence and insurance verification) as a cheap entry product. The January 2026 penalties make it an easy yes.</li>
+          <li>Expand each account into <b>Margin Watch</b> (job cost and cash early warning) and <b>Trade Flow</b> (delay risk and trade booking). Then move into commercial builders with <b>Tender Reader</b>.</li>
+        </ol>
+        <p class="small">Scale of the prize: cutting two weeks from an average build across SA's 14,130 yearly completions frees capacity equal to roughly 470 extra homes a year with the same workforce (14,130 × 2 ÷ 59.6 weeks). This is arithmetic, not a forecast.</p>
+      </div>
+    </section>
+
+    <!-- 01 MARKET -->
+    <section id="market">
+      <h2><span class="num">01</span>The Adelaide market in numbers</h2>
+      <div class="stats">
+        <div class="stat"><span class="lbl">Dwellings approved</span><span class="v">15,308</span><span class="c">12 months to July 2026. Highest run since 1985.<a class="ref" href="#s2">[2]</a><a class="ref" href="#s1">[1]</a></span></div>
+        <div class="stat"><span class="lbl">Homes completed</span><span class="v">14,130</span><span class="c">Year to March 2026, up 16.5%. State target is 13,500 a year.<a class="ref" href="#s2">[2]</a></span></div>
+        <div class="stat"><span class="lbl">Approval to completion</span><span class="v">13.7 mo</span><span class="c">SA average, 2024-25. Up 74% on 2014.<a class="ref" href="#s9">[9]</a></span></div>
+        <div class="stat"><span class="lbl">Trade availability, Adelaide</span><span class="v">−0.79</span><span class="c">June qtr 2026 (0 = balanced). It was −1.33 in March.<a class="ref" href="#s7">[7]</a><a class="ref" href="#s8">[8]</a></span></div>
+        <div class="stat"><span class="lbl">Construction workforce</span><span class="v">90,000</span><span class="c">About 27,600 businesses. Another ~20,000 workers needed over 5 years.<a class="ref" href="#s6">[6]</a></span></div>
+        <div class="stat"><span class="lbl">Work done, June qtr 2026</span><span class="v">$5.61bn</span><span class="c">SA, chain volume. +11.5% year on year vs +2.7% nationally.<a class="ref" href="#s4">[4]</a></span></div>
+      </div>
+
+      <h3>Housing pipeline and land</h3>
+      <p>The state is pushing supply on several fronts at once. That means more jobs in each builder's pipeline, but not more supervisors or trades to run them.</p>
+      <div class="tbl"><table class="w-mid">
+        <thead><tr><th>Lever</th><th>What it is</th><th>What it means for builders</th></tr></thead>
+        <tbody>
+          <tr><td><b>Greenfield land release</b></td><td>At least 23,700 homes planned at Hackham (now Onkaparinga Heights, ~2,000), Sellicks Beach (1,700), Dry Creek and Concordia (~10,000 each), with 15% affordable.<a class="ref" href="#s20">[20]</a> Only Onkaparinga Heights is close to slab-ready in 2026. Trunk water mains for the others are not expected before 2028.<a class="ref" href="#s21">[21]</a></td><td>Steady volume for house-and-land builders into the 2030s, concentrated in the far north and south, where supervisors spend hours driving between sites.</td></tr>
+          <tr><td><b>Second-term Labor commitments</b></td><td>A perpetual $500m land purchase fund run by Renewal SA, $500m underwriting for mid-tier apartments, and stamp duty abolished for buyers aged 60+ downsizing into new builds up to $2m.<a class="ref" href="#s18">[18]</a><a class="ref" href="#s19">[19]</a></td><td>More medium-density and downsizer product. Both need more design coordination and more homeowner hand-holding.</td></tr>
+          <tr><td><b>Faster planning</b></td><td>PlanSA announced AI that assesses detached dwellings in Master Planned Neighbourhood/Township zones in minutes, against an average of 9.5 business days.<a class="ref" href="#s35">[35]</a></td><td>Once council approval gets faster, the delay moves to the builder's own paperwork: selections, engineering, energy ratings.</td></tr>
+          <tr><td><b>Prefab and modular</b></td><td>SA Housing Trust tendered for 120 turnkey homes built with off-site components, plus a $2.15m modular display village pilot.<a class="ref" href="#s22">[22]</a></td><td>New entrants with factory workflows, and pressure on traditional builders to show they can match their speed.</td></tr>
+          <tr><td><b>Tighter building code</b></td><td>NCC 2022 7-star energy efficiency, the Livable Housing Design Standard and condensation rules apply to new homes from 1 October 2024.<a class="ref" href="#s34">[34]</a></td><td>More documents and checks per job before site start.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Major projects competing for the same workforce</h3>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Project</th><th class="num">Value</th><th>2026 status</th><th>Who is delivering</th><th>Local impact</th></tr></thead>
+        <tbody>
+          <tr><td><b>Osborne nuclear submarine construction yard</b></td><td class="num">$8.5bn</td><td>Construction started Sep 2026. ~600,000 m² of floor area, 50+ buildings, 126,000 t of structural steel, 66m labour hours. About 1,100 workers now, around 4,000 at peak, with work running to 2040.<a class="ref" href="#s12">[12]</a><a class="ref" href="#s13">[13]</a></td><td>Australian Naval Infrastructure and Australian Submarine Agency. ~$1.9bn of contracts awarded; a further $4.6bn committed Jul 2026.<a class="ref" href="#s13">[13]</a></td><td>Pulls steel fixers, electricians and experienced supervisors out of housing. Subcontract work demands heavy compliance paperwork.</td></tr>
+          <tr><td><b>Torrens to Darlington (T2D)</b></td><td class="num">$15.4bn</td><td>Three tunnel boring machines. Southern Tunnels boring from second half of 2026.<a class="ref" href="#s14">[14]</a></td><td>Alliance of John Holland, Bouygues, Arcadis, Jacobs and Ventia.<a class="ref" href="#s15">[15]</a></td><td>Civil labour and plant demand for years.</td></tr>
+          <tr><td><b>New Women's and Children's Hospital</b></td><td class="num">$3.2bn</td><td>Main hospital construction targeting completion by 2031.</td><td>Lendlease main works contractor.<a class="ref" href="#s16">[16]</a></td><td>Commercial trades, services and fit-out capacity.</td></tr>
+          <tr><td><b>State infrastructure program</b></td><td class="num">$29.1bn</td><td>Over four years, 2026-27 State Budget.<a class="ref" href="#s17">[17]</a></td><td>Many head contractors.</td><td>A steady flow of civil and building tenders.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Costs, labour and productivity</h3>
+      <ul>
+        <li>Rider Levett Bucknall forecasts Adelaide tender prices to rise 5.1% in 2026.<a class="ref" href="#s10">[10]</a> Builders who signed fixed-price contracts at last year's rates absorb the gap.</li>
+        <li>Bricklaying, ceramic tiling, roofing and carpentry are the worst shortages nationally. Australia needs about 83,000 more skilled trades for housing.<a class="ref" href="#s7">[7]</a></li>
+        <li>The Productivity Commission found housing construction labour productivity fell 12% over 30 years, while the whole economy rose 49%. The average residential building firm employs fewer than two people.<a class="ref" href="#s11">[11]</a></li>
+        <li>Only 12% of SA's construction workforce are women (4% in trades), and the median age is 39.<a class="ref" href="#s6">[6]</a> Labour supply will not solve this quickly, so each existing worker has to get more done.</li>
+      </ul>
+
+      <h3>Failures and the regulator's response</h3>
+      <div class="tbl"><table class="w-mid">
+        <thead><tr><th>Event</th><th>When</th><th>What happened</th></tr></thead>
+        <tbody>
+          <tr><td><b>Qattro</b></td><td>Sep 2023</td><td>Liquidation with 200+ projects worth $110m+ in construction or pre-construction. The director blamed supply chain and labour shortages that left "too much cash stuck on near completed projects". Came months after Felmeri Homes.<a class="ref" href="#s27">[27]</a></td></tr>
+          <tr><td><b>Adelaide Designer Homes</b></td><td>Aug 2024</td><td>Liquidation leaving 20 homes incomplete and 80+ creditors.<a class="ref" href="#s28">[28]</a></td></tr>
+          <tr><td><b>JAC Homes</b> (Murray Bridge)</td><td>Jan 2025</td><td>30-year regional builder entered liquidation two days after CBS suspended its licence. Owners reported missing insulation, gaps and cracked tiles.<a class="ref" href="#s29">[29]</a></td></tr>
+          <tr><td><b>National picture</b></td><td>FY2024-25</td><td>About 3,500 construction firms entered insolvency, a record and roughly one in four of all Australian insolvencies.<a class="ref" href="#s30">[30]</a></td></tr>
+          <tr><td><b>SA penalties reform</b></td><td>15 Jan 2026</td><td>New offences for engaging unlicensed subcontractors and misusing licence numbers. Penalties up to $150,000 for individuals and $550,000 for companies on repeat offences. $20,000 expiation for working without building indemnity insurance (BII).<a class="ref" href="#s31">[31]</a><a class="ref" href="#s32">[32]</a></td></tr>
+          <tr><td><b>BII changes</b></td><td>From 10 Nov 2025</td><td>Minimum cover up from $80,000 to $250,000 for new policies. Threshold up from $12,000 to $20,000. CBS is auditing builders for proof of cover.<a class="ref" href="#s32">[32]</a><a class="ref" href="#s33">[33]</a></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 02 PLAYERS -->
+    <section id="players">
+      <h2><span class="num">02</span>Who builds Adelaide, and what they run on</h2>
+      <p>The HIA Housing 100 builders started 5,349 SA homes in 2024-25, just 40% of the state's starts.<a class="ref" href="#s23">[23]</a> The other 60% comes from mid-size and small builders. Mid-size builders are the sweet spot: big enough to feel the pain and pay for a fix, small enough to decide within weeks.</p>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Segment</th><th>Adelaide examples</th><th>Scale signals</th><th>Systems in use</th><th>Biggest pains</th><th>Best AI entry</th></tr></thead>
+        <tbody>
+          <tr><td><b>Volume and project home builders</b></td><td>Hickinbotham Group (Hickinbotham, Statesman, Country Homes), Fairmont (Metricon), Longridge Group (Sarah Homes, Longridge, Atlas, Gallery Living), Rivergum, Metro Homes (Creation Group), Weeks, Dechellis, Sterling, Simonds SA</td><td>Starts in 2022-23: Hickinbotham 1,507, Metricon 398, Longridge 392, Rivergum 352, Metro 327.<a class="ref" href="#s24">[24]</a> Hickinbotham is SA's #14 company.<a class="ref" href="#s25">[25]</a></td><td>ClickHome construction management; Hickinbotham and Metricon are listed customers.<a class="ref" href="#s36">[36]</a> Plus estimating software, CRM, email and spreadsheets.</td><td>Supervisors carrying 10–15 builds each.<a class="ref" href="#s39">[39]</a> Homeowner calls, pre-site delays, trade booking, unsigned variations, cash stuck in near-complete homes.</td><td>SiteVoice, Trade Flow, Margin Watch</td></tr>
+          <tr><td><b>Custom and premium</b></td><td>Scott Salisbury Homes and other luxury builders</td><td>Supervisors usually run 3–5 builds.<a class="ref" href="#s39">[39]</a></td><td>Estimating software, email, spreadsheets</td><td>Expectation management, selections, variations, pricing one-off designs</td><td>Precon Desk, Plan to Price, SiteVoice</td></tr>
+          <tr><td><b>Small builders and renovators</b></td><td>Thousands of CBS-licensed builders across metro and regional SA</td><td>Average residential firm has fewer than 2 staff.<a class="ref" href="#s11">[11]</a></td><td>Buildxact ($169–$449/month), trade job apps, Xero, Excel<a class="ref" href="#s47">[47]</a></td><td>Quoting time, licensing and BII compliance, cash flow</td><td>Sub Check, low-cost quick quoting</td></tr>
+          <tr><td><b>Mid-tier commercial and civil</b></td><td>Badge, Mossop, Kennett Builders, Sarah Group, Ahrens, Leed, Exact Contracting, Lucas Total Contract Solutions ($221m), Outside Ideas ($112m), Mykra ($52m).<a class="ref" href="#s25">[25]</a> Hansen Yuncken (~$1–1.4bn national turnover).<a class="ref" href="#s26">[26]</a></td><td>InDaily SA Top 100 members</td><td>Procore or Aconex, EstimateOne for tenders, Payapps for claims<a class="ref" href="#s55">[55]</a></td><td>Reading tender packs, RFIs, subcontract claims under the SA Security of Payment Act, site diaries, WHS paperwork</td><td>Tender Reader, claims and diary copilot</td></tr>
+          <tr><td><b>Tier 1, defence and major civil</b></td><td>Lendlease (WCH), T2D alliance, ANI/ASC at Osborne, McMahon Services (~$816m revenue)<a class="ref" href="#s69">[69]</a></td><td>Billion-dollar programs</td><td>Enterprise platforms and in-house digital teams</td><td>They buy global tools. Their SA subcontractors struggle with the compliance and reporting load.</td><td>Compliance packs for SA subcontractors (later phase)</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">Tells from the market: Weeks Homes advertises a "30 week build time", so speed is a selling point builders compete on.<a class="ref" href="#s38">[38]</a> Adelaide's soils and slopes change site costs by suburb: reactive clay in the north, sand and narrow blocks in the west, slopes and bushfire (BAL) overlays in the Hills.<a class="ref" href="#s37">[37]</a> Homeowner reviews of Adelaide builders repeatedly mention communication and slow defect fixes.<a class="ref" href="#s41">[41]</a></p>
+    </section>
+
+    <!-- 03 GAPS -->
+    <section id="gaps">
+      <h2><span class="num">03</span>Where time and money leak, stage by stage</h2>
+      <p>A residential job moves through fixed stages, and each handover is a place where time is lost:</p>
+      <div class="flow" aria-label="Residential build stages">
+        <span>Enquiry</span><i>→</i><span>Contract</span><i>→</i><span>Pre-site</span><i>→</i><span>Base / slab</span><i>→</i><span>Frame</span><i>→</i><span>Lock-up</span><i>→</i><span>Fixing</span><i>→</i><span>Practical completion</span><i>→</i><span>Maintenance period</span>
+      </div>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Where</th><th>What happens now</th><th>Evidence</th><th>What AI changes</th><th>Prove it with</th></tr></thead>
+        <tbody>
+          <tr><td><b>Sales and enquiries</b></td><td>Web and display-home enquiries wait hours or days. Consultants re-key designs, prices and estate details.</td><td>Builders compete on speed claims, e.g. a "30 week build".<a class="ref" href="#s38">[38]</a></td><td>Enquiry assistant grounded in the builder's own designs, inclusions and estates. It books display visits and qualifies land and finance status.</td><td>Response time; enquiry-to-appointment rate</td></tr>
+          <tr><td><b>Pre-site</b> (contract → site start)</td><td>Chasing selections, soil reports, engineering, energy ratings, BAL, BII certificates and planning.</td><td>8–16 weeks is typical. A 2-week selection delay often becomes a 4-week start delay.<a class="ref" href="#s40">[40]</a></td><td>Document chaser, selections assistant, and a Planning and Design Code pre-check from open SA data.</td><td>Contract-to-site-start days</td></tr>
+          <tr><td><b>Estimating and takeoff</b></td><td>Manual takeoff from PDF plans; rates held in spreadsheets.</td><td>AI takeoff up to 76% faster in a University of Kansas study.<a class="ref" href="#s45">[45]</a> One contractor saved 14.5 hours per plan set, about US$1m a year.<a class="ref" href="#s46">[46]</a></td><td>Plan → quantities → draft estimate using the builder's own rates. An estimator checks and signs.</td><td>Hours per estimate; quote turnaround; estimate vs actual</td></tr>
+          <tr><td><b>Construction</b></td><td>Supervisors juggle 10–15 jobs, call trades, write diaries at night and hunt for information.</td><td>Construction staff lose about 5.5 hours a week searching for project information.<a class="ref" href="#s54">[54]</a> Rework costs 2.4–10% of contract value in Australian studies.<a class="ref" href="#s52">[52]</a> Recent work finds contractors under-report rework by around 300%.<a class="ref" href="#s53">[53]</a></td><td>Voice-note site diary, next-step checklists, trade confirmations by SMS, delay-risk flags using weather and trade data, photo QA.</td><td>Idle days between stages; rework cost; supervisor admin hours</td></tr>
+          <tr><td><b>Homeowner communication</b></td><td>"Where is my build?" calls go to supervisors and customer service.</td><td>Reviews cite poor communication, slow responses and slow follow-up on repairs.<a class="ref" href="#s41">[41]</a></td><td>Weekly updates drafted from the schedule and photos, plus a portal assistant that answers from that job's own data and escalates anything it can't.</td><td>Inbound calls per job; review score</td></tr>
+          <tr><td><b>Handover and maintenance</b></td><td>Defect lists in emails and photos; trades return late.</td><td>JAC Homes buyers found missing insulation, gaps and cracked tiles.<a class="ref" href="#s29">[29]</a></td><td>Defect intake from photos, sorted and assigned to the right trade, tracked to close. Shows repeat defects by trade.</td><td>Days to close; repeat defects</td></tr>
+          <tr><td><b>Money and compliance</b></td><td>Margin fade is found at job close. Variations go unbilled. Stage claims go out late. Sub licences and insurance are checked by hand, if at all.</td><td>Trade prices +5.1% in six months.<a class="ref" href="#s7">[7]</a> Qattro's cash was "stuck on near completed projects".<a class="ref" href="#s27">[27]</a> Engaging an unlicensed sub is now an offence.<a class="ref" href="#s31">[31]</a></td><td>Margin-fade alerts, unbilled-variation detection, stage-claim reminders, automatic licence and insurance checks.</td><td>Margin variance caught earlier; days to invoice; % of subs verified</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 04 LANDSCAPE -->
+    <section id="landscape">
+      <h2><span class="num">04</span>What AI can do today, and what to build yourself</h2>
+      <p>Tools already exist for most of the gaps above. Adelaide builders mostly lack someone to connect them to their real data and to SA's rules. Build where local knowledge is the product. Integrate or resell where a global vendor already leads.</p>
+      <div class="stats">
+        <div class="stat"><span class="lbl">Firms using AI/ML tools (AU &amp; APAC)</span><span class="v">46%</span><span class="c">Up from ~25% in 2023. Only 16% have advanced capability; a quarter still rely mainly on paper. Deloitte survey of 954 firms in six markets, July 2026.<a class="ref" href="#s42">[42]</a></span></div>
+        <div class="stat"><span class="lbl">AU respondents with AI "at scale"</span><span class="v">43.8%</span><span class="c">Global figure is 24%. Yet only 68.8% expect productivity gains (75% globally). KPMG 2025/26.<a class="ref" href="#s43">[43]</a></span></div>
+        <div class="stat"><span class="lbl">Construction leaders who trust AI</span><span class="v">68%</span><span class="c">Down 14 points in a year as real projects hit real problems. Autodesk 2025.<a class="ref" href="#s44">[44]</a></span></div>
+      </div>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Capability</th><th>Proven examples</th><th>Evidence</th><th>Your move</th></tr></thead>
+        <tbody>
+          <tr><td><b>AI takeoff and estimating</b></td><td>Togal.AI; Buildxact "Blu" (auto-scaling plans, area takeoff; Bunnings, Mitre 10 and Dahlsens price catalogues)<a class="ref" href="#s47">[47]</a></td><td>Up to 76% faster takeoff, within 5% of manual.<a class="ref" href="#s45">[45]</a></td><td><b>Integrate.</b> Your value is the SA layer on top: local rates, site-cost rules by soil and slope, and the builder's own inclusions.</td></tr>
+          <tr><td><b>Document intelligence</b> (drawings, specs, RFIs, contracts)</td><td>Trunk Tools ($40m Series B, 2025; agents for RFIs, submittals and drawing revisions)<a class="ref" href="#s48">[48]</a>; assistants inside Procore and Autodesk</td><td>Enterprise-grade and priced for large contractors</td><td><b>Build a lighter version</b> for SA mid-tier builders who don't run enterprise stacks.</td></tr>
+          <tr><td><b>Visual progress and delay prediction</b></td><td>Buildots, OpenSpace</td><td>Buildots reports up to 50% fewer delays.<a class="ref" href="#s49">[49]</a> OpenSpace reports 41% fewer claims on data-centre projects.<a class="ref" href="#s50">[50]</a></td><td><b>Partner</b> for commercial work. For housing, phone photos plus stage checklists are enough.</td></tr>
+          <tr><td><b>Planning compliance</b></td><td>Archistar AI PreCheck; PlanSA's own AI for detached dwellings</td><td>Archistar claims up to 55% shorter permit review cycles.<a class="ref" href="#s51">[51]</a> PlanSA: minutes vs 9.5 business days.<a class="ref" href="#s35">[35]</a></td><td><b>Build</b> a builder-side pre-check (advisory only) from open Planning and Design Code data, so applications arrive complete.</td></tr>
+          <tr><td><b>Construction management platforms</b></td><td>ClickHome (Hickinbotham, Metricon), Procore, Buildxact<a class="ref" href="#s36">[36]</a></td><td>Already the system of record</td><td><b>Integrate, never replace.</b> Read their exports or APIs, and write drafts and tasks back.</td></tr>
+          <tr><td><b>Tendering and payment claims</b></td><td>EstimateOne (900+ builders, 50,000+ subs); Payapps (34 of Australia's top 50 builders)<a class="ref" href="#s55">[55]</a></td><td>Dominant in commercial</td><td><b>Integrate.</b> Analyse the quotes and claims these platforms produce.</td></tr>
+          <tr><td><b>Safety and WHS</b></td><td>HammerTech, Sitemate, computer-vision PPE detection</td><td>Mature vendors</td><td><b>Buy or partner</b> later. Hardware-heavy with long sales cycles.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">Local proof point: Adelaide firm Digital Constructors built "ConstructAI", a camera-based inspection model, with engineers from the Australian Institute for Machine Learning (AIML) through the state-funded Industrial AI program.<a class="ref" href="#s62">[62]</a> You can use the same route (see <a href="#gtm">§09</a>).</p>
+    </section>
+
+    <!-- 05 PRODUCTS -->
+    <section id="products">
+      <h2><span class="num">05</span>Products to build</h2>
+      <p>Eight products share one data layer: jobs, schedules, costs, documents and people. Build that layer once. Each new product then costs weeks, not months. Priority reflects value to the builder, build effort, how easily you can get the data, and how fast the first result shows.</p>
+
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Code</th><th>Product</th><th>Buyer</th><th>Value</th><th>Build effort</th><th>Data access</th><th>First result</th><th>Priority</th></tr></thead>
+        <tbody>
+          <tr><td>P1</td><td><b>SiteVoice</b></td><td>Construction manager</td><td>High</td><td>Low–medium</td><td>Easy</td><td>2–4 weeks</td><td><span class="chip pri">1 · Pilot</span></td></tr>
+          <tr><td>P2</td><td><b>Sub Check</b></td><td>Operations / compliance</td><td>Medium</td><td>Low</td><td>Easy</td><td>1–2 weeks</td><td><span class="chip pri">2 · Entry</span></td></tr>
+          <tr><td>P3</td><td><b>Margin Watch</b></td><td>Owner / CFO</td><td>Very high</td><td>Medium</td><td>Medium</td><td>4–6 weeks</td><td><span class="chip pri">3</span></td></tr>
+          <tr><td>P4</td><td><b>Trade Flow</b></td><td>Construction manager</td><td>High</td><td>Medium–high</td><td>Medium</td><td>6–10 weeks</td><td><span class="chip pri">4</span></td></tr>
+          <tr><td>P5</td><td><b>Precon Desk</b></td><td>Pre-construction manager</td><td>High</td><td>Medium</td><td>Medium</td><td>4–8 weeks</td><td><span class="chip pri">5</span></td></tr>
+          <tr><td>P6</td><td><b>Plan to Price</b></td><td>Estimating manager</td><td>High</td><td>High (partner)</td><td>Easy</td><td>6–10 weeks</td><td><span class="chip pri">5</span></td></tr>
+          <tr><td>P7</td><td><b>Tender Reader</b></td><td>Commercial estimating / PM</td><td>High</td><td>Medium</td><td>Easy</td><td>4–6 weeks</td><td><span class="chip pri">6 · New segment</span></td></tr>
+          <tr><td>P8</td><td><b>Site Vision</b></td><td>Safety / QA manager</td><td>Medium</td><td>High</td><td>Hard</td><td>3+ months</td><td><span class="chip pri">Partner</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="products">
+        <article class="product" id="p1">
+          <div class="p-head"><span class="p-code">P1</span><h3>SiteVoice — supervisor diary and homeowner updates</h3><span class="chip pri">Lead pilot</span></div>
+          <div class="p-body">
+            <dl>
+              <dt>Problem</dt><dd>Supervisors running 10–15 builds spend evenings on diaries, texts and calls. Homeowners ring because they can't see progress. Communication is the most common complaint in reviews.</dd>
+              <dt>What it does</dt><dd><ul>
+                <li>Supervisor sends a voice note or photos from the car. SiteVoice writes the diary entry per job, logs defects and actions, and drafts messages to trades and suppliers.</li>
+                <li>Every week it drafts each homeowner's update from the schedule, the diary and photos, with a weather note. The supervisor or customer-care team approves each one with a tap.</li>
+                <li>A portal or SMS assistant answers "what's next on my build?" from that job's own data only. Anything about money, disputes or defects goes to a person.</li>
+                <li>A daily digest for the construction manager: what moved, what's stuck, who hasn't been updated in 10 days.</li>
+              </ul></dd>
+              <dt>Data needed</dt><dd>Job list and schedule (ClickHome export or API, or a spreadsheet), supervisor voice notes and photos, and homeowner contact preferences.</dd>
+              <dt>AI underneath</dt><dd>Speech-to-text, an LLM that extracts structured facts into a fixed diary schema, retrieval over each job's history, and style rules taken from the builder's best past updates.</dd>
+              <dt>MVP scope</dt><dd>6–8 weeks to build. Pilot on 20–40 live jobs with 2–3 supervisors. Voice notes arrive through a simple web app or WhatsApp/SMS, so there's no new app to learn.</dd>
+              <dt>Price guide</dt><dd>$15k–$25k pilot. Then about $20–$35 per active job per month (≈$60k–$100k a year for a builder with 250 jobs in progress).</dd>
+              <dt>Proof metric</dt><dd>Supervisor admin hours per week, homeowner calls per job, update frequency, and review score before vs after.</dd>
+            </dl>
+          </div>
+        </article>
+
+        <article class="product" id="p2">
+          <div class="p-head"><span class="p-code">P2</span><h3>Sub Check — subcontractor licence and insurance compliance</h3><span class="chip pri">Entry product</span></div>
+          <div class="p-body">
+            <dl>
+              <dt>Problem</dt><dd>Since 15 January 2026, engaging an unlicensed subcontractor or misusing a licence number is an offence, with penalties up to $550,000 for companies on repeat offences.<a class="ref" href="#s31">[31]</a> Insurance certificates expire without anyone noticing.</dd>
+              <dt>What it does</dt><dd><ul>
+                <li>Checks each subcontractor's licence against the CBS public register<a class="ref" href="#s68">[68]</a> and ABN status via ABN Lookup. Re-checks monthly.</li>
+                <li>Reads uploaded insurance certificates (public liability, workers comp) and SWMS with document AI. Extracts expiry dates and cover amounts, then chases renewals by SMS or email.</li>
+                <li>Blocks or flags a trade booking when a licence or policy has lapsed, and keeps an audit trail for CBS inquiries.</li>
+                <li>Optional: watches ASIC published notices for insolvency events among the builder's subcontractors and suppliers.</li>
+              </ul></dd>
+              <dt>Data needed</dt><dd>The builder's subcontractor list with ABNs and licence numbers, plus certificate PDFs.</dd>
+              <dt>MVP scope</dt><dd>3–4 weeks. Easy to sell to any builder size, including self-serve for small builders.</dd>
+              <dt>Price guide</dt><dd>$99–$499 a month by number of subcontractors, or bundled with SiteVoice.</dd>
+              <dt>Proof metric</dt><dd>% of active subs verified; lapsed policies caught before work started.</dd>
+            </dl>
+          </div>
+        </article>
+
+        <article class="product" id="p3">
+          <div class="p-head"><span class="p-code">P3</span><h3>Margin Watch — job cost and cash early warning</h3><span class="chip pri">Owner's product</span></div>
+          <div class="p-body">
+            <dl>
+              <dt>Problem</dt><dd>Fixed-price contracts meet 5.1% trade price rises in six months.<a class="ref" href="#s7">[7]</a> Margin fade shows up at job close, too late. Variations go unsigned or unbilled, and stage claims go out days late. That cash squeeze is how Qattro failed.<a class="ref" href="#s27">[27]</a></dd>
+              <dt>What it does</dt><dd><ul>
+                <li>Joins estimate, purchase orders, supplier invoices and variations per job. Forecasts final margin every week and flags jobs drifting beyond a set tolerance, with the cost codes causing it.</li>
+                <li>Finds variations that were agreed on site (in diaries, emails or texts) but never signed or invoiced.</li>
+                <li>Watches stage completion and prompts the progress claim the same day. Tracks debtor days per stage.</li>
+                <li>13-week cash forecast across all jobs. Plain-English weekly brief to the owner: "Three jobs in Riverlea are trending 4% under margin because brick costs rose; here is why."</li>
+              </ul></dd>
+              <dt>Data needed</dt><dd>Accounting (Xero or MYOB), estimating and purchasing exports (e.g. Databuild), and the job schedule.</dd>
+              <dt>AI underneath</dt><dd>Invoice and PO extraction, cost-code matching, anomaly detection, a simple forecasting model, and LLM-written explanations with links to the source documents.</dd>
+              <dt>Price guide</dt><dd>$1.5k–$4k a month after a $10k–$20k setup.</dd>
+              <dt>Proof metric</dt><dd>Weeks between a margin issue appearing and being flagged; unbilled variations recovered; days from stage completion to invoice.</dd>
+            </dl>
+          </div>
+        </article>
+
+        <article class="product" id="p4">
+          <div class="p-head"><span class="p-code">P4</span><h3>Trade Flow — delay risk and trade booking</h3><span class="chip pri">Speed product</span></div>
+          <div class="p-body">
+            <dl>
+              <dt>Problem</dt><dd>With Adelaide short of bricklayers, tilers, roofers and carpenters, one missed booking can idle a job for a week or more. Supervisors re-plan by phone.</dd>
+              <dt>What it does</dt><dd><ul>
+                <li>Predicts each job's next stage dates from the builder's own history plus Bureau of Meteorology rain forecasts, trade reliability and supplier lead times. Flags jobs at risk before the gap opens.</li>
+                <li>Confirms bookings with trades by SMS two days out, and offers re-sequencing when a trade drops out (e.g. bring forward a nearby job that's ready for that crew).</li>
+                <li>Groups nearby jobs by estate to cut supervisor and trade travel across the far north and south growth fronts.</li>
+              </ul></dd>
+              <dt>Data needed</dt><dd>12–24 months of schedule history with actual stage dates, the trade list, and BOM forecasts and observations.</dd>
+              <dt>AI underneath</dt><dd>Gradient-boosted duration models, a rules layer for weather-sensitive stages (slab, frame, roof, brickwork), an optimiser for sequencing, and an LLM for the messages and explanations.</dd>
+              <dt>Price guide</dt><dd>$2k–$5k a month. A good fit for co-development with AIML's SME program.</dd>
+              <dt>Proof metric</dt><dd>Idle days between stages; average build weeks; % of bookings confirmed 48 hours out.</dd>
+            </dl>
+          </div>
+        </article>
+
+        <article class="product" id="p5">
+          <div class="p-head"><span class="p-code">P5</span><h3>Precon Desk — lot check, document chaser and selections</h3><span class="chip pri">Adelaide-specific</span></div>
+          <div class="p-body">
+            <dl>
+              <dt>Problem</dt><dd>Pre-site takes 8–16 weeks, and one late decision pushes site start further.<a class="ref" href="#s40">[40]</a> With PlanSA speeding up approvals,<a class="ref" href="#s35">[35]</a> the builder's own paperwork becomes the critical path.</dd>
+              <dt>What it does</dt><dd><ul>
+                <li><b>Lot Check:</b> from an address or lot, pulls the Planning and Design Code zone, subzone, overlays and Technical and Numeric Variations from open state data.<a class="ref" href="#s58">[58]</a> Summarises the rules that matter for the chosen design, flags likely issues (bushfire overlay, character area, minimum site area), and adds a site-cost risk note by region.</li>
+                <li><b>Document chaser:</b> per job, tracks soil report, engineering, 7-star energy rating, BAL assessment, BII certificate and planning consent. Reads each document as it arrives to confirm it's the right one, and chases the consultant or homeowner.</li>
+                <li><b>Selections assistant:</b> guides homeowners through colour and fixture selections in plain language, prices upgrades from the builder's schedule, and nudges before a delay costs site-start weeks.</li>
+              </ul></dd>
+              <dt>Guardrail</dt><dd>Advisory only. Planning decisions stay with the relevant authority and building rules with the certifier.</dd>
+              <dt>Price guide</dt><dd>$1.5k–$4k a month plus setup.</dd>
+              <dt>Proof metric</dt><dd>Contract-to-site-start days; % of applications lodged complete the first time.</dd>
+            </dl>
+          </div>
+        </article>
+
+        <article class="product" id="p6">
+          <div class="p-head"><span class="p-code">P6</span><h3>Plan to Price — AI takeoff and quick estimate</h3><span class="chip pri">Partner on the model</span></div>
+          <div class="p-body">
+            <dl>
+              <dt>Problem</dt><dd>Estimators re-measure similar plans again and again, and custom jobs wait weeks for a price.</dd>
+              <dt>What it does</dt><dd>Reads a floor plan PDF, measures floor area, wall lengths, roof area and door and window counts, then maps quantities to the builder's rate library and inclusions to produce a draft estimate for an estimator to check. Many builder plans are vector PDFs, so dimensions and room labels can be read directly, which is more reliable than image recognition.</dd>
+              <dt>Build vs buy</dt><dd>Don't train a takeoff model from scratch. Use vector extraction, a vision LLM for raster plans, and integrate tools like Buildxact where the builder already uses them. Your value is the rate mapping, the SA site-cost rules and the workflow.</dd>
+              <dt>Price guide</dt><dd>Per plan ($20–$60) or $1k–$3k a month.</dd>
+              <dt>Proof metric</dt><dd>Estimator hours per quote; turnaround; variance between the AI draft and the final estimate.</dd>
+            </dl>
+          </div>
+        </article>
+
+        <article class="product" id="p7">
+          <div class="p-head"><span class="p-code">P7</span><h3>Tender Reader — commercial tender, RFI and claims copilot</h3><span class="chip pri">Second market</span></div>
+          <div class="p-body">
+            <dl>
+              <dt>Problem</dt><dd>Mid-tier commercial builders read thousands of pages per tender, write RFIs by hand and assess subcontractor claims against tight Security of Payment timelines.</dd>
+              <dt>What it does</dt><dd><ul>
+                <li>Splits specs and drawings into scope by trade, finds gaps and conflicts, and drafts RFIs with page references.</li>
+                <li>Compares subcontractor quotes line by line (e.g. from EstimateOne), highlighting exclusions and qualifications.</li>
+                <li>Flags contract risks: liquidated damages, time bars, payment terms against SA's Security of Payment Act.</li>
+                <li>Drafts daily site diaries and delay notices from site records.</li>
+              </ul></dd>
+              <dt>Buyers</dt><dd>Badge, Mossop, Kennett, Sarah Group, Leed, Exact Contracting and similar firms.<a class="ref" href="#s25">[25]</a></dd>
+              <dt>Price guide</dt><dd>$1.5k–$5k a month per estimating team.</dd>
+            </dl>
+          </div>
+        </article>
+
+        <article class="product" id="p8">
+          <div class="p-head"><span class="p-code">P8</span><h3>Site Vision — photo QA and safety</h3><span class="chip pri">Later / partner</span></div>
+          <div class="p-body">
+            <dl>
+              <dt>What it does</dt><dd>Checks stage photos against a checklist (e.g. insulation present before plasterboard, sarking, tie-downs), and detects PPE and edge-protection issues from site photos.</dd>
+              <dt>Why later</dt><dd>Needs labelled photos from real sites and hardware in commercial settings. Start by collecting well-labelled stage photos through SiteVoice. That builds the dataset for free.</dd>
+            </dl>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 06 DEMO -->
+    <section id="demo">
+      <h2><span class="num">06</span>The demo that gets a builder to pay</h2>
+      <p class="lede">Show a builder their own business running better. <b>Build Command</b> is a web app loaded with a realistic synthetic portfolio of 60 jobs in the builder's real estates, using their real published designs, real SA planning data and real Adelaide weather. It shows four moments in 20 minutes.</p>
+
+      <h3>Screen A · Portfolio board</h3>
+      <div class="screen" aria-label="Illustrative portfolio board">
+        <div class="screen-bar"><span><b>Build Command</b> · Portfolio · 60 active jobs</span><span>As at Mon 28 Sep 2026 · synthetic data, fictional designs</span></div>
+        <div class="tbl"><table class="w-wide">
+          <thead><tr><th>Job</th><th>Estate / suburb</th><th>Design</th><th>Stage</th><th class="num">Days in stage (plan)</th><th>Status</th><th>Why (AI summary)</th></tr></thead>
+          <tbody>
+            <tr><td>2417</td><td>Riverlea, Buckland Park</td><td>Kestrel 24</td><td>Frame</td><td class="num">26 (18)</td><td><span class="chip risk">▲ At risk</span></td><td>Trusses on site; carpentry crew not confirmed for Tue; 11 mm rain forecast Wed.</td></tr>
+            <tr><td>2395</td><td>Springwood, Gawler East</td><td>Kestrel 24</td><td>Pre-site</td><td class="num">58 (40)</td><td><span class="chip risk">▲ At risk</span></td><td>Colour selections 3 weeks overdue; 2 reminders unanswered.</td></tr>
+            <tr><td>2388</td><td>Bluestone, Mount Barker</td><td>Hills 28</td><td>Lock-up</td><td class="num">34 (28)</td><td><span class="chip watch">● Watch</span></td><td>Brickwork 80%; bricklayer split across 3 jobs; windows arrive 3 Oct.</td></tr>
+            <tr><td>2376</td><td>Aldinga Beach</td><td>Coast 21</td><td>Practical completion</td><td class="num">12 (14)</td><td><span class="chip watch">● Watch</span></td><td>2 variations agreed on site ($6,840) are unsigned and not invoiced.</td></tr>
+            <tr><td>2402</td><td>Playford Alive, Munno Para</td><td>Urban 19</td><td>Fixing</td><td class="num">41 (45)</td><td><span class="chip ok">✓ On track</span></td><td>Cabinetry in; tiler booked 2 Oct.</td></tr>
+            <tr><td>2431</td><td>Eyre, Penfield</td><td>Coast 21</td><td>Base</td><td class="num">9 (10)</td><td><span class="chip ok">✓ On track</span></td><td>Slab poured 18 Sep; plumbing inspection booked.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="cols">
+        <div class="screen" aria-label="Illustrative voice note to diary">
+          <div class="screen-bar"><span><b>Screen B</b> · Voice note → diary</span><span>synthetic</span></div>
+          <div class="transcript">"Twenty-four seventeen, trusses are on site, stack's fine, but truss T7 has a cracked bottom chord, need a replacement. Twenty-four oh-two, sparky finished rough-in today. Tell the chippies Tuesday's still on if the rain holds off."</div>
+          <div class="note">
+            <p><b>Job 2417 · diary</b>: Roof trusses delivered and checked. Defect: T7 bottom chord cracked. <i>Action:</i> replacement request drafted to truss supplier.</p>
+            <p><b>Job 2402 · diary</b>: Electrical rough-in complete. Stage checklist updated.</p>
+            <p><b>Draft SMS to carpentry crew</b>: "Confirming Tue 29 Sep, 14 Kestrel Way Riverlea, standing trusses. T7 replacement due Wed. Reply Y to confirm."</p>
+          </div>
+        </div>
+        <div class="screen" aria-label="Illustrative homeowner update">
+          <div class="screen-bar"><span><b>Screen C</b> · Homeowner update draft</span><span>awaiting approval</span></div>
+          <div class="note">
+            <p>Hi Priya and Sam,</p>
+            <p>Here's this week's update for 14 Kestrel Way, Riverlea. Your roof trusses arrived on Thursday and the carpenters are booked to stand them from Tuesday. One truss was damaged in transport and a replacement is on its way, so it won't hold anything up.</p>
+            <p>Weather watch: rain is forecast for Wednesday, which may move roof work by a day. Your frame inspection will be booked as soon as the roof frame is complete.</p>
+            <p>Nothing needed from you this week. Photos are in your portal.</p>
+            <p>Daniel, Site Supervisor</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Screen D · Lot Check and Plan to Price</h3>
+      <p>Type an Adelaide address or pick a lot on the map. The app shows the zone, subzone, overlays and numeric variations from the state's open datasets. Then drop one of the prospect's own published floor plans in and get a quantity takeoff and a draft price from sample rates. Label all figures as examples until the builder's real rates are loaded.</p>
+      <div class="tbl"><table class="w-mid">
+        <thead><tr><th>Output field</th><th>Source</th><th>Example of what's shown</th></tr></thead>
+        <tbody>
+          <tr><td>Zone and subzone</td><td>P&amp;D Code Zones and Subzones (GeoJSON)</td><td>Zone name and the policies that apply to a detached dwelling</td></tr>
+          <tr><td>Overlays</td><td>P&amp;D Code Overlays</td><td>e.g. bushfire hazard, character area, aircraft noise, if present</td></tr>
+          <tr><td>Numeric variations</td><td>Technical and Numeric Variations dataset</td><td>e.g. minimum site area, maximum building height, where set</td></tr>
+          <tr><td>Site-cost risk note</td><td>Region rules you maintain</td><td>e.g. "Northern Adelaide: reactive clay common; allow for engineered slab"</td></tr>
+          <tr><td>Takeoff</td><td>The builder's plan PDF</td><td>Floor area, external wall length, roof area, doors and windows count</td></tr>
+          <tr><td>Draft price</td><td>Sample or builder rates</td><td>Cost by trade with editable rates; flagged as a draft for estimator review</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>How to make it personal before the meeting</h3>
+      <ul>
+        <li>Load the prospect's public design names, sizes and "from" prices, and their display and estate locations, from their website. Use them only in their private demo, and don't republish their plans.</li>
+        <li>Put the synthetic jobs in the estates where they actually build, and use real rain history for those weeks, so the risk flags look like their year.</li>
+        <li>Summarise the themes in their public reviews (e.g. "communication after handover") to frame the problem. Show themes, not quotes, and be tactful.</li>
+      </ul>
+
+      <h3>Synthetic data model</h3>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Table</th><th>Key fields</th><th>How to make it realistic</th></tr></thead>
+        <tbody>
+          <tr><td><b>jobs</b></td><td>job_id, estate, suburb, lot, design, floor_m2, contract_value, contract_date, supervisor, zone_code</td><td>Contract values $300k–$550k for volume product; estates on the real growth fronts; zones joined from the P&amp;D Code layer</td></tr>
+          <tr><td><b>stages</b></td><td>job_id, stage, planned_start, actual_start, planned_days, actual_days</td><td>Stage sequence base → frame → lock-up → fixing → PC. Draw durations from distributions you set, e.g. base 2–3 wks, frame 3–4, lock-up 4–6, fixing 6–8 (assumptions to tune with the builder)</td></tr>
+          <tr><td><b>weather</b></td><td>date, station, rain_mm</td><td>Real BOM daily rainfall (e.g. Kent Town 023090, Adelaide Airport 023034). Treat ≥5 mm as a lost day for slab, frame and roof work</td></tr>
+          <tr><td><b>trades</b> / <b>bookings</b></td><td>trade, company, reliability, booked_date, confirmed, no_show</td><td>Shortage multiplier for bricklaying, tiling, roofing and carpentry, following HIA's shortage ranking</td></tr>
+          <tr><td><b>costs</b></td><td>job_id, cost_code, estimate, committed, actual</td><td>Margin 10–15% at contract; apply +5.1% per half-year to trade rates to create fade on older contracts</td></tr>
+          <tr><td><b>variations</b></td><td>job_id, description, amount, signed, invoiced</td><td>0–6% of contract; a few signed-on-site-only items for Margin Watch to find</td></tr>
+          <tr><td><b>claims</b></td><td>job_id, stage, amount_pct, stage_done_date, invoiced_date</td><td>Illustrative stage split such as deposit 5%, base 15%, frame 20%, lock-up 25%, fixing 20%, PC 15%; mirror the builder's contract once known</td></tr>
+          <tr><td><b>messages</b> / <b>diary</b></td><td>job_id, author, channel, text, created_at</td><td>Generated with an LLM from the stage events, then hand-edited so they sound like real Adelaide sites</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Architecture</h3>
+      <div class="arch" aria-label="System architecture">
+        <div class="arch-row"><div class="arch-name">Sources</div><div class="arch-boxes"><span>ClickHome / schedule export</span><span>Estimating &amp; purchasing (e.g. Databuild)</span><span>Xero / MYOB</span><span>Email, SMS, voice notes, photos</span><span>SA open data &amp; BOM</span></div></div>
+        <div class="arch-arrow">↓ connectors: API where offered, scheduled export otherwise</div>
+        <div class="arch-row"><div class="arch-name">Data layer</div><div class="arch-boxes"><span>Postgres + PostGIS (jobs, lots, zones)</span><span>Vector index per client (documents)</span><span>File store (plans, certificates, photos)</span></div></div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-row"><div class="arch-name">AI services</div><div class="arch-boxes"><span>LLM with retrieval (answers, drafts, summaries)</span><span>Document AI and vision (plans, certificates, invoices)</span><span>Speech-to-text</span><span>Duration and cost forecasting models</span><span>SA rules engine (licensing, BII, P&amp;D Code)</span></div></div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-row"><div class="arch-name">Actions</div><div class="arch-boxes"><span>Drafts for human approval</span><span>SMS and email to trades and homeowners</span><span>Tasks written back to the builder's system</span><span>Owner and manager briefs</span></div></div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-row"><div class="arch-name">Controls</div><div class="arch-boxes"><span>Australian hosting region</span><span>Per-client data isolation</span><span>Audit log of every AI output and approval</span><span>No training on client data by default</span></div></div>
+      </div>
+      <p class="small">Suggested stack: a React/Next.js front end, a Python FastAPI backend, Postgres with PostGIS and pgvector, MapLibre for the lot map, and a frontier LLM API such as Anthropic's Claude for extraction, drafting and answers. Use an SMS gateway in the pilot, but keep it mocked in the demo so nothing is ever sent by accident.</p>
+
+      <h3>Three-week build plan for the demo</h3>
+      <div class="plan">
+        <div class="plan-row"><span class="when">Week 1</span><div>Download P&amp;D Code zones, subzones, overlays and variations. Load BOM rainfall. Write the synthetic data generator. Build the portfolio board with status chips and a job page timeline.</div></div>
+        <div class="plan-row"><span class="when">Week 2</span><div>AI summaries per job ("why is it late?"), homeowner update drafts, and a chat that answers from the job's data and cites the diary entries it used. Margin Watch view with fade and unbilled variations.</div></div>
+        <div class="plan-row"><span class="when">Week 3</span><div>Voice note → diary flow (upload an audio file). Lot Check map. Plan to Price on 3–5 vector plans. A personalisation script that loads a prospect's designs and estates. Rehearse the 20-minute script.</div></div>
+      </div>
+      <p class="small">Running cost for demos is small: hosting in the tens of dollars a month and LLM usage in the cents-to-dollars range per demo. The expensive part is your time.</p>
+
+      <h3>The 20-minute meeting</h3>
+      <div class="plan">
+        <div class="plan-row"><span class="when">0–3 min</span><div>Their world in numbers: their estates, their designs, the Adelaide trade shortage, build times, and January's penalty changes. Ask how many jobs each supervisor carries.</div></div>
+        <div class="plan-row"><span class="when">3–8 min</span><div>Portfolio board. "These six jobs are where you'd lose weeks this month, and here's why."</div></div>
+        <div class="plan-row"><span class="when">8–13 min</span><div>Play a supervisor voice note, show the diary, the trade SMS and the homeowner update. Approve one live.</div></div>
+        <div class="plan-row"><span class="when">13–17 min</span><div>Lot Check and Plan to Price on one of their own published designs.</div></div>
+        <div class="plan-row"><span class="when">17–20 min</span><div>The offer: a paid 2-week AI Opportunity Audit, or straight to an 8-week SiteVoice pilot on 20–40 jobs, with agreed KPIs measured before and after. Ask for a schedule export, sample homeowner emails and two supervisors to pilot with.</div></div>
+      </div>
+    </section>
+
+    <!-- 07 DATA -->
+    <section id="data">
+      <h2><span class="num">07</span>Data you can use now</h2>
+      <p>Start with open government data, which is licensed for reuse. Use scraped or third-party data carefully and only for the purpose shown.</p>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Source</th><th>What you get</th><th>Access and licence</th><th>Use it for</th></tr></thead>
+        <tbody>
+          <tr><td><b>Planning and Design Code Zones, Subzones, Overlays, Variations</b> (data.sa.gov.au)</td><td>Statewide planning boundaries; updated fortnightly</td><td>Free download in SHP, GeoJSON and KML; Creative Commons Attribution<a class="ref" href="#s58">[58]</a></td><td>Lot Check; zone per synthetic job</td></tr>
+          <tr><td><b>Planning and Design Code online</b></td><td>Policy text for each zone and overlay</td><td>Public website (code.plan.sa.gov.au)</td><td>Grounding the Lot Check explanations</td></tr>
+          <tr><td><b>SAPPA</b> (SA Property and Planning Atlas)</td><td>Map viewer for planning layers and land information</td><td>Free public viewer<a class="ref" href="#s60">[60]</a></td><td>Checking your Lot Check results by hand</td></tr>
+          <tr><td><b>PlanSA Development Application Register</b></td><td>Applications lodged since July 2020, searchable by council, with an interactive map<a class="ref" href="#s59">[59]</a></td><td>Public website. Check terms, rate-limit, and avoid collecting personal details</td><td>Market sizing by council and application type (not homeowner lead lists)</td></tr>
+          <tr><td><b>Land division applications</b>, <b>residential broadhectare land</b>, <b>metro median house sales</b></td><td>Subdivision pipeline, land supply and price context</td><td>data.sa.gov.au (DHUD), CC BY</td><td>Where volume is heading; estate selection for demos</td></tr>
+          <tr><td><b>ABS Building Approvals</b> (SA2 and LGA) and <b>Construction Work Done</b></td><td>Monthly approvals by small area; quarterly work done</td><td>ABS Data API and data cubes, CC BY<a class="ref" href="#s5">[5]</a></td><td>Market context slides; suburb-level demand</td></tr>
+          <tr><td><b>ABS Producer Price Indexes</b></td><td>Input costs to house construction by capital city, including Adelaide</td><td>ABS, CC BY</td><td>Cost-escalation assumptions in Margin Watch</td></tr>
+          <tr><td><b>Bureau of Meteorology</b> climate data</td><td>Daily rainfall and forecasts for Adelaide stations</td><td>Public Climate Data Online; check BOM terms for automated use</td><td>Weather lost days and Trade Flow risk</td></tr>
+          <tr><td><b>CBS Occupational Licence Public Register</b></td><td>Licence status for builders and trades<a class="ref" href="#s68">[68]</a></td><td>Public search</td><td>Sub Check</td></tr>
+          <tr><td><b>ABN Lookup web services</b></td><td>ABN status, entity name, GST registration</td><td>Free with registration</td><td>Sub Check</td></tr>
+          <tr><td><b>ASIC published notices</b></td><td>Insolvency appointments</td><td>Public website</td><td>Sub and supplier risk alerts</td></tr>
+          <tr><td><b>Builders' own websites</b></td><td>Designs, floor plans, inclusions, estates, display homes</td><td>Public, but plans are copyright</td><td>Personalising a private demo for that builder only</td></tr>
+          <tr><td><b>Open ML datasets</b></td><td>CubiCasa5K floor plans; public hard-hat and PPE image sets</td><td>Check each dataset's licence (some are non-commercial)</td><td>Prototyping takeoff and Site Vision models</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">Checked for this brief: the data.sa.gov.au catalogue lists the P&amp;D Code layers with direct SHP, GeoJSON and KML downloads, the DHUD land division and broadhectare datasets, and council-level registers such as City of Playford's development application register.</p>
+    </section>
+
+    <!-- 08 ROI -->
+    <section id="roi">
+      <h2><span class="num">08</span>ROI model to take into the meeting</h2>
+      <p>Replace the example values with the builder's own numbers during the meeting. Every line is simple arithmetic you can explain on a whiteboard. The pilot's job is to measure the real figures.</p>
+      <form class="calc" id="roi-form" autocomplete="off">
+        <div class="calc-inputs">
+          <div class="calc-group">
+            <h4>Business</h4>
+            <div class="fields">
+              <div class="field"><label for="starts">Home starts per year</label><input id="starts" type="number" min="0" step="10" value="300"></div>
+              <div class="field"><label for="contract">Average contract value ($)</label><input id="contract" type="number" min="0" step="5000" value="380000"></div>
+              <div class="field"><label for="margin">Gross margin per home ($)</label><input id="margin" type="number" min="0" step="1000" value="40000"></div>
+              <div class="field"><label for="cost">Annual cost of the AI solution ($)</label><input id="cost" type="number" min="0" step="5000" value="90000"></div>
+            </div>
+          </div>
+          <div class="calc-group">
+            <h4>Supervisors and customer care (SiteVoice)</h4>
+            <div class="fields">
+              <div class="field"><label for="sups">Site supervisors</label><input id="sups" type="number" min="0" step="1" value="18"></div>
+              <div class="field"><label for="suph">Admin hours saved per supervisor per week</label><input id="suph" type="number" min="0" step="0.5" value="3"></div>
+              <div class="field"><label for="suprate">Supervisor loaded cost ($/hour)</label><input id="suprate" type="number" min="0" step="5" value="70"></div>
+              <div class="field"><label for="enq">Homeowner enquiries handled per week</label><input id="enq" type="number" min="0" step="10" value="400"></div>
+              <div class="field"><label for="enqmin">Minutes saved per enquiry</label><input id="enqmin" type="number" min="0" step="1" value="5"></div>
+              <div class="field"><label for="csrate">Customer care loaded cost ($/hour)</label><input id="csrate" type="number" min="0" step="5" value="55"></div>
+            </div>
+          </div>
+          <div class="calc-group">
+            <h4>Estimating, rework and build time</h4>
+            <div class="fields">
+              <div class="field"><label for="quotes">Quotes and estimates per year</label><input id="quotes" type="number" min="0" step="50" value="900"></div>
+              <div class="field"><label for="qh">Estimator hours saved per quote</label><input id="qh" type="number" min="0" step="0.5" value="2"></div>
+              <div class="field"><label for="estrate">Estimator loaded cost ($/hour)</label><input id="estrate" type="number" min="0" step="5" value="75"></div>
+              <div class="field"><label for="rework">Rework cost as % of contract value</label><input id="rework" type="number" min="0" step="0.1" value="2"></div>
+              <div class="field"><label for="rwcut">Reduction in rework (%)</label><input id="rwcut" type="number" min="0" max="100" step="1" value="5"></div>
+              <div class="field"><label for="weeks">Average build length (weeks)</label><input id="weeks" type="number" min="1" step="1" value="40"></div>
+              <div class="field"><label for="wcut">Weeks cut from average build</label><input id="wcut" type="number" min="0" step="0.25" value="0.5"></div>
+            </div>
+          </div>
+          <button class="btn" type="button" id="reset">Reset example values</button>
+        </div>
+        <div class="calc-out" aria-live="polite">
+          <div class="totals">
+            <div class="stat"><span class="lbl">Hard savings per year</span><span class="v" id="t-hard">—</span><span class="c">Staff time and rework</span></div>
+            <div class="stat"><span class="lbl">Capacity released</span><span class="v" id="t-cap">—</span><span class="c">Margin on extra homes the same team could deliver, if you can sell them</span></div>
+            <div class="stat"><span class="lbl">Return on cost</span><span class="v" id="t-roi">—</span><span class="c" id="t-roi-c">Hard savings ÷ annual cost</span></div>
+          </div>
+          <div class="bars" id="bars"></div>
+          <p class="small">Formulas: supervisors × hours × 46 weeks × rate; enquiries × 52 × minutes ÷ 60 × rate; quotes × hours × rate; starts × contract × rework % × reduction; starts × weeks cut ÷ build weeks × margin. Example values are illustrative, not the builder's figures.</p>
+        </div>
+      </form>
+    </section>
+
+    <!-- 09 GTM -->
+    <section id="gtm">
+      <h2><span class="num">09</span>Selling in Adelaide</h2>
+
+      <h3>Who to approach first</h3>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Prospect</th><th>Why they might buy</th><th>Opening angle</th></tr></thead>
+        <tbody>
+          <tr><td><b>Rivergum Group</b></td><td>352 starts (FY23); builds in SA, QLD and VIC plus independent living<a class="ref" href="#s24">[24]</a></td><td>SiteVoice for consistent supervision and updates across regions</td></tr>
+          <tr><td><b>Metro Homes SA</b> (Creation Group)</td><td>327 starts; infill, townhouses and medium density<a class="ref" href="#s24">[24]</a></td><td>Precon Desk: infill planning rules and pre-site paperwork</td></tr>
+          <tr><td><b>Longridge Group</b></td><td>392 starts across several brands<a class="ref" href="#s24">[24]</a></td><td>Margin Watch across brands</td></tr>
+          <tr><td><b>Weeks Homes</b></td><td>Sells a "30 week build time"<a class="ref" href="#s38">[38]</a></td><td>Trade Flow to protect the promise they market</td></tr>
+          <tr><td><b>Sterling, Dechellis, Simonds SA</b></td><td>Established project builders with large display networks and affordable-to-mid product</td><td>Enquiry assistant, selections and homeowner updates</td></tr>
+          <tr><td><b>Scott Salisbury Homes</b></td><td>Premium custom builder; reputation built on client experience</td><td>SiteVoice as a premium client-experience layer</td></tr>
+          <tr><td><b>Regional builders</b> (Murray Bridge, Mount Barker, Gawler, Riverland)</td><td>Owner-operated and quick to decide. JAC Homes showed the cost of weak controls.<a class="ref" href="#s29">[29]</a></td><td>Sub Check plus a light Margin Watch</td></tr>
+          <tr><td><b>Hickinbotham Group, Fairmont</b></td><td>Largest volume. Hickinbotham runs ClickHome;<a class="ref" href="#s36">[36]</a> Fairmont is part of a national group, so decisions are likely made centrally</td><td>Approach once you have a local case study, as a ClickHome add-on</td></tr>
+          <tr><td><b>Commercial:</b> Badge, Mossop, Kennett, Sarah Group, Leed, Exact Contracting</td><td>SA Top 100 builders with steady tender volume<a class="ref" href="#s25">[25]</a></td><td>Tender Reader, from month 12</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Channels that work in a small market</h3>
+      <ul>
+        <li><b>Industry associations:</b> Master Builders SA and HIA SA events, breakfasts and awards nights. Adelaide is small; one good case study travels fast.</li>
+        <li><b>Software partners:</b> ClickHome, Buildxact and estimating-software resellers. You add AI on top of their product rather than competing with it.</li>
+        <li><b>AIML Industrial AI SME Grant Program:</b> gives SA SMEs access to AIML's machine learning engineers (support in kind, not cash).<a class="ref" href="#s61">[61]</a> Co-apply with a builder client to develop Trade Flow's forecasting.</li>
+        <li><b>Direct outreach:</b> LinkedIn and email to construction managers, pre-construction managers and customer-experience leads, with a one-minute video of their own designs in the demo.</li>
+      </ul>
+
+      <h3>Packaging and pricing</h3>
+      <div class="tbl"><table class="w-mid">
+        <thead><tr><th>Offer</th><th>Included</th><th class="num">Price guide</th></tr></thead>
+        <tbody>
+          <tr><td><b>AI Opportunity Audit</b> (2 weeks)</td><td>Interviews with 5–8 staff, data inventory, KPI baseline, top-3 roadmap. Fee credited to the pilot.</td><td class="num">$4k–$8k</td></tr>
+          <tr><td><b>Pilot</b> (8–10 weeks)</td><td>One product on 20–40 live jobs, a weekly KPI report and a go/no-go review</td><td class="num">$15k–$35k</td></tr>
+          <tr><td><b>Subscription</b></td><td>Per active job (SiteVoice) or per module (Margin Watch, Trade Flow, Precon Desk)</td><td class="num">$20–$35/job/month; $1.5k–$5k/module/month</td></tr>
+          <tr><td><b>Small builder self-serve</b></td><td>Sub Check plus quick quoting</td><td class="num">$99–$299/month</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">Benchmarks: single-workflow AI projects for Australian SMEs typically cost $5k–$40k, multi-workflow programs $50k–$150k, and AI consultants charge $150–$450 an hour.<a class="ref" href="#s57">[57]</a> Buildxact lists $169–$449 a month.<a class="ref" href="#s47">[47]</a> Procore typically runs about 0.1–0.2% of annual construction volume ($15k–$80k+ a year).<a class="ref" href="#s56">[56]</a></p>
+
+      <h3>Objections you will hear</h3>
+      <div class="tbl"><table class="w-mid">
+        <thead><tr><th>They say</th><th>You answer</th></tr></thead>
+        <tbody>
+          <tr><td>"We already have ClickHome."</td><td>Good. It stays the system of record. We read from it and write drafts and tasks back. Nobody learns a new system.</td></tr>
+          <tr><td>"AI makes things up."</td><td>It only answers from your job data and shows its source. Nothing reaches a homeowner or trade without a person approving it.</td></tr>
+          <tr><td>"Our supervisors won't use another app."</td><td>They send a voice note or photo the way they already text. That's the whole interface.</td></tr>
+          <tr><td>"Where does our data go?"</td><td>Australian hosting, isolated per builder, never used to train models, full audit log, and deletion on exit.</td></tr>
+          <tr><td>"It's too expensive."</td><td>The pilot has agreed KPIs. If the numbers don't move, you don't continue.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Funding to extend your runway</h3>
+      <ul>
+        <li><b>R&amp;D Tax Incentive:</b> a refundable offset (currently 43.5% for eligible companies under $20m turnover) for genuine experimental work such as the forecasting and plan-reading models. Get an adviser to confirm eligibility.</li>
+        <li><b>Industry Growth Program:</b> early-stage commercialisation grants of $50k–$250k for SMEs in National Reconstruction Fund priority areas.<a class="ref" href="#s65">[65]</a> Check fit before applying.</li>
+        <li><b>SA Seed-Start:</b> state grants for innovative early-stage SA startups commercialising a product.<a class="ref" href="#s64">[64]</a></li>
+        <li><b>SA's new $50m Research and Development Productivity Fund</b> (2026 budget; details still emerging).<a class="ref" href="#s63">[63]</a></li>
+        <li><b>AIML Industrial AI SME program:</b> engineering support in kind.<a class="ref" href="#s61">[61]</a></li>
+      </ul>
+    </section>
+
+    <!-- 10 RISKS -->
+    <section id="risks">
+      <h2><span class="num">10</span>Legal, privacy and delivery risks</h2>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Risk</th><th>What applies</th><th>What to do</th></tr></thead>
+        <tbody>
+          <tr><td><b>Scraping</b></td><td>Website terms, copyright in plans and drawings, and personal information on public registers</td><td>Prefer open data (CC BY). Use a builder's plans only in their own private demo. Summarise review themes rather than copying text. Don't build homeowner lead lists from the DA register.</td></tr>
+          <tr><td><b>Privacy</b></td><td>Privacy Act and the Australian Privacy Principles. The small-business exemption does not cover businesses that trade in personal information. Automated decision-making transparency duties start 10 December 2026.<a class="ref" href="#s67">[67]</a> A statutory tort for serious invasions of privacy also now applies.</td><td>Privacy policy and data processing terms from day one. Keep a person making any decision about an individual. Minimise and delete homeowner data you don't need.</td></tr>
+          <tr><td><b>AI regulation</b></td><td>The National AI Plan (2 Dec 2025) dropped mandatory guardrails in favour of existing laws. The new AI Safety Institute advises but can't compel.<a class="ref" href="#s66">[66]</a></td><td>No AI-specific licence is needed, but consumer law, WHS and privacy still apply. Avoid overstating what the product does in your marketing.</td></tr>
+          <tr><td><b>Professional liability</b></td><td>Estimates, code checks and compliance flags can be wrong</td><td>Label outputs as drafts. Licensed people sign off. Never certify building or planning compliance. Carry professional indemnity insurance. Cap liability in contracts.</td></tr>
+          <tr><td><b>Accuracy</b></td><td>LLMs can invent facts</td><td>Answer only from retrieved job data and show sources. Keep an evaluation set per product. Log every output with its approval.</td></tr>
+          <tr><td><b>Customer failure</b></td><td>Builder insolvencies are running at record levels<a class="ref" href="#s30">[30]</a></td><td>Bill monthly in advance. Avoid depending on one client. Check the client's financial signals before large custom builds.</td></tr>
+          <tr><td><b>Adoption</b></td><td>Supervisors are busy and sceptical</td><td>Use voice and SMS instead of new apps. Choose pilot champions. Report hours saved back to the supervisors themselves.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- 11 ROADMAP -->
+    <section id="roadmap">
+      <h2><span class="num">11</span>Roadmap: first 24 months</h2>
+      <div class="plan">
+        <div class="plan-row"><span class="when">Weeks 0–3</span><div><b>Demo and list.</b> Build Build Command. Research 40 prospects and prepare personalised demos for the top 10.</div></div>
+        <div class="plan-row"><span class="when">Months 1–4</span><div><b>First revenue.</b> 20 demos, 2–3 paid audits, 1–2 SiteVoice pilots, and Sub Check live for small builders. Apply to the AIML program and check Industry Growth Program eligibility.</div></div>
+        <div class="plan-row"><span class="when">Months 4–9</span><div><b>Prove and expand.</b> Convert pilots to subscriptions. Publish a case study with measured KPIs. Add Margin Watch. Build reusable connectors for ClickHome, estimating exports and Xero.</div></div>
+        <div class="plan-row"><span class="when">Months 9–15</span><div><b>Speed products.</b> Trade Flow forecasting (with AIML if accepted), Precon Desk and Plan to Price. Target 5–10 builder clients.</div></div>
+        <div class="plan-row"><span class="when">Months 12–24</span><div><b>New segments.</b> Tender Reader for mid-tier commercial builders. Compliance packs for SA subcontractors chasing Osborne, T2D and hospital work. Take the proven playbook to other states' mid-size builders.</div></div>
+      </div>
+    </section>
+
+    <!-- 12 SOURCES -->
+    <section id="sources">
+      <h2><span class="num">12</span>Sources</h2>
+      <p class="small">Figures were checked against these sources in September 2026. Some official SA pages block automated access, so a few figures come from search summaries of those pages. Confirm key numbers before putting them in a proposal.</p>
+      <ol class="sources">
+        <li id="s1"><a href="https://www.dhud.sa.gov.au/news/south-australia-continues-40-year-home-approval-high">DHUD — South Australia continues 40-year home approval high</a></li>
+        <li id="s2"><a href="https://glamadelaide.com.au/south-australias-housing-pipeline-hits-40-year-high-as-more-homes-move-through-the-building-process/">Glam Adelaide — SA's housing pipeline hits 40-year high (completions, approvals to July 2026)</a></li>
+        <li id="s3"><a href="https://www.premier.sa.gov.au/media-releases/news-items/housing-approvals-continue-to-surge-in-south-australia">Premier of SA — Housing approvals continue to surge</a></li>
+        <li id="s4"><a href="https://www.abs.gov.au/statistics/industry/building-and-construction/construction-work-done-australia-preliminary/latest-release">ABS — Construction Work Done, Australia, Preliminary, June 2026</a></li>
+        <li id="s5"><a href="https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/latest-release">ABS — Building Approvals, Australia, July 2026</a></li>
+        <li id="s6"><a href="https://statedevelopment.sa.gov.au/workforce-development-and-migration/construction-workforce">Department of State Development — South Australia's construction workforce</a></li>
+        <li id="s7"><a href="https://hia.com.au/our-industry/newsroom/economic-research-and-forecasting/2026/07/tradie-shortages-remain-entrenched-despite-housing-market-uncertainty">HIA — Tradie shortages remain entrenched (July 2026)</a></li>
+        <li id="s8"><a href="https://hia.com.au/our-industry/newsroom/economic-research-and-forecasting/2026/03/skilled-labour-remains-a-constraint">HIA — Skilled labour remains a constraint (March 2026)</a></li>
+        <li id="s9"><a href="https://ipa.org.au/publications-ipa/research-note/nationwide-handbrake-on-housing-construction">IPA — Nationwide handbrake on housing construction (July 2025)</a></li>
+        <li id="s10"><a href="https://www.rlb.com/oceania/insight/construction-cost-escalation-to-remain-elevated-in-2026/">Rider Levett Bucknall — Construction cost escalation to remain elevated in 2026</a></li>
+        <li id="s11"><a href="https://www.pc.gov.au/inquiries-and-research/housing-construction/">Productivity Commission — Housing construction productivity: Can we fix it?</a></li>
+        <li id="s12"><a href="https://www.indailysa.com.au/news/business/2026/09/07/construction-of-sas-8-5bn-nuclear-submarine-shipyard-kicks-off">InDaily — Construction of SA's $8.5bn nuclear submarine shipyard kicks off</a></li>
+        <li id="s13"><a href="https://www.minister.defence.gov.au/media-releases/2026-07-24/albanese-government-backs-continued-investment-australias-nuclear-powered-submarine-construction-yard">Defence Ministers — Continued investment in the submarine construction yard (24 July 2026)</a></li>
+        <li id="s14"><a href="https://dit.sa.gov.au/infrastructure/projects/river-torrens-to-darlington">Department for Infrastructure and Transport — River Torrens to Darlington</a></li>
+        <li id="s15"><a href="https://tunnellingjournal.com/consortium-chosen-for-south-australias-biggest-ever-infrastructure-project/">Tunnelling Journal — Consortium chosen for SA's biggest-ever infrastructure project</a></li>
+        <li id="s16"><a href="https://www.indailysa.com.au/news/archive/2022/02/18/builder-chosen-for-new-womens-and-childrens-hospital">InDaily — Builder chosen for new Women's and Children's Hospital</a>; <a href="https://www.newwch.sa.gov.au/">New WCH project site</a></li>
+        <li id="s17"><a href="https://statebudget.sa.gov.au/our-budget/infrastructure-roads-and-transport">SA State Budget 2026-27 — Infrastructure, roads and transport</a></li>
+        <li id="s18"><a href="https://www.abc.net.au/news/2026-02-22/labor-launches-sa-election-campaign-with-housing-policy/106373392">ABC — Labor launches SA election campaign with land and housing promises</a></li>
+        <li id="s19"><a href="https://www.abc.net.au/news/2025-10-25/sa-government-unveils-apartment-construction-election-policy/105933814">ABC — Apartment construction scheme unveiled</a></li>
+        <li id="s20"><a href="https://www.abc.net.au/news/2023-02-12/sa-land-release-at-hackham-dry-creek-concordia-sellicks-beach/101963032">ABC — Nearly 24,000 new homes under land release plans</a></li>
+        <li id="s21"><a href="https://www.abc.net.au/news/2025-06-11/no-water-infrastructure-funding-sa-land-release-sites/105402110">ABC — No current water infrastructure funding for three land release sites</a></li>
+        <li id="s22"><a href="https://prefabnews.com.au/south-australia-prefab-housing-pilot-120-homes-2026/">Prefab News — South Australia tenders 120 prefab homes</a></li>
+        <li id="s23"><a href="https://hia.com.au/our-industry/newsroom/economic-research-and-forecasting/2025/09/hia-reveals-australias-largest-home-builders-for-202425">HIA — Australia's largest home builders 2024/25</a></li>
+        <li id="s24"><a href="https://www.canstar.com.au/home-loans/home-builders-adelaide/">Canstar — The top 5 home builders in Adelaide</a></li>
+        <li id="s25"><a href="https://www.indailysa.com.au/news/business/2025/10/17/sas-top-100-companies-the-full-list-for-2025">InDaily — SA's top 100 companies, 2025</a></li>
+        <li id="s26"><a href="https://en.wikipedia.org/wiki/Hansen_Yuncken">Hansen Yuncken — company overview</a></li>
+        <li id="s27"><a href="https://www.abc.net.au/news/2023-09-12/sa-builder-qattro-goes-into-liquidation/102845102">ABC — SA builder Qattro collapses</a></li>
+        <li id="s28"><a href="https://www.abc.net.au/news/2024-09-16/homes-left-unfinished-after-adelaide-designer-homes-goes-bust/104344958">ABC — Homes left unfinished after Adelaide Designer Homes goes bust</a></li>
+        <li id="s29"><a href="https://www.murraybridge.news/homeowners-and-tradies-left-in-the-lurch-as-murray-bridges-jac-homes-collapses/">Murray Bridge News — JAC Homes collapses</a></li>
+        <li id="s30"><a href="https://www.buildpaperless.com.au/blog/australian-builder-insolvency-wave-2026">BuildPaperless — Australia's builder insolvency wave (ASIC-based figures)</a></li>
+        <li id="s31"><a href="https://hia.com.au/our-industry/newsroom/workplace-relations-and-legal/2025/09/statutes-amendment-building-and-construction-industry-review-penalties-bill-2025">HIA — Building and Construction Industry Review (Penalties) Bill 2025</a></li>
+        <li id="s32"><a href="https://www.lexisnexis.com/blogs/en-au/insights/construction-law-reform-in-australia-what-to-expect-in-2026">LexisNexis — Australian construction law 2026: key reforms by state</a></li>
+        <li id="s33"><a href="https://hia.com.au/resources-and-advice/managing-your-business/managing-compliance/articles/building-indemnity-insurance-compliance-crackdown">HIA — Building indemnity insurance compliance crackdown</a></li>
+        <li id="s34"><a href="https://plan.sa.gov.au/resources/building/ncc-2022-modern-homes-provisions">PlanSA — NCC 2022 modern homes provisions</a></li>
+        <li id="s35"><a href="https://www.premier.sa.gov.au/media-releases/news-archive/new-ai-technology-to-boost-planning-efficiency">Premier of SA — New AI technology to boost planning efficiency</a></li>
+        <li id="s36"><a href="https://www.getapp.com.au/software/103463/clickhome">GetApp — ClickHome (customers include Hickinbotham Homes and Metricon)</a></li>
+        <li id="s37"><a href="https://buildpilot.com.au/home-builders-adelaide">BuildPilot — Adelaide home builders 2026</a></li>
+        <li id="s38"><a href="https://www.weeks.com.au/">Weeks Homes</a></li>
+        <li id="s39"><a href="https://www.austcorpexecutive.com.au/job/site-supervisor-volume-home-builder-south-east-melbourne-97639705">Austcorp — Site supervisor, volume home builder (typical workload)</a></li>
+        <li id="s40"><a href="https://www.senkahomes.com.au/pre-site-phase-explained/">Senka Homes — Pre-site phase explained</a></li>
+        <li id="s41"><a href="https://www.productreview.com.au/listings/simonds-sa-adelaide">ProductReview — Simonds SA reviews</a></li>
+        <li id="s42"><a href="https://www.deloitte.com/au/en/services/economics/perspectives/state-digital-adoption-construction-industry.html">Deloitte — State of Digital Adoption in the Construction Industry 2026</a></li>
+        <li id="s43"><a href="https://thegoodbuilder.com.au/australia-leads-the-world-on-construction-ai-adoption-productivity-confidence-has-not-followed/">The Good Builder — KPMG Global Construction Survey findings</a></li>
+        <li id="s44"><a href="https://www.autodesk.com/blogs/construction/state-of-design-make-spotlight-construction/">Autodesk — State of Design &amp; Make: construction spotlight</a></li>
+        <li id="s45"><a href="https://www.togal.ai/case-study/ku-study-togal-vs-ost">Togal.AI — University of Kansas study</a></li>
+        <li id="s46"><a href="https://www.togal.ai/case-study/coastal-construction-case-study">Togal.AI — Coastal Construction case study</a></li>
+        <li id="s47"><a href="https://www.buildxact.com/au/blu-ai-construction-assistant/">Buildxact — Blu AI assistant</a>; <a href="https://www.buildxact.com/au/pricing/">Buildxact pricing</a></li>
+        <li id="s48"><a href="https://trunktools.com/resources/company-updates/trunk-tools-closes-40m-series-b-construction-ai-transformation/">Trunk Tools — $40M Series B</a></li>
+        <li id="s49"><a href="https://buildots.com/blog/deep-dive-into-delay-forecast/">Buildots — Delay Forecast</a></li>
+        <li id="s50"><a href="https://www.openspace.ai/blog/openspace-2025-review/">OpenSpace — 2025 review</a></li>
+        <li id="s51"><a href="https://www.archistar.ai/aiprecheck/">Archistar — AI PreCheck</a></li>
+        <li id="s52"><a href="https://www.tandfonline.com/doi/abs/10.1080/10286600500049904">Love &amp; Edwards — Calculating total rework costs in Australian construction projects</a></li>
+        <li id="s53"><a href="https://www.asce.org/publications-and-news/civil-engineering-source/article/2026/01/22/how-much-does-field-rework-in-construction-actually-cost">ASCE — How much does field rework actually cost? (2026)</a></li>
+        <li id="s54"><a href="https://www.autodesk.com/blogs/construction/construction-disconnected-fmi-report/">Autodesk / FMI — Construction Disconnected</a></li>
+        <li id="s55"><a href="https://estimateone.com/">EstimateOne</a>; <a href="https://www.payapps.com/">Payapps</a></li>
+        <li id="s56"><a href="https://www.deepspacegroup.ai/blog/procore-pricing-australia-mid-tier-builders">Deep Space — Procore pricing in Australia</a></li>
+        <li id="s57"><a href="https://source-digital.com.au/blog/ai-consulting-cost-australia">Source Digital — AI consulting cost in Australia (2026)</a></li>
+        <li id="s58"><a href="https://data.sa.gov.au/data/dataset/planning-and-design-code-zones">data.sa.gov.au — Planning and Design Code Zones</a> (see also Subzones, Overlays, Variations)</li>
+        <li id="s59"><a href="https://plan.sa.gov.au/development_application_register">PlanSA — Development application register</a></li>
+        <li id="s60"><a href="https://sappa.plan.sa.gov.au/">SAPPA — SA Property and Planning Atlas</a></li>
+        <li id="s61"><a href="https://www.adelaide.edu.au/aiml/our-key-initiatives/industrial-ai-program/program-3-industrial-ai-sme-grant-program">AIML — Industrial AI SME Grant Program</a></li>
+        <li id="s62"><a href="https://adelaide.edu.au/research/australian-institute-for-machine-learning/our-key-initiatives/industrial-ai-program/case-studies/">AIML — Industrial AI case studies (Digital Constructors)</a></li>
+        <li id="s63"><a href="https://www.smartcompany.com.au/economy/south-australia-budget-2026-small-business-startups/">SmartCompany — SA budget 2026: $50m R&amp;D fund</a></li>
+        <li id="s64"><a href="https://statedevelopment.sa.gov.au/science-and-research-excellence/rif/stream-2/seed-start">Department of State Development — Seed-Start</a></li>
+        <li id="s65"><a href="https://business.gov.au/grants-and-programs/industry-growth-program">business.gov.au — Industry Growth Program</a></li>
+        <li id="s66"><a href="https://iapp.org/news/a/australia-unveils-ai-policy-roadmap">IAPP — Australia unveils AI policy roadmap</a></li>
+        <li id="s67"><a href="https://www.legislation.gov.au/C2024A00128/asmade">Privacy and Other Legislation Amendment Act 2024</a>; <a href="https://aicura.com.au/frameworks/privacy-act-adm-transparency/">summary of ADM transparency duties</a></li>
+        <li id="s68"><a href="https://secure.cbs.sa.gov.au/OccLicPubReg/LicenceSearch.php">CBS — Occupational licence public register</a></li>
+        <li id="s69"><a href="https://www.ibisworld.com/australia/company/mcmahon-services-australia-pty-ltd/450440/">IBISWorld — McMahon Services Australia</a></li>
+      </ol>
+    </section>
+
+    <footer>Adelaide Construction AI Playbook · Rev A · 28 Sep 2026 · Synthetic examples are marked; all other figures link to sources.</footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  var ids = ["starts","contract","margin","cost","sups","suph","suprate","enq","enqmin","csrate","quotes","qh","estrate","rework","rwcut","weeks","wcut"];
+  var defaults = {};
+  ids.forEach(function (id) { defaults[id] = document.getElementById(id).value; });
+
+  function num(id) {
+    var v = parseFloat(document.getElementById(id).value);
+    return isFinite(v) && v >= 0 ? v : 0;
+  }
+  function money(v) {
+    if (v >= 1e6) return "$" + (v / 1e6).toFixed(2) + "m";
+    if (v >= 1e3) return "$" + Math.round(v / 1e3).toLocaleString("en-AU") + "k";
+    return "$" + Math.round(v).toLocaleString("en-AU");
+  }
+
+  function compute() {
+    var weeks = Math.max(num("weeks"), 1);
+    var lines = [
+      { label: "Supervisor admin time", value: num("sups") * num("suph") * 46 * num("suprate"), hard: true },
+      { label: "Homeowner enquiry handling", value: num("enq") * 52 * num("enqmin") / 60 * num("csrate"), hard: true },
+      { label: "Estimating time", value: num("quotes") * num("qh") * num("estrate"), hard: true },
+      { label: "Rework avoided", value: num("starts") * num("contract") * (num("rework") / 100) * (num("rwcut") / 100), hard: true },
+      { label: "Capacity released (margin)", value: num("starts") * num("wcut") / weeks * num("margin"), hard: false }
+    ];
+    var hard = 0, cap = 0, max = 0;
+    lines.forEach(function (l) { if (l.hard) hard += l.value; else cap += l.value; if (l.value > max) max = l.value; });
+    var cost = num("cost");
+
+    document.getElementById("t-hard").textContent = money(hard);
+    document.getElementById("t-cap").textContent = money(cap);
+    var roiEl = document.getElementById("t-roi"), roiC = document.getElementById("t-roi-c");
+    if (cost > 0) {
+      roiEl.textContent = (hard / cost).toFixed(1) + "×";
+      var payback = hard > 0 ? (cost / hard) * 12 : Infinity;
+      roiC.textContent = isFinite(payback) ? "Hard savings ÷ annual cost. Payback about " + payback.toFixed(1) + " months." : "Hard savings ÷ annual cost.";
+    } else {
+      roiEl.textContent = "—";
+      roiC.textContent = "Enter the annual cost to see the return.";
+    }
+
+    var bars = document.getElementById("bars");
+    bars.textContent = "";
+    lines.forEach(function (l) {
+      var row = document.createElement("div"); row.className = "barrow";
+      var name = document.createElement("span"); name.textContent = l.label + (l.hard ? "" : " (upside)");
+      var track = document.createElement("div"); track.className = "track";
+      var fill = document.createElement("div"); fill.className = "fill";
+      fill.style.width = (max > 0 ? Math.max(l.value / max * 100, l.value > 0 ? 1 : 0) : 0) + "%";
+      if (!l.hard) fill.style.opacity = "0.55";
+      track.appendChild(fill);
+      track.title = l.label + ": " + money(l.value) + " per year";
+      var amt = document.createElement("span"); amt.className = "amt"; amt.textContent = money(l.value);
+      row.appendChild(name); row.appendChild(track); row.appendChild(amt);
+      bars.appendChild(row);
+    });
+  }
+
+  var form = document.getElementById("roi-form");
+  form.addEventListener("input", compute);
+  form.addEventListener("submit", function (e) { e.preventDefault(); });
+  document.getElementById("reset").addEventListener("click", function () {
+    ids.forEach(function (id) { document.getElementById(id).value = defaults[id]; });
+    compute();
+  });
+  compute();
+})();
+</script>
