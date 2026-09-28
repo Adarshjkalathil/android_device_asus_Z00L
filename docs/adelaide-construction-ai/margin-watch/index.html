@@ -86,6 +86,10 @@ h3 { font-size: 1rem; font-weight: 700; margin: 0; }
 .tile .v { font-size: 1.75rem; font-stretch: 80%; font-weight: 750; line-height: 1.05; }
 .tile .c { font-size: 0.82rem; color: var(--ink-2); line-height: 1.35; }
 .tile.key { border-top: 3px solid var(--hivis); }
+.health { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; border-top: 1px solid var(--line); margin-top: 12px; }
+.hi { padding: 12px 16px 14px; display: grid; gap: 4px; align-content: start; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.hi b { font-size: 1.1rem; font-weight: 700; }
+.hi .c { font-size: 0.8rem; color: var(--ink-2); line-height: 1.35; }
 
 /* buttons */
 .btn { border: 1.5px solid var(--strong); background: var(--panel); padding: 6px 12px; font-weight: 600; font-size: 0.88rem; border-radius: 3px; cursor: pointer; white-space: nowrap; }
@@ -251,6 +255,9 @@ var MW = (function () {
     varCostRatio: 0.75,      // cost of a variation as a share of its price
     openingCash: 4600000,
     weeklyOverhead: 45000,
+    basAmount: 210000,       // next quarterly GST/PAYG payment to the ATO (estimate)
+    basDate: "2026-10-28",    // quarterly BAS due 28 Oct, 28 Feb, 28 Apr, 28 Jul
+    bufferWeeks: 4,          // weeks of overheads to keep as a cash buffer
     riskFade: 0.03,          // margin fade (points) that marks a job at risk
     watchFade: 0.025,        // margin fade (points) that puts a job on the watch list
     watchIssue: 10000,       // money in open items on one job that puts it on the watch list
@@ -540,6 +547,9 @@ var MW = (function () {
       copy.due_date = eomFollowing(copy.invoice_date); copy.paid_date = "";
       out.supplier_invoices.push(copy);
     });
+    // 6a. supplier bills past their due date and still unpaid
+    out.supplier_invoices.filter(function (b) { return b.paid_date && b.due_date < addDays(AS_AT, -2) && b.due_date >= addDays(AS_AT, -40); })
+      .filter(function (b, k) { return k % 9 === 4; }).slice(0, 6).forEach(function (b) { b.paid_date = ""; });
     // 6. site notes that describe extra work nobody turned into a variation
     var usedJobs = {};
     EXTRA_NOTES.forEach(function (n) {
@@ -686,6 +696,11 @@ var MW = (function () {
       }
     });
     invoices.forEach(function (b) {
+      if (!b.paid_date && b.due_date && b.due_date < asAt && !dupIds[b.invoice_id]) {
+        var late = daysBetween(b.due_date, asAt);
+        issue({ type: "latepay", job_id: b.job_id, amount: b.amount, days: late, supplier: b.supplier, ref: b.invoice_id,
+          detail: b.supplier + " bill " + b.invoice_id + " was due " + late + " days ago and is unpaid." });
+      }
       if (!b.po_id && b.amount >= s.noPoMin && !dupIds[b.invoice_id])
         issue({ type: "nopo", job_id: b.job_id, amount: b.amount, supplier: b.supplier, ref: b.invoice_id, paid: !!b.paid_date,
           detail: b.supplier + " bill " + b.invoice_id + " has no purchase order. Check it was approved and coded to the right job." });
@@ -855,12 +870,38 @@ var MW = (function () {
     t.notesCount = notes.length;
     t.notesUnpriced = notes.filter(function (i) { return !i.amount; }).length;
 
+    var late = issues.filter(function (i) { return i.type === "latepay"; });
+    t.latePay = sum(late, function (i) { return i.amount; });
+    t.latePayCount = late.length;
     var result = { settings: s, jobs: jobs, jobIndex: jobIndex, issues: issues, totals: t, dupIds: dupIds };
     result.cash = cashForecast(result, data, true);
     result.cashAsIs = cashForecast(result, data, false);
+    result.health = health(result);
     return result;
   }
   var RECOVER = { claim: 1, unbilled: 1, overdue: 1, overpo: 1, duplicate: 1, note: 1 };
+
+  // Early-warning indicators, following the financial-health signals recommended in Australian insolvency research
+  function health(res) {
+    var t = res.totals, s = res.settings, out = [];
+    function lvl(bad, warn) { return bad ? "critical" : warn ? "warning" : "good"; }
+    var weeks = res.cashAsIs, low = weeks.reduce(function (m, w) { return w.closing < m.closing ? w : m; }, weeks[0]);
+    var buffer = s.weeklyOverhead * s.bufferWeeks;
+    out.push({ key: "cash", label: "Cash runway", value: low.closing < 0 ? "Short in week of " + low.start : "Low " + Math.round(low.closing / 1000) + "k",
+      level: lvl(low.closing < 0, low.closing < buffer), note: "Lowest cash over 13 weeks if nothing changes, against a buffer of " + s.bufferWeeks + " weeks of overheads." });
+    var fadePts = (t.origGPpct - t.fcGPpct) * 100;
+    out.push({ key: "fade", label: "Margin fade", value: fadePts.toFixed(1) + " pts", level: lvl(fadePts >= 3, fadePts >= 1.5), note: "Forecast gross margin against margin at contract, across all jobs." });
+    var ub = t.revised ? t.underbilled / t.revised * 100 : 0;
+    out.push({ key: "under", label: "Work not yet claimed", value: ub.toFixed(1) + "% of WIP", level: lvl(ub > 8, ub > 4), note: "Earned but unbilled work. Under SA law you can claim only for work done, so claim promptly." });
+    var od = res.issues.filter(function (i) { return i.type === "overdue"; }), odMax = od.reduce(function (m, i) { return Math.max(m, i.days || 0); }, 0);
+    out.push({ key: "debtors", label: "Client payments overdue", value: od.length ? od.length + " · oldest " + odMax + " d" : "None", level: lvl(odMax > 21, od.length > 0), note: "Stage claims and variations past the client's payment days." });
+    out.push({ key: "trades", label: "Trades paid on time", value: t.latePayCount ? t.latePayCount + " bills late" : "All on time", level: lvl(t.latePay > 50000 || t.latePayCount > 8, t.latePayCount > 0), note: "Late payment to trades is an early sign of distress, and in a shortage it costs you crews." });
+    var escShare = t.fcGP > 0 ? t.escalation / t.fcGP * 100 : 100;
+    out.push({ key: "fixed", label: "Fixed-price exposure", value: Math.round(escShare) + "% of profit", level: lvl(escShare > 25, escShare > 10), note: "Price-rise allowance on trades not yet ordered, as a share of forecast profit." });
+    var basWeek = weeks.filter(function (w) { return s.basDate >= w.start && s.basDate <= w.end; })[0];
+    out.push({ key: "tax", label: "Next BAS", value: s.basAmount ? "$" + Math.round(s.basAmount / 1000) + "k on " + s.basDate : "Not set", level: basWeek ? lvl(basWeek.closing < 0, basWeek.closing < buffer) : "good", note: "Quarterly GST and PAYG payment to the ATO, included in the cash forecast." });
+    return out;
+  }
 
   function cashForecast(res, data, actNow) {
     var s = res.settings, asAt = s.asAt, weeks = [];
@@ -900,6 +941,7 @@ var MW = (function () {
       if (actNow && b.po_id && poOver[b.po_id]) { amt -= poOver[b.po_id]; poOver[b.po_id] = 0; }
       put(b.due_date && b.due_date > asAt ? b.due_date : asAt, Math.max(0, amt), "outflow", "Supplier bills");
     });
+    if (s.basAmount > 0 && s.basDate) put(s.basDate < asAt ? asAt : s.basDate, s.basAmount, "outflow", "Tax (BAS)");
     var bal = s.openingCash;
     weeks.forEach(function (w) { w.net = w.inflow - w.outflow - w.overhead; bal += w.net; w.closing = bal; });
     return weeks;
@@ -919,10 +961,12 @@ var MW = (function () {
       margin_lost_since_contract: Math.round(t.fadeDollars), cash_to_collect_now: Math.round(t.collect), supplier_overcharges_to_stop: Math.round(t.stop),
       underbilled: Math.round(t.underbilled), unpriced_extras_in_site_notes: t.notesCount, uncommitted_cost_escalation: Math.round(t.escalation),
       jobs_at_risk: t.atRisk, jobs_to_watch: t.watch, lowest_cash_week: { week_starting: low.start, closing_cash: Math.round(low.closing) },
+      supplier_bills_past_due: { count: t.latePayCount, amount: Math.round(t.latePay || 0) }, next_bas: { due: res.settings.basDate, amount: res.settings.basAmount },
+      health_signs: (res.health || []).map(function (h) { return { sign: h.label, value: h.value, level: h.level === "critical" ? "red" : h.level === "warning" ? "amber" : "green" }; }),
       worst_jobs: top, biggest_items: iss
     };
   }
-  var TYPE_LABEL = { claim: "Claim not sent", unbilled: "Signed variation not invoiced", overdue: "Overdue payment", unsigned: "Variation awaiting signature", overpo: "Bill above purchase order", duplicate: "Duplicate bill", nopo: "Bill without a purchase order", overrun: "Cost code over budget", note: "Extra work in site notes" };
+  var TYPE_LABEL = { latepay: "Supplier bill past due", claim: "Claim not sent", unbilled: "Signed variation not invoiced", overdue: "Overdue payment", unsigned: "Variation awaiting signature", overpo: "Bill above purchase order", duplicate: "Duplicate bill", nopo: "Bill without a purchase order", overrun: "Cost code over budget", note: "Extra work in site notes" };
 
   return {
     AS_AT: AS_AT, STAGES: STAGES, CODES: CODES, SCHEMA: SCHEMA, DEFAULTS: DEFAULTS, TYPE_LABEL: TYPE_LABEL, RECOVER: RECOVER,
@@ -1002,8 +1046,8 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
 
   var TABS = [["overview", "Overview"], ["wip", "WIP schedule"], ["leaks", "Money leaks"], ["cash", "Cash"], ["ask", "Ask"], ["data", "Your data"], ["method", "Method"]];
   var TYPE = MW.TYPE_LABEL;
-  var GROUP = { claim: "Collect", unbilled: "Collect", overdue: "Collect", unsigned: "Collect", overpo: "Stop", duplicate: "Stop", note: "Price", nopo: "Check", overrun: "Check" };
-  var ACTION = { claim: "Send claim", unbilled: "Invoice", overdue: "Chase", unsigned: "Chase signature", overpo: "Query supplier", duplicate: "Hold payment", note: "Draft variation", nopo: "Check approval", overrun: "Review" };
+  var GROUP = { latepay: "Pay", claim: "Collect", unbilled: "Collect", overdue: "Collect", unsigned: "Collect", overpo: "Stop", duplicate: "Stop", note: "Price", nopo: "Check", overrun: "Check" };
+  var ACTION = { latepay: "Schedule payment", claim: "Send claim", unbilled: "Invoice", overdue: "Chase", unsigned: "Chase signature", overpo: "Query supplier", duplicate: "Hold payment", note: "Draft variation", nopo: "Check approval", overrun: "Review" };
 
   // ---------- render ----------
   function render() {
@@ -1051,6 +1095,7 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
       .sort(function (a, b) { return (b.amount || 0) - (a.amount || 0); }).slice(0, 8);
     var fadeRows = res.jobs.slice().sort(function (a, b) { return b.fade - a.fade; }).slice(0, 12);
     return '<div class="tiles">' + tiles.map(function (x) { return '<div class="tile ' + (x[3] || "") + '"><span class="lbl">' + x[0] + '</span><span class="v">' + x[1] + '</span><span class="c">' + x[2] + "</span></div>"; }).join("") + "</div>" +
+      healthPanel() +
       '<div class="grid2">' +
         '<section class="panel flush"><div class="panel-head"><h2>Do this week</h2><p class="sub">The largest items you can act on now, sorted by value.</p></div>' +
         '<div class="tw"><table class="min-620"><thead><tr><th>Item</th><th>Job</th><th class="n">Amount</th><th>What we found</th><th></th></tr></thead><tbody>' +
@@ -1065,6 +1110,14 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
       '<section class="panel"><div class="spread"><div><h2>Where margin is fading</h2><p class="sub">Gross margin at contract compared with today\'s forecast, for the 12 jobs that have lost the most. Hover a row for detail; click to open the job.</p></div>' +
       '<div class="legend"><span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="var(--panel)" stroke="var(--ink-2)" stroke-width="2"/></svg>At contract</span><span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="var(--in)"/></svg>Forecast</span></div></div>' +
       '<div class="chart">' + fadeChart(fadeRows) + "</div></section>";
+  }
+  function healthPanel() {
+    var lab = { critical: "Act now", warning: "Watch", good: "OK" };
+    return '<section class="panel flush"><div class="panel-head"><div class="spread"><div><h2>Business health</h2><p class="sub">Early-warning signs that research on builder insolvencies says to track every week. Red means act this week.</p></div><button class="btn ghost small" data-act="tab" data-tab="method">Why these signs</button></div></div>' +
+      '<div class="health">' + res.health.map(function (h) {
+        var val = String(h.value).replace(/(\d{4}-\d{2}-\d{2})/g, function (m) { return dAU(m); });
+        return '<div class="hi ' + h.level + '"><div class="spread" style="align-items:center"><span class="lbl">' + esc(h.label) + '</span><span class="st ' + h.level + '"><i></i>' + lab[h.level] + '</span></div><b>' + esc(val) + '</b><span class="c">' + esc(h.note) + "</span></div>";
+      }).join("") + "</div></section>";
   }
   function autoBrief() {
     var t = res.totals, iss = res.issues;
@@ -1186,12 +1239,12 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
   // ----- leaks -----
   function vLeaks() {
     var all = openIssues();
-    var types = ["claim", "overdue", "unbilled", "unsigned", "overpo", "duplicate", "note", "nopo", "overrun"];
+    var types = ["claim", "overdue", "unbilled", "unsigned", "overpo", "duplicate", "latepay", "note", "nopo", "overrun"];
     var list = all.filter(function (i) { return state.issueType === "all" || i.type === state.issueType; })
       .sort(function (a, b) { return (state.done[a.id] ? 1 : 0) - (state.done[b.id] ? 1 : 0) || (b.amount || 0) - (a.amount || 0); });
     var g = function (grp) { return all.filter(function (i) { return GROUP[i.type] === grp && !state.done[i.id]; }); };
     var tot = function (a) { return a.reduce(function (s, i) { return s + (i.amount || 0); }, 0); };
-    var tiles = [["Collect", "Cash to collect", tot(g("Collect").filter(function (i) { return i.type !== "unsigned"; })), g("Collect").length + " items: claims, overdue payments, variations"], ["Stop", "Overcharges to stop", tot(g("Stop").filter(function (i) { return !i.paid; })), g("Stop").length + " duplicate or above-PO bills"], ["Price", "Extras to price", tot(g("Price")), g("Price").length + " site notes with extra work"], ["Check", "Worth checking", tot(g("Check")), g("Check").length + " bills without a PO and codes over budget"]];
+    var tiles = [["Collect", "Cash to collect", tot(g("Collect").filter(function (i) { return i.type !== "unsigned"; })), g("Collect").length + " items: claims, overdue payments, variations"], ["Stop", "Overcharges to stop", tot(g("Stop").filter(function (i) { return !i.paid; })), g("Stop").length + " duplicate or above-PO bills"], ["Price", "Extras to price", tot(g("Price")), g("Price").length + " site notes with extra work"], ["Pay", "Trades to pay", tot(g("Pay")), g("Pay").length + " supplier bills past due"], ["Check", "Worth checking", tot(g("Check")), g("Check").length + " bills without a PO and codes over budget"]];
     var scan = state.scan;
     return '<div class="spread"><div><h2>Money leaks</h2><p class="sub">Checks run across the schedule, claims, variations, purchase orders, supplier bills and site notes. Mark items done as your team clears them.</p></div><div class="row"><button class="btn ghost small" data-act="export-issues">Export CSV</button></div></div>' +
       '<div class="tiles">' + tiles.map(function (x) { return '<div class="tile"><span class="lbl">' + x[0] + '</span><span class="v">' + money(x[2]) + '</span><span class="c">' + x[1] + " · " + x[3] + "</span></div>"; }).join("") + "</div>" +
@@ -1214,10 +1267,12 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
     var low = weeks.reduce(function (m, w) { return w.closing < m.closing ? w : m; }, weeks[0]);
     var inTot = weeks.reduce(function (s, w) { return s + w.inflow; }, 0), outTot = weeks.reduce(function (s, w) { return s + w.outflow + w.overhead; }, 0);
     var diff = res.cash[3].closing - res.cashAsIs[3].closing;
-    return '<div class="spread"><div><h2>13-week cash forecast</h2><p class="sub">Money in from stage claims at forecast stage dates plus ' + state.settings.paymentTermsDays + ' days. Money out from supplier bills by due date, open orders and remaining costs billed at stage end and paid end of the following month, plus weekly overheads.</p></div></div>' +
+    return '<div class="spread"><div><h2>13-week cash forecast</h2><p class="sub">Money in from stage claims at forecast stage dates plus ' + state.settings.paymentTermsDays + ' days. Money out from supplier bills by due date, open orders and remaining costs billed at stage end and paid end of the following month, weekly overheads and the next BAS payment.</p></div></div>' +
       '<div class="panel"><div class="fields">' +
       '<div class="field"><label for="c-open">Cash at bank today ($)</label><input type="number" id="c-open" data-set="openingCash" step="50000" value="' + state.settings.openingCash + '"></div>' +
       '<div class="field"><label for="c-ovh">Overheads per week ($)</label><input type="number" id="c-ovh" data-set="weeklyOverhead" step="1000" value="' + state.settings.weeklyOverhead + '"></div>' +
+      '<div class="field"><label for="c-bas">Next BAS payment ($)</label><input type="number" id="c-bas" data-set="basAmount" step="10000" value="' + state.settings.basAmount + '"></div>' +
+      '<div class="field"><label for="c-basd">BAS due date</label><input type="date" id="c-basd" data-set="basDate" data-kind="date" value="' + esc(state.settings.basDate) + '"></div>' +
       '<div class="field"><span class="lbl" style="margin-top:4px">Scenario</span><div class="chips"><button class="chipbtn" data-act="scenario" data-v="1" aria-pressed="' + state.actNow + '">This week\'s items actioned</button><button class="chipbtn" data-act="scenario" data-v="0" aria-pressed="' + !state.actNow + '">Nothing changes</button></div></div>' +
       "</div></div>" +
       '<div class="tiles"><div class="tile key"><span class="lbl">Lowest point</span><span class="v ' + (low.closing < 0 ? "neg" : "") + '">' + money(low.closing) + '</span><span class="c">Week of ' + dAU(low.start) + '</span></div><div class="tile"><span class="lbl">Money in, 13 weeks</span><span class="v">' + money(inTot) + '</span><span class="c">Stage claims, late claims, variations</span></div><div class="tile"><span class="lbl">Money out, 13 weeks</span><span class="v">' + money(outTot) + '</span><span class="c">Supplier bills, orders, overheads</span></div><div class="tile"><span class="lbl">Acting this week adds</span><span class="v">' + money(diff) + '</span><span class="c">Extra cash by week 4 vs doing nothing</span></div></div>' +
@@ -1268,6 +1323,9 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
     ["riskFade", "Margin fall that marks a job at risk (pts)", "pct", ""],
     ["watchFade", "Margin fall that puts a job on watch (pts)", "pct", ""],
     ["openingCash", "Cash at bank today ($)", "num", ""],
+    ["basAmount", "Next BAS payment ($)", "num", "Estimate of GST and PAYG due to the ATO."],
+    ["basDate", "BAS due date", "date", "Quarterly BAS is due 28 Oct, 28 Feb, 28 Apr and 28 Jul (later if lodged by a tax agent)."],
+    ["bufferWeeks", "Cash buffer (weeks of overheads)", "num", ""],
     ["weeklyOverhead", "Overheads per week ($)", "num", ""]
   ];
   function vMethod() {
@@ -1287,6 +1345,14 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
       "<li><b>Extra work in site notes:</b> keyword rules by default. With Claude, every note is read and judged for whether the client can be charged.</li>" +
       "<li><b>Cash forecast:</b> future claims at the forecast stage date plus payment days; supplier costs billed at stage end and paid at the end of the following month; unpaid bills on their due date; overheads weekly.</li>" +
       "</ul></section>" +
+      '<section class="panel"><h3>Why these checks</h3><ul class="plain">' +
+      '<li><b>Cash is the most common cause of failure.</b> In ASIC\'s external administrators\' reports, inadequate cash flow or high cash use is the most cited cause of construction insolvencies each year (about 16–20% of cases), with poor financial control in 11–15%.</li>' +
+      '<li><b>Builders lack early warnings.</b> A 2025 Building 4.0 CRC study of residential builder insolvencies found construction was 26% of national insolvencies in FY24, margins are typically around 5%, and that the sector lacks early-warning indicators. It recommends traffic-light toolkits and real-time tracking of financial health.</li>' +
+      '<li><b>Claims must follow work.</b> In South Australia a domestic building deposit is capped at 5%, and progress payments can be requested only for work already done, so a finished stage with no claim is cash you are lending the client.</li>' +
+      '<li><b>Fixed-price contracts carry the price risk.</b> Trade prices rose 5.1% in the first half of 2026 (HIA). Costs not yet ordered on older contracts are where margin fades.</li>' +
+      '<li><b>Tax is a large, fixed outflow.</b> Quarterly BAS falls on 28 October, 28 February, 28 April and 28 July. The same research notes tax debts are common among failed builders.</li>' +
+      '<li><b>Site notes hold unpriced work.</b> Research on text mining of construction daily logs shows useful signals sit in free-text records. Claude reads them the way a contract administrator would.</li>' +
+      '</ul><p class="sub">Sources are listed in the Adelaide Construction AI Playbook.</p></section>' +
       '<section class="panel"><h3>Limits of this version</h3><ul class="plain"><li>Treat all amounts consistently (all ex-GST or all inc-GST).</li><li>Retentions, deposits held in trust and finance drawdowns are not modelled.</li><li>A purchase order is assumed to cover the full scope of its cost code.</li><li>The price-rise allowance is an estimate. Replace it with supplier price notices where you have them.</li><li>AI output is a draft for a person to check. It never changes your records.</li></ul></section>';
   }
 
@@ -1446,6 +1512,7 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
     overpo: "Write a short, professional email from the builder's purchasing team to supplier {supplier}. {detail} Ask for a credit note or the approved price change before the bill is paid. 60 to 100 words. Start with a Subject line.",
     duplicate: "Write a short email from the builder's accounts team to supplier {supplier}. {detail} Ask them to confirm it is a duplicate and void it. 50 to 80 words. Start with a Subject line.",
     note: "Draft a variation for the client ({client}) of job {job} at {address} based on this site note: \"{quote}\". Include: variation title, description of the change, price ({amountOrTbc}), effect on time (state 'to be confirmed' if unknown), and lines for the client's signature and date. Under 140 words. Plain text.",
+    latepay: "Write a short, professional email from the builder's accounts team to supplier {supplier}. {detail} Apologise, confirm the bill is approved and give a payment date within 3 business days (write it as a placeholder [date]). 50 to 80 words. Start with a Subject line.",
     nopo: "Write a two-sentence message to the site supervisor for job {job} asking them to confirm they approved this bill and that it is coded to the right job: {detail}",
     overrun: "Write a three-sentence note to the construction manager about job {job}: {detail} Ask whether a price rise was approved and whether any part can be recovered from the client under the contract."
   };
@@ -1476,6 +1543,7 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
       overpo: "Subject: Bill above purchase order\n\nHi " + f.supplier + ",\n\n" + f.detail + " Please send a credit note or the approved price change before we process payment.\n\nThanks,\nPurchasing",
       duplicate: "Subject: Possible duplicate bill\n\nHi " + f.supplier + ",\n\n" + f.detail + " Please confirm and void the duplicate.\n\nThanks,\nAccounts",
       note: "VARIATION — job " + f.job + "\nChange: " + f.quote + "\nPrice: " + f.amountOrTbc + "\nTime: to be confirmed\n\nClient signature: ____________   Date: ________",
+      latepay: "Subject: Payment of your bill\n\nHi " + f.supplier + ",\n\n" + f.detail + " Sorry for the delay. It is approved and will be paid by [date].\n\nThanks,\nAccounts team",
       nopo: "Job " + f.job + ": " + f.detail + " Can you confirm you approved it?",
       overrun: "Job " + f.job + ": " + f.detail + " Was the price rise approved, and can any part be recovered?"
     };

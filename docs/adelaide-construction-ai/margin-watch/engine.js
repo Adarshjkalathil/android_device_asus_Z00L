@@ -56,6 +56,9 @@ var MW = (function () {
     varCostRatio: 0.75,      // cost of a variation as a share of its price
     openingCash: 4600000,
     weeklyOverhead: 45000,
+    basAmount: 210000,       // next quarterly GST/PAYG payment to the ATO (estimate)
+    basDate: "2026-10-28",    // quarterly BAS due 28 Oct, 28 Feb, 28 Apr, 28 Jul
+    bufferWeeks: 4,          // weeks of overheads to keep as a cash buffer
     riskFade: 0.03,          // margin fade (points) that marks a job at risk
     watchFade: 0.025,        // margin fade (points) that puts a job on the watch list
     watchIssue: 10000,       // money in open items on one job that puts it on the watch list
@@ -345,6 +348,9 @@ var MW = (function () {
       copy.due_date = eomFollowing(copy.invoice_date); copy.paid_date = "";
       out.supplier_invoices.push(copy);
     });
+    // 6a. supplier bills past their due date and still unpaid
+    out.supplier_invoices.filter(function (b) { return b.paid_date && b.due_date < addDays(AS_AT, -2) && b.due_date >= addDays(AS_AT, -40); })
+      .filter(function (b, k) { return k % 9 === 4; }).slice(0, 6).forEach(function (b) { b.paid_date = ""; });
     // 6. site notes that describe extra work nobody turned into a variation
     var usedJobs = {};
     EXTRA_NOTES.forEach(function (n) {
@@ -491,6 +497,11 @@ var MW = (function () {
       }
     });
     invoices.forEach(function (b) {
+      if (!b.paid_date && b.due_date && b.due_date < asAt && !dupIds[b.invoice_id]) {
+        var late = daysBetween(b.due_date, asAt);
+        issue({ type: "latepay", job_id: b.job_id, amount: b.amount, days: late, supplier: b.supplier, ref: b.invoice_id,
+          detail: b.supplier + " bill " + b.invoice_id + " was due " + late + " days ago and is unpaid." });
+      }
       if (!b.po_id && b.amount >= s.noPoMin && !dupIds[b.invoice_id])
         issue({ type: "nopo", job_id: b.job_id, amount: b.amount, supplier: b.supplier, ref: b.invoice_id, paid: !!b.paid_date,
           detail: b.supplier + " bill " + b.invoice_id + " has no purchase order. Check it was approved and coded to the right job." });
@@ -660,12 +671,38 @@ var MW = (function () {
     t.notesCount = notes.length;
     t.notesUnpriced = notes.filter(function (i) { return !i.amount; }).length;
 
+    var late = issues.filter(function (i) { return i.type === "latepay"; });
+    t.latePay = sum(late, function (i) { return i.amount; });
+    t.latePayCount = late.length;
     var result = { settings: s, jobs: jobs, jobIndex: jobIndex, issues: issues, totals: t, dupIds: dupIds };
     result.cash = cashForecast(result, data, true);
     result.cashAsIs = cashForecast(result, data, false);
+    result.health = health(result);
     return result;
   }
   var RECOVER = { claim: 1, unbilled: 1, overdue: 1, overpo: 1, duplicate: 1, note: 1 };
+
+  // Early-warning indicators, following the financial-health signals recommended in Australian insolvency research
+  function health(res) {
+    var t = res.totals, s = res.settings, out = [];
+    function lvl(bad, warn) { return bad ? "critical" : warn ? "warning" : "good"; }
+    var weeks = res.cashAsIs, low = weeks.reduce(function (m, w) { return w.closing < m.closing ? w : m; }, weeks[0]);
+    var buffer = s.weeklyOverhead * s.bufferWeeks;
+    out.push({ key: "cash", label: "Cash runway", value: low.closing < 0 ? "Short in week of " + low.start : "Low " + Math.round(low.closing / 1000) + "k",
+      level: lvl(low.closing < 0, low.closing < buffer), note: "Lowest cash over 13 weeks if nothing changes, against a buffer of " + s.bufferWeeks + " weeks of overheads." });
+    var fadePts = (t.origGPpct - t.fcGPpct) * 100;
+    out.push({ key: "fade", label: "Margin fade", value: fadePts.toFixed(1) + " pts", level: lvl(fadePts >= 3, fadePts >= 1.5), note: "Forecast gross margin against margin at contract, across all jobs." });
+    var ub = t.revised ? t.underbilled / t.revised * 100 : 0;
+    out.push({ key: "under", label: "Work not yet claimed", value: ub.toFixed(1) + "% of WIP", level: lvl(ub > 8, ub > 4), note: "Earned but unbilled work. Under SA law you can claim only for work done, so claim promptly." });
+    var od = res.issues.filter(function (i) { return i.type === "overdue"; }), odMax = od.reduce(function (m, i) { return Math.max(m, i.days || 0); }, 0);
+    out.push({ key: "debtors", label: "Client payments overdue", value: od.length ? od.length + " · oldest " + odMax + " d" : "None", level: lvl(odMax > 21, od.length > 0), note: "Stage claims and variations past the client's payment days." });
+    out.push({ key: "trades", label: "Trades paid on time", value: t.latePayCount ? t.latePayCount + " bills late" : "All on time", level: lvl(t.latePay > 50000 || t.latePayCount > 8, t.latePayCount > 0), note: "Late payment to trades is an early sign of distress, and in a shortage it costs you crews." });
+    var escShare = t.fcGP > 0 ? t.escalation / t.fcGP * 100 : 100;
+    out.push({ key: "fixed", label: "Fixed-price exposure", value: Math.round(escShare) + "% of profit", level: lvl(escShare > 25, escShare > 10), note: "Price-rise allowance on trades not yet ordered, as a share of forecast profit." });
+    var basWeek = weeks.filter(function (w) { return s.basDate >= w.start && s.basDate <= w.end; })[0];
+    out.push({ key: "tax", label: "Next BAS", value: s.basAmount ? "$" + Math.round(s.basAmount / 1000) + "k on " + s.basDate : "Not set", level: basWeek ? lvl(basWeek.closing < 0, basWeek.closing < buffer) : "good", note: "Quarterly GST and PAYG payment to the ATO, included in the cash forecast." });
+    return out;
+  }
 
   function cashForecast(res, data, actNow) {
     var s = res.settings, asAt = s.asAt, weeks = [];
@@ -705,6 +742,7 @@ var MW = (function () {
       if (actNow && b.po_id && poOver[b.po_id]) { amt -= poOver[b.po_id]; poOver[b.po_id] = 0; }
       put(b.due_date && b.due_date > asAt ? b.due_date : asAt, Math.max(0, amt), "outflow", "Supplier bills");
     });
+    if (s.basAmount > 0 && s.basDate) put(s.basDate < asAt ? asAt : s.basDate, s.basAmount, "outflow", "Tax (BAS)");
     var bal = s.openingCash;
     weeks.forEach(function (w) { w.net = w.inflow - w.outflow - w.overhead; bal += w.net; w.closing = bal; });
     return weeks;
@@ -724,10 +762,12 @@ var MW = (function () {
       margin_lost_since_contract: Math.round(t.fadeDollars), cash_to_collect_now: Math.round(t.collect), supplier_overcharges_to_stop: Math.round(t.stop),
       underbilled: Math.round(t.underbilled), unpriced_extras_in_site_notes: t.notesCount, uncommitted_cost_escalation: Math.round(t.escalation),
       jobs_at_risk: t.atRisk, jobs_to_watch: t.watch, lowest_cash_week: { week_starting: low.start, closing_cash: Math.round(low.closing) },
+      supplier_bills_past_due: { count: t.latePayCount, amount: Math.round(t.latePay || 0) }, next_bas: { due: res.settings.basDate, amount: res.settings.basAmount },
+      health_signs: (res.health || []).map(function (h) { return { sign: h.label, value: h.value, level: h.level === "critical" ? "red" : h.level === "warning" ? "amber" : "green" }; }),
       worst_jobs: top, biggest_items: iss
     };
   }
-  var TYPE_LABEL = { claim: "Claim not sent", unbilled: "Signed variation not invoiced", overdue: "Overdue payment", unsigned: "Variation awaiting signature", overpo: "Bill above purchase order", duplicate: "Duplicate bill", nopo: "Bill without a purchase order", overrun: "Cost code over budget", note: "Extra work in site notes" };
+  var TYPE_LABEL = { latepay: "Supplier bill past due", claim: "Claim not sent", unbilled: "Signed variation not invoiced", overdue: "Overdue payment", unsigned: "Variation awaiting signature", overpo: "Bill above purchase order", duplicate: "Duplicate bill", nopo: "Bill without a purchase order", overrun: "Cost code over budget", note: "Extra work in site notes" };
 
   return {
     AS_AT: AS_AT, STAGES: STAGES, CODES: CODES, SCHEMA: SCHEMA, DEFAULTS: DEFAULTS, TYPE_LABEL: TYPE_LABEL, RECOVER: RECOVER,
