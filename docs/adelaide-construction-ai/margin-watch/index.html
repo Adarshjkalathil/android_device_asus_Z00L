@@ -966,12 +966,73 @@ var MW = (function () {
       worst_jobs: top, biggest_items: iss
     };
   }
+  // ---------- check one incoming supplier bill against the ledger ----------
+  function checkBill(data, res, bill) {
+    var s = res.settings, checks = [];
+    var pos = data.purchase_orders || [], invs = data.supplier_invoices || [];
+    var ns = norm(bill.supplier || ""), nno = norm(bill.supplier_invoice_no || "");
+    var amount = +bill.amount || 0;
+    function supMatch(x) { var a = norm(x || ""); return a && ns && (a === ns || a.indexOf(ns) >= 0 || ns.indexOf(a) >= 0); }
+    // purchase order
+    var po = null, pn = norm(bill.po_number || "").replace(/^po/, "");
+    if (pn) pos.forEach(function (p) { if (norm(p.po_id).replace(/^po/, "") === pn) po = p; });
+    // job
+    var job = null;
+    if (po) job = res.jobIndex[po.job_id] || null;
+    if (!job && bill.job_reference) { var jr = String(bill.job_reference).replace(/[^0-9a-z]/gi, ""); res.jobs.forEach(function (r) { if (norm(r.id) === norm(jr) || (jr && norm(jr).indexOf(norm(r.id)) >= 0 && norm(r.id).length >= 3)) job = r; }); }
+    if (!job && bill.site_address) { var ad = norm(bill.site_address); res.jobs.forEach(function (r) { var ja = norm(r.job.address || ""); if (ja && ad.indexOf(ja) >= 0) job = r; }); }
+    if (!po && job) {
+      var cands = pos.filter(function (p) { return p.job_id === job.id && supMatch(p.supplier); });
+      if (cands.length === 1) { po = cands[0]; checks.push({ level: "warning", label: "PO number missing", detail: "The bill doesn't quote a PO. It matches " + po.po_id + " for this supplier on job " + job.id + "." }); }
+    }
+    // duplicate
+    var dup = invs.filter(function (x) { return nno && supMatch(x.supplier) && norm(x.supplier_invoice_no || "") === nno; })[0];
+    if (dup) checks.push({ level: "critical", label: "Already entered", detail: "Invoice " + bill.supplier_invoice_no + " from this supplier is already in the ledger as " + dup.invoice_id + " (" + dup.invoice_date + ", $" + Math.round(dup.amount).toLocaleString("en-AU") + ")." + (dup.paid_date ? " It was paid on " + dup.paid_date + "." : "") });
+    var code = po ? po.cost_code : null;
+    if (po) {
+      var billed = invs.filter(function (x) { return x.po_id === po.po_id && !res.dupIds[x.invoice_id]; }).reduce(function (t, x) { return t + (x.amount || 0); }, 0);
+      var after = billed + (dup ? 0 : amount), over = after - po.amount;
+      if (over > po.amount * s.overPoTolPct && over > s.overPoTolAmt)
+        checks.push({ level: "critical", label: "Above purchase order", detail: po.po_id + " is for $" + Math.round(po.amount).toLocaleString("en-AU") + ". Already billed $" + Math.round(billed).toLocaleString("en-AU") + "; this bill takes it to $" + Math.round(after).toLocaleString("en-AU") + ", $" + Math.round(over).toLocaleString("en-AU") + " over.", over: Math.round(over) });
+      else if (!dup) checks.push({ level: "good", label: "Within purchase order", detail: po.po_id + " has $" + Math.round(Math.max(0, po.amount - billed)).toLocaleString("en-AU") + " left before this bill." });
+    } else checks.push({ level: "warning", label: "No purchase order", detail: "No matching PO was found. Check the work was approved before paying." });
+    if (!job) checks.push({ level: "warning", label: "Job not identified", detail: "The bill doesn't name a job number or a site address we recognise." });
+    if (!code && job) {
+      var counts = {}; invs.forEach(function (x) { if (supMatch(x.supplier) && x.cost_code) counts[x.cost_code] = (counts[x.cost_code] || 0) + 1; });
+      code = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; })[0] || null;
+    }
+    if (job && code) {
+      var c = job.codes.filter(function (x) { return x.code === code; })[0];
+      if (c && c.stageStatus === "future") checks.push({ level: "warning", label: "Stage not started", detail: c.name + " belongs to the " + c.stage + " stage, which hasn't started on job " + job.id + "." });
+    }
+    if (bill.due_date && bill.invoice_date && daysBetween(bill.invoice_date, bill.due_date) < 14) checks.push({ level: "warning", label: "Short payment terms", detail: "Due " + daysBetween(bill.invoice_date, bill.due_date) + " days after the invoice date. Your usual terms are end of the following month." });
+    return { po: po, job: job, code: code, codeName: code && CODE_MAP[code] ? CODE_MAP[code].name : code, checks: checks, verdict: checks.some(function (c) { return c.level === "critical"; }) ? "critical" : checks.some(function (c) { return c.level === "warning"; }) ? "warning" : "good" };
+  }
+
+  // Regex extraction used when Claude isn't available (works on simple text invoices)
+  function roughExtract(text) {
+    var t = String(text || ""), m;
+    var lines = t.split(/\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+    var supplier = lines.filter(function (l) { return !/tax invoice|invoice$/i.test(l); })[0] || "";
+    function grab(re) { var x = t.match(re); return x ? x[1].trim() : null; }
+    var money = function (re) { var v = grab(re); return v ? parseMoney(v) : null; };
+    return {
+      supplier: supplier, supplier_invoice_no: grab(/invoice\s*(?:no\.?|number|#)\s*[:\-]?\s*([A-Z0-9\-\/]+)/i),
+      invoice_date: parseDate(grab(/\bdate\s*[:\-]?\s*([0-9]{1,2}[\/.\-][0-9]{1,2}[\/.\-][0-9]{2,4})/i) || "") || null,
+      due_date: parseDate(grab(/\bdue(?:\s*date)?\s*[:\-]?\s*([0-9]{1,2}[\/.\-][0-9]{1,2}[\/.\-][0-9]{2,4})/i) || "") || null,
+      subtotal_ex_gst: money(/sub\s*-?total[^0-9$]*\$?\s*([0-9,]+(?:\.[0-9]+)?)/i),
+      total_inc_gst: money(/\btotal(?!\s*ex)[^0-9$]*\$?\s*([0-9,]+(?:\.[0-9]+)?)\s*$/im),
+      po_number: grab(/\b(PO\s*-?\s*[0-9]+)/i), job_reference: grab(/\bjob\s*(?:no\.?|#)?\s*[:\-]?\s*([0-9]{3,6})/i),
+      site_address: grab(/\bsite\s*[:\-]\s*([^\n—]+)/i)
+    };
+  }
+
   var TYPE_LABEL = { latepay: "Supplier bill past due", claim: "Claim not sent", unbilled: "Signed variation not invoiced", overdue: "Overdue payment", unsigned: "Variation awaiting signature", overpo: "Bill above purchase order", duplicate: "Duplicate bill", nopo: "Bill without a purchase order", overrun: "Cost code over budget", note: "Extra work in site notes" };
 
   return {
     AS_AT: AS_AT, STAGES: STAGES, CODES: CODES, SCHEMA: SCHEMA, DEFAULTS: DEFAULTS, TYPE_LABEL: TYPE_LABEL, RECOVER: RECOVER,
     generate: generate, analyse: analyse, parseCSV: parseCSV, toCSV: toCSV, detectTable: detectTable, importTable: importTable,
-    summaryForAI: summaryForAI, addDays: addDays, daysBetween: daysBetween, tableSpec: tableSpec, isSigned: isSigned
+    summaryForAI: summaryForAI, checkBill: checkBill, roughExtract: roughExtract, parseDate: parseDate, parseMoney: parseMoney, addDays: addDays, daysBetween: daysBetween, tableSpec: tableSpec, isSigned: isSigned
   };
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = MW;
@@ -1035,7 +1096,8 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
     data: MW.generate(), source: "demo", settings: Object.assign({}, MW.DEFAULTS),
     tab: "overview", jobId: null, wipFilter: "all", sort: { key: "fadeDollars", dir: -1 }, q: "",
     issueType: "all", done: {}, dismissed: {}, aiNotes: null, aiNotesNonBill: [], scan: null,
-    actNow: true, brief: null, chat: [], staged: {}, aiOff: false, introClosed: false
+    actNow: true, brief: null, chat: [], staged: {}, aiOff: false, introClosed: false,
+    bill: { text: "", image: null, result: null }
   };
   var res = null;
   function recompute() {
@@ -1044,7 +1106,7 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
     res = MW.analyse(state.data, opts);
   }
 
-  var TABS = [["overview", "Overview"], ["wip", "WIP schedule"], ["leaks", "Money leaks"], ["cash", "Cash"], ["ask", "Ask"], ["data", "Your data"], ["method", "Method"]];
+  var TABS = [["overview", "Overview"], ["wip", "WIP schedule"], ["leaks", "Money leaks"], ["bills", "Check a bill"], ["cash", "Cash"], ["ask", "Ask"], ["data", "Your data"], ["method", "Method"]];
   var TYPE = MW.TYPE_LABEL;
   var GROUP = { latepay: "Pay", claim: "Collect", unbilled: "Collect", overdue: "Collect", unsigned: "Collect", overpo: "Stop", duplicate: "Stop", note: "Price", nopo: "Check", overrun: "Check" };
   var ACTION = { latepay: "Schedule payment", claim: "Send claim", unbilled: "Invoice", overdue: "Chase", unsigned: "Chase signature", overpo: "Query supplier", duplicate: "Hold payment", note: "Draft variation", nopo: "Check approval", overrun: "Review" };
@@ -1064,7 +1126,7 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
         : '<span><b>Your data.</b> ' + res.totals.jobs + ' jobs loaded from your files. Nothing has left this browser. AI buttons send only the excerpt they describe.</span><button class="btn small ghost" data-act="close-intro">Hide</button>';
     }
     var v = $("#view");
-    var fn = state.tab === "wip" && state.jobId ? function () { return vJob(state.jobId); } : { overview: vOverview, wip: vWip, leaks: vLeaks, cash: vCash, ask: vAsk, data: vData, method: vMethod }[state.tab];
+    var fn = state.tab === "wip" && state.jobId ? function () { return vJob(state.jobId); } : { overview: vOverview, wip: vWip, leaks: vLeaks, bills: vBills, cash: vCash, ask: vAsk, data: vData, method: vMethod }[state.tab];
     v.innerHTML = fn();
     v.classList.remove("fade-in"); void v.offsetWidth; v.classList.add("fade-in");
     afterRender();
@@ -1259,6 +1321,86 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
         return "<tr" + (state.done[i.id] ? ' class="done"' : "") + '><td><span class="tag">' + GROUP[i.type] + "</span></td><td>" + esc(TYPE[i.type]) + (i.source ? '<br><span class="muted" style="font-size:.78rem">' + esc(i.source) + (i.confidence != null ? " · " + Math.round(i.confidence * 100) + "% sure" : "") + "</span>" : "") + '</td><td><a href="#" data-act="job" data-id="' + esc(i.job_id) + '">' + esc(i.job_id) + '</a></td><td class="n">' + (i.amount ? full(i.amount) : '<span class="muted">unpriced</span>') + '</td><td class="n">' + (i.days != null ? i.days + " d" : "") + "</td><td>" + esc(i.detail) + (i.quote ? '<br><span class="quote">“' + esc(i.quote) + "”</span>" : "") +
           '</td><td class="act"><div class="row"><button class="btn small" data-act="draft" data-id="' + i.id + '">' + ACTION[i.type] + '</button><button class="btn small ghost" data-act="done" data-id="' + i.id + '">' + (state.done[i.id] ? "Undo" : "Done") + '</button><button class="btn small ghost" data-act="dismiss" data-id="' + i.id + '" aria-label="Dismiss">Dismiss</button></div></td></tr>';
       }).join("") : '<tr><td colspan="7" class="muted">No items of this type.</td></tr>') + "</tbody></table></div></div>";
+  }
+
+  // ----- bills -----
+  function billSamples() {
+    var d = state.data, out = [];
+    var billedBy = {}; (d.supplier_invoices || []).forEach(function (b) { if (b.po_id) billedBy[b.po_id] = (billedBy[b.po_id] || 0) + b.amount; });
+    var po = (d.purchase_orders || []).filter(function (p) { var r = res.jobIndex[p.job_id]; var c = r && r.codes.filter(function (x) { return x.code === p.cost_code; })[0]; return c && c.stageStatus === "current" && (billedBy[p.po_id] || 0) < p.amount * 0.5; })[0];
+    if (po) {
+      var r = res.jobIndex[po.job_id], left = po.amount - (billedBy[po.po_id] || 0), amt = Math.round(left * 1.06 / 10) * 10;
+      out.push({ label: "Bill above its PO", text: billText(po.supplier, "INV-" + (58000 + (+po.job_id % 900)), MW.addDays(state.settings.asAt, -3), po.po_id, r, (MW.CODES.filter(function (c) { return c.code === po.cost_code; })[0] || { name: "Work" }).name + " to stage completion", amt) });
+    }
+    var dup = (d.supplier_invoices || []).filter(function (b) { return !b.paid_date && b.po_id && b.supplier_invoice_no && !res.dupIds[b.invoice_id]; }).slice(-1)[0];
+    if (dup) out.push({ label: "Bill already entered", text: billText(dup.supplier, dup.supplier_invoice_no, dup.invoice_date, "", res.jobIndex[dup.job_id], "As per quote", dup.amount) });
+    return out;
+  }
+  function billText(supplier, no, date, poId, r, desc, amt) {
+    var d = function (iso) { var x = iso.split("-"); return x[2] + "/" + x[1] + "/" + x[0]; };
+    var due = MW.addDays(date, 36);
+    var gst = Math.round(amt * 0.1 * 100) / 100;
+    return "TAX INVOICE\n" + supplier + "\nABN 00 000 000 000 (fictional)\n\nInvoice no: " + no + "\nDate: " + d(date) + "    Due: " + d(due) + "\n\nBill to: Demo Homes SA\nSite: " + (r ? (r.job.address || "") + ", " + (r.job.suburb || "") + " — Job " + r.id : "") + (poId ? "\nYour order: " + poId : "") +
+      "\n\n" + desc + "    $" + amt.toLocaleString("en-AU", { minimumFractionDigits: 2 }) + "\n\nSubtotal: $" + amt.toLocaleString("en-AU", { minimumFractionDigits: 2 }) + "\nGST: $" + gst.toLocaleString("en-AU", { minimumFractionDigits: 2 }) + "\nTotal: $" + (amt + gst).toLocaleString("en-AU", { minimumFractionDigits: 2 });
+  }
+  function vBills() {
+    var samples = billSamples();
+    return '<div><h2>Check a supplier bill before it is paid</h2><p class="sub">Paste a bill or add a photo of it. Claude reads it; Margin Watch matches it to the job, cost code and purchase order and checks it against everything already billed. Nothing is written to your accounts.</p></div>' +
+      '<div class="grid2"><section class="panel"><div class="row"><span class="lbl">Try a sample</span>' + samples.map(function (x, i) { return '<button class="btn small ghost" data-act="bill-sample" data-i="' + i + '">' + esc(x.label) + "</button>"; }).join("") + "</div>" +
+      '<textarea id="bill-text" rows="14" aria-label="Bill text" placeholder="Paste the text of a supplier invoice here">' + esc(state.bill.text) + "</textarea>" +
+      '<div class="row" id="bill-img-row" hidden><label class="btn small ghost" for="bill-img">Add a photo of the bill</label><input type="file" id="bill-img" accept="image/jpeg,image/png,image/webp" hidden><span class="sub" id="bill-img-name">' + (state.bill.image ? esc(state.bill.image.name) : "") + "</span></div>" +
+      '<div class="row"><button class="btn primary" data-act="bill-check" id="bill-btn">Check bill</button><button class="btn ghost small" data-act="stop-bill" id="bill-stop" hidden>Stop</button></div>' +
+      '<p class="sub">If Claude isn\'t available, simple text bills are read with pattern rules.</p></section>' +
+      '<section class="panel" id="bill-out">' + billResult() + "</section></div>";
+  }
+  function billResult() {
+    var b = state.bill.result;
+    if (!b) return '<h3>Result</h3><p class="muted">Pick a sample or paste a bill, then choose Check bill.</p>';
+    if (b.error) return '<h3>Result</h3><p class="neg">' + esc(b.error) + "</p>";
+    var c = b.check, ex = b.bill;
+    var verdict = { critical: ["Hold. Don't pay this yet", "critical"], warning: ["Check before approving", "warning"], good: ["OK to approve", "good"] }[c.verdict];
+    var rows = [["Supplier", ex.supplier], ["Invoice no.", ex.supplier_invoice_no], ["Invoice date", ex.invoice_date ? dAU(ex.invoice_date, true) : "—"], ["Due", ex.due_date ? dAU(ex.due_date, true) : "—"], ["Amount ex GST", full(ex.amount)], ["Purchase order", c.po ? c.po.po_id + " · " + full(c.po.amount) : "Not found"], ["Job", c.job ? c.job.id + " · " + (c.job.job.address || "") + ", " + (c.job.job.suburb || "") : "Not identified"], ["Cost code", c.code ? c.code + " · " + (c.codeName || "") : "—"]];
+    var worst = c.checks.filter(function (x) { return x.level === "critical"; })[0];
+    return '<div class="spread"><h3>Result</h3><span class="ai-src">' + esc(b.src.toUpperCase()) + '</span></div><div><span class="st ' + verdict[1] + '" style="font-size:.9rem"><i></i>' + verdict[0] + "</span></div>" +
+      '<dl class="kv">' + rows.map(function (r) { return "<dt>" + r[0] + "</dt><dd>" + esc(r[1] || "—") + "</dd>"; }).join("") + "</dl>" +
+      '<ul class="plain">' + c.checks.map(function (x) { return '<li><span class="st ' + x.level + '"><i></i>' + esc(x.label) + "</span> " + esc(String(x.detail).replace(/(\d{4}-\d{2}-\d{2})/g, function (m) { return dAU(m, true); })) + "</li>"; }).join("") + "</ul>" +
+      (c.job && c.code ? '<p class="sub">Suggested coding: job ' + esc(c.job.id) + ", cost code " + esc(c.code) + (c.po ? ", " + esc(c.po.po_id) : "") + ".</p>" : "") +
+      (worst ? '<div class="row"><button class="btn" data-act="bill-draft">Draft a query to the supplier</button></div>' : "");
+  }
+  var BILL_PROMPT = "Extract the fields from this supplier invoice sent to an Australian home builder. Dates on Australian invoices are day/month/year. Reply with only JSON: {\"supplier\": string, \"supplier_invoice_no\": string or null, \"invoice_date\": \"YYYY-MM-DD\" or null, \"due_date\": \"YYYY-MM-DD\" or null, \"subtotal_ex_gst\": number or null, \"gst\": number or null, \"total_inc_gst\": number or null, \"po_number\": string or null, \"job_reference\": string or null (the builder's job number if shown), \"site_address\": string or null, \"lines\": [{\"description\": string, \"amount\": number}]}. Use null for anything not on the invoice. Do not guess.";
+  async function checkBillFlow() {
+    var area = $("#bill-text"); state.bill.text = area ? area.value : state.bill.text;
+    var text = state.bill.text.trim(), img = state.bill.image;
+    if (!text && !img) { toast("Paste a bill or add a photo first."); return; }
+    ctl.bill = new AbortController(); setBusy("bill", true);
+    var out = $("#bill-out"); if (out) out.innerHTML = '<h3>Result</h3><p class="muted">Reading the bill…</p>';
+    var ex = null, src = "Read by Claude";
+    try {
+      var sample = await getSample();
+      var opts = { modelTier: img ? "default" : "quick", signal: ctl.bill.signal };
+      if (img) opts.images = img;
+      ex = await sample.json(BILL_PROMPT + (text ? "\n\nINVOICE TEXT:\n" + text.slice(0, 12000) : "\n\nThe invoice is in the attached image."), opts);
+    } catch (e) {
+      if (e && e.code === "cancelled") { setBusy("bill", false); if (out) out.innerHTML = billResult(); return; }
+      if (e && AI_OFF_CODES[e.code]) state.aiOff = true;
+      if (!text) { state.bill.result = { error: aiMsg(e) }; setBusy("bill", false); if (out) out.innerHTML = billResult(); return; }
+      ex = MW.roughExtract(text); src = "Read with pattern rules";
+    }
+    ex = ex || {};
+    var amount = typeof ex.subtotal_ex_gst === "number" ? ex.subtotal_ex_gst : (typeof ex.total_inc_gst === "number" ? Math.round(ex.total_inc_gst / 1.1 * 100) / 100 : 0);
+    var bill = { supplier: String(ex.supplier || ""), supplier_invoice_no: ex.supplier_invoice_no ? String(ex.supplier_invoice_no) : "", invoice_date: MW.parseDate(ex.invoice_date || ""), due_date: MW.parseDate(ex.due_date || ""), amount: amount, po_number: ex.po_number ? String(ex.po_number) : "", job_reference: ex.job_reference ? String(ex.job_reference) : "", site_address: ex.site_address ? String(ex.site_address) : "" };
+    state.bill.result = { bill: bill, check: MW.checkBill(state.data, res, bill), src: src };
+    setBusy("bill", false);
+    if ($("#bill-out")) $("#bill-out").innerHTML = billResult();
+  }
+  async function billDraft() {
+    var b = state.bill.result; if (!b || !b.check) return;
+    var issues = b.check.checks.filter(function (x) { return x.level === "critical"; }).map(function (x) { return x.detail; }).join(" ");
+    var prompt = "Write a short, professional email from an Adelaide home builder's accounts team to supplier " + b.bill.supplier + " about their invoice " + (b.bill.supplier_invoice_no || "") + " for " + full(b.bill.amount) + " ex GST. The problem: " + issues + " Ask them to confirm and send a credit note or corrected invoice, or evidence of an approved price change. 60 to 110 words. Start with a Subject line. Australian spelling. Plain text.";
+    openModal("Query to " + (b.bill.supplier || "supplier"), '<p class="sub">' + esc(issues) + '</p><textarea id="draft-area" aria-label="Draft">Thinking…</textarea><div class="row"><button class="btn primary" data-act="copy-draft">Copy</button><button class="btn ghost" data-act="close-modal">Close</button></div><p class="ai-src" id="draft-src">DRAFT BY CLAUDE · CHECK BEFORE SENDING</p>');
+    var area = $("#draft-area"); ctl.draft = new AbortController();
+    try { var sample = await getSample(); await sample(prompt, { modelTier: "quick", signal: ctl.draft.signal, onText: function (u) { if (area) area.value = u.text; } }); }
+    catch (e) { if (e && e.code === "cancelled") return; if (area) area.value = "Subject: Invoice " + (b.bill.supplier_invoice_no || "") + "\n\nHi " + b.bill.supplier + ",\n\n" + issues + " Please confirm and send a credit note or corrected invoice before we process payment.\n\nThanks,\nAccounts team"; var src = $("#draft-src"); if (src) src.textContent = aiMsg(e).toUpperCase() + " SHOWING A TEMPLATE INSTEAD."; }
   }
 
   // ----- cash -----
@@ -1599,6 +1741,12 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
     var q = $("#wip-q"); if (q) q.addEventListener("input", function () { state.q = q.value; var pos = q.selectionStart; render(); var q2 = $("#wip-q"); if (q2) { q2.focus(); q2.setSelectionRange(pos, pos); } });
     var f = $("#ask-form"); if (f) f.addEventListener("submit", function (e) { e.preventDefault(); var v = $("#ask-q").value; ask(v); });
     var fi = $("#file-in"); if (fi) fi.addEventListener("change", function () { stageFiles(fi.files); });
+    var bt = $("#bill-text"); if (bt) bt.addEventListener("input", function () { state.bill.text = bt.value; });
+    var bi = $("#bill-img");
+    if (bi) {
+      bi.addEventListener("change", function () { state.bill.image = bi.files && bi.files[0] ? bi.files[0] : null; var n = $("#bill-img-name"); if (n) n.textContent = state.bill.image ? state.bill.image.name : ""; });
+      sampleP.then(function (smp) { return smp && smp.limits ? smp.limits() : null; }).then(function (l) { var row = $("#bill-img-row"); if (row && l && l.images) row.hidden = false; }).catch(function () {});
+    }
     var drop = $("#drop");
     if (drop) {
       drop.addEventListener("dragover", function (e) { e.preventDefault(); drop.classList.add("over"); });
@@ -1646,6 +1794,10 @@ if (typeof module !== "undefined" && module.exports) module.exports = MW;
       case "stop-scan": if (ctl.scan) ctl.scan.abort(); break;
       case "scan-reset": state.aiNotes = null; state.aiNotesNonBill = []; state.scan = null; recompute(); render(); break;
       case "scenario": state.actNow = t.dataset.v === "1"; render(); break;
+      case "bill-sample": var smp = billSamples()[+t.dataset.i]; if (smp) { state.bill.text = smp.text; state.bill.image = null; state.bill.result = null; render(); } break;
+      case "bill-check": checkBillFlow(); break;
+      case "stop-bill": if (ctl.bill) ctl.bill.abort(); break;
+      case "bill-draft": billDraft(); break;
       case "suggest": ask(t.textContent); break;
       case "stop-ask": if (ctl.ask) ctl.ask.abort(); break;
       case "clear-chat": state.chat = []; render(); break;

@@ -767,12 +767,73 @@ var MW = (function () {
       worst_jobs: top, biggest_items: iss
     };
   }
+  // ---------- check one incoming supplier bill against the ledger ----------
+  function checkBill(data, res, bill) {
+    var s = res.settings, checks = [];
+    var pos = data.purchase_orders || [], invs = data.supplier_invoices || [];
+    var ns = norm(bill.supplier || ""), nno = norm(bill.supplier_invoice_no || "");
+    var amount = +bill.amount || 0;
+    function supMatch(x) { var a = norm(x || ""); return a && ns && (a === ns || a.indexOf(ns) >= 0 || ns.indexOf(a) >= 0); }
+    // purchase order
+    var po = null, pn = norm(bill.po_number || "").replace(/^po/, "");
+    if (pn) pos.forEach(function (p) { if (norm(p.po_id).replace(/^po/, "") === pn) po = p; });
+    // job
+    var job = null;
+    if (po) job = res.jobIndex[po.job_id] || null;
+    if (!job && bill.job_reference) { var jr = String(bill.job_reference).replace(/[^0-9a-z]/gi, ""); res.jobs.forEach(function (r) { if (norm(r.id) === norm(jr) || (jr && norm(jr).indexOf(norm(r.id)) >= 0 && norm(r.id).length >= 3)) job = r; }); }
+    if (!job && bill.site_address) { var ad = norm(bill.site_address); res.jobs.forEach(function (r) { var ja = norm(r.job.address || ""); if (ja && ad.indexOf(ja) >= 0) job = r; }); }
+    if (!po && job) {
+      var cands = pos.filter(function (p) { return p.job_id === job.id && supMatch(p.supplier); });
+      if (cands.length === 1) { po = cands[0]; checks.push({ level: "warning", label: "PO number missing", detail: "The bill doesn't quote a PO. It matches " + po.po_id + " for this supplier on job " + job.id + "." }); }
+    }
+    // duplicate
+    var dup = invs.filter(function (x) { return nno && supMatch(x.supplier) && norm(x.supplier_invoice_no || "") === nno; })[0];
+    if (dup) checks.push({ level: "critical", label: "Already entered", detail: "Invoice " + bill.supplier_invoice_no + " from this supplier is already in the ledger as " + dup.invoice_id + " (" + dup.invoice_date + ", $" + Math.round(dup.amount).toLocaleString("en-AU") + ")." + (dup.paid_date ? " It was paid on " + dup.paid_date + "." : "") });
+    var code = po ? po.cost_code : null;
+    if (po) {
+      var billed = invs.filter(function (x) { return x.po_id === po.po_id && !res.dupIds[x.invoice_id]; }).reduce(function (t, x) { return t + (x.amount || 0); }, 0);
+      var after = billed + (dup ? 0 : amount), over = after - po.amount;
+      if (over > po.amount * s.overPoTolPct && over > s.overPoTolAmt)
+        checks.push({ level: "critical", label: "Above purchase order", detail: po.po_id + " is for $" + Math.round(po.amount).toLocaleString("en-AU") + ". Already billed $" + Math.round(billed).toLocaleString("en-AU") + "; this bill takes it to $" + Math.round(after).toLocaleString("en-AU") + ", $" + Math.round(over).toLocaleString("en-AU") + " over.", over: Math.round(over) });
+      else if (!dup) checks.push({ level: "good", label: "Within purchase order", detail: po.po_id + " has $" + Math.round(Math.max(0, po.amount - billed)).toLocaleString("en-AU") + " left before this bill." });
+    } else checks.push({ level: "warning", label: "No purchase order", detail: "No matching PO was found. Check the work was approved before paying." });
+    if (!job) checks.push({ level: "warning", label: "Job not identified", detail: "The bill doesn't name a job number or a site address we recognise." });
+    if (!code && job) {
+      var counts = {}; invs.forEach(function (x) { if (supMatch(x.supplier) && x.cost_code) counts[x.cost_code] = (counts[x.cost_code] || 0) + 1; });
+      code = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; })[0] || null;
+    }
+    if (job && code) {
+      var c = job.codes.filter(function (x) { return x.code === code; })[0];
+      if (c && c.stageStatus === "future") checks.push({ level: "warning", label: "Stage not started", detail: c.name + " belongs to the " + c.stage + " stage, which hasn't started on job " + job.id + "." });
+    }
+    if (bill.due_date && bill.invoice_date && daysBetween(bill.invoice_date, bill.due_date) < 14) checks.push({ level: "warning", label: "Short payment terms", detail: "Due " + daysBetween(bill.invoice_date, bill.due_date) + " days after the invoice date. Your usual terms are end of the following month." });
+    return { po: po, job: job, code: code, codeName: code && CODE_MAP[code] ? CODE_MAP[code].name : code, checks: checks, verdict: checks.some(function (c) { return c.level === "critical"; }) ? "critical" : checks.some(function (c) { return c.level === "warning"; }) ? "warning" : "good" };
+  }
+
+  // Regex extraction used when Claude isn't available (works on simple text invoices)
+  function roughExtract(text) {
+    var t = String(text || ""), m;
+    var lines = t.split(/\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+    var supplier = lines.filter(function (l) { return !/tax invoice|invoice$/i.test(l); })[0] || "";
+    function grab(re) { var x = t.match(re); return x ? x[1].trim() : null; }
+    var money = function (re) { var v = grab(re); return v ? parseMoney(v) : null; };
+    return {
+      supplier: supplier, supplier_invoice_no: grab(/invoice\s*(?:no\.?|number|#)\s*[:\-]?\s*([A-Z0-9\-\/]+)/i),
+      invoice_date: parseDate(grab(/\bdate\s*[:\-]?\s*([0-9]{1,2}[\/.\-][0-9]{1,2}[\/.\-][0-9]{2,4})/i) || "") || null,
+      due_date: parseDate(grab(/\bdue(?:\s*date)?\s*[:\-]?\s*([0-9]{1,2}[\/.\-][0-9]{1,2}[\/.\-][0-9]{2,4})/i) || "") || null,
+      subtotal_ex_gst: money(/sub\s*-?total[^0-9$]*\$?\s*([0-9,]+(?:\.[0-9]+)?)/i),
+      total_inc_gst: money(/\btotal(?!\s*ex)[^0-9$]*\$?\s*([0-9,]+(?:\.[0-9]+)?)\s*$/im),
+      po_number: grab(/\b(PO\s*-?\s*[0-9]+)/i), job_reference: grab(/\bjob\s*(?:no\.?|#)?\s*[:\-]?\s*([0-9]{3,6})/i),
+      site_address: grab(/\bsite\s*[:\-]\s*([^\n—]+)/i)
+    };
+  }
+
   var TYPE_LABEL = { latepay: "Supplier bill past due", claim: "Claim not sent", unbilled: "Signed variation not invoiced", overdue: "Overdue payment", unsigned: "Variation awaiting signature", overpo: "Bill above purchase order", duplicate: "Duplicate bill", nopo: "Bill without a purchase order", overrun: "Cost code over budget", note: "Extra work in site notes" };
 
   return {
     AS_AT: AS_AT, STAGES: STAGES, CODES: CODES, SCHEMA: SCHEMA, DEFAULTS: DEFAULTS, TYPE_LABEL: TYPE_LABEL, RECOVER: RECOVER,
     generate: generate, analyse: analyse, parseCSV: parseCSV, toCSV: toCSV, detectTable: detectTable, importTable: importTable,
-    summaryForAI: summaryForAI, addDays: addDays, daysBetween: daysBetween, tableSpec: tableSpec, isSigned: isSigned
+    summaryForAI: summaryForAI, checkBill: checkBill, roughExtract: roughExtract, parseDate: parseDate, parseMoney: parseMoney, addDays: addDays, daysBetween: daysBetween, tableSpec: tableSpec, isSigned: isSigned
   };
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = MW;
