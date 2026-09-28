@@ -1,0 +1,53 @@
+var_id,job_id,description,amount,status,request_date,signed_date,invoice_date,paid_date
+V1,2364,Rainwater tank and pump,3060,Requested,2026-09-03,,,
+V2,2364,Alfresco ceiling lining upgrade,3170,Signed,2026-08-20,2026-08-27,2026-08-29,2026-09-07
+V3,2369,Double garage panel-lift door upgrade,1820,Signed,2026-03-12,2026-03-18,2026-03-19,2026-03-27
+V4,2369,Upgrade to 2.7 m ceilings,6860,Requested,2026-05-14,,,
+V5,2371,Double garage panel-lift door upgrade,1710,Signed,2026-07-06,2026-07-09,,
+V6,2374,Upgrade to 900 mm freestanding cooker,1740,Signed,2026-08-23,2026-08-30,2026-08-31,2026-09-06
+V7,2374,Ducted reverse-cycle air upgrade,4190,Signed,2026-08-17,2026-08-26,2026-08-30,2026-09-07
+V8,2378,Solar 6.6 kW system,6850,Signed,2026-07-16,2026-07-21,,
+V9,2381,Additional data points (4),660,Signed,2026-06-10,2026-06-12,,
+V10,2388,Additional data points (4),680,Signed,2026-09-01,2026-09-05,2026-09-06,2026-09-10
+V11,2390,Double garage panel-lift door upgrade,1290,Signed,2026-08-19,2026-08-22,2026-08-29,2026-09-08
+V12,2397,Solar 6.6 kW system,6870,Signed,2026-06-10,2026-06-13,2026-06-16,2026-06-19
+V13,2399,Ducted reverse-cycle air upgrade,4310,Signed,2025-12-17,2025-12-20,2025-12-26,2026-01-03
+V14,2399,Upgrade to 900 mm freestanding cooker,1730,Signed,2026-07-10,2026-07-12,2026-07-20,2026-07-28
+V15,2401,Rainwater tank and pump,2960,Signed,2026-07-21,2026-07-28,2026-08-04,2026-08-14
+V16,2401,Solar 6.6 kW system,7270,Requested,2026-08-17,,,
+V17,2402,Additional data points (4),800,Signed,2026-01-17,2026-01-26,2026-01-29,2026-02-05
+V18,2406,Solar 6.6 kW system,5980,Signed,2026-06-21,2026-06-28,2026-07-07,2026-07-13
+V19,2406,Upgrade to 900 mm freestanding cooker,2270,Signed,2026-05-24,2026-05-26,2026-06-04,2026-06-14
+V20,2408,Upgrade to 2.7 m ceilings,7520,Signed,2026-08-11,2026-08-16,2026-08-22,2026-08-29
+V21,2411,Ducted reverse-cycle air upgrade,5280,Signed,2026-02-28,2026-03-02,2026-03-05,2026-03-13
+V22,2412,Alfresco ceiling lining upgrade,2090,Requested,2026-03-28,,,
+V23,2414,Ducted reverse-cycle air upgrade,4170,Signed,2026-08-26,2026-09-04,2026-09-11,2026-09-20
+V24,2417,Additional data points (4),600,Signed,2026-05-21,2026-05-26,2026-06-03,2026-06-09
+V25,2417,Double garage panel-lift door upgrade,1570,Signed,2025-12-27,2026-01-01,,
+V26,2419,Double garage panel-lift door upgrade,1940,Signed,2026-04-07,2026-04-10,2026-04-20,2026-04-23
+V27,2419,Upgrade to 900 mm freestanding cooker,1780,Signed,2026-03-09,2026-03-12,,
+V28,2420,Ducted reverse-cycle air upgrade,5860,Requested,2026-07-21,,,
+V29,2420,Upgrade to 2.7 m ceilings,6560,Requested,2026-01-27,,,
+V30,2424,Additional data points (4),650,Signed,2026-07-28,2026-08-03,,
+V31,2426,Solar 6.6 kW system,5370,Signed,2026-03-13,2026-03-21,2026-03-30,2026-04-04
+V32,2426,Upgrade to 900 mm freestanding cooker,1470,Signed,2026-04-10,2026-04-12,,
+V33,2430,Additional data points (4),1080,Signed,2026-04-05,2026-04-08,,
+V34,2432,Double garage panel-lift door upgrade,1690,Signed,2026-06-06,2026-06-11,2026-06-19,2026-06-25
+V35,2434,Alfresco ceiling lining upgrade,1980,Signed,2026-08-15,2026-08-18,2026-08-19,2026-08-24
+V36,2439,Alfresco ceiling lining upgrade,2420,Signed,2025-11-20,2025-11-24,,
+V37,2439,Ducted reverse-cycle air upgrade,3950,Signed,2026-06-29,2026-07-03,2026-07-08,2026-07-16
+V38,2441,Double garage panel-lift door upgrade,2080,Requested,2026-08-27,,,
+V39,2441,Rainwater tank and pump,3890,Signed,2026-08-30,2026-09-04,2026-09-05,2026-09-15
+V40,2447,Additional data points (4),760,Signed,2026-04-05,2026-04-11,2026-04-12,2026-04-15
+V41,2450,Additional data points (4),690,Signed,2026-02-25,2026-03-06,2026-03-14,2026-03-20
+V42,2453,Additional data points (4),870,Requested,2026-08-30,,,
+V43,2454,Double garage panel-lift door upgrade,2060,Requested,2026-01-12,,,
+V44,2454,Solar 6.6 kW system,6690,Signed,2026-09-02,2026-09-08,2026-09-09,2026-09-18
+V45,2457,Alfresco ceiling lining upgrade,1890,Signed,2026-04-18,2026-04-25,2026-05-02,2026-05-10
+V46,2457,Solar 6.6 kW system,5680,Signed,2026-03-26,2026-04-03,2026-04-03,2026-04-10
+V47,2463,Upgrade to 900 mm freestanding cooker,1560,Signed,2026-08-31,2026-09-09,2026-09-09,2026-09-14
+V48,2464,Rainwater tank and pump,3740,Signed,2026-04-30,2026-05-06,2026-05-07,2026-05-10
+V49,2464,Alfresco ceiling lining upgrade,2060,Signed,2026-09-02,2026-09-10,2026-09-20,2026-09-24
+V50,2468,Double garage panel-lift door upgrade,1590,Signed,2026-02-05,2026-02-11,2026-02-15,2026-02-19
+V51,2473,Additional data points (4),740,Requested,2026-05-23,,,
+V52,2474,Solar 6.6 kW system,6850,Signed,2026-08-09,2026-08-15,,

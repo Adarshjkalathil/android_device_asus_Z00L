@@ -1,0 +1,61 @@
+job_id,client,address,suburb,estate,design,supervisor,contract_date,contract_value
+2361,Patel family,32 Mallee Dr,Munno Para,Playford Alive,Banksia 26,Daniel,2026-02-03,415100
+2363,O'Brien family,87 Redgum Rd,Mount Barker,Aston Hills,Banksia 26,Mia,2025-10-19,466600
+2364,Martin family,11 Wattle St,Gawler East,Springwood,Kestrel 24,Tom,2026-03-25,390500
+2366,Russo family,17 Samphire St,Gawler East,Springwood,Wattle 30,Aisha,2025-11-19,504600
+2369,Rossi family,46 Samphire St,Gawler East,Springwood,Mallee 23,Daniel,2026-02-20,370100
+2371,Kowalski family,9 Saltbush Cres,Munno Para,Playford Alive,Coast 21,Mia,2026-06-16,333400
+2372,Clarke family,66 Banksia Tce,Buckland Park,Riverlea,Kestrel 24,Tom,2026-02-04,369800
+2374,Smith family,43 Samphire St,Gawler East,Springwood,Coast 21,Aisha,2026-01-13,330400
+2377,Walker family,58 Pelican Pde,Aldinga Beach,Aldinga Beach,Banksia 26,Daniel,2025-09-28,394900
+2378,Lee family,28 Quandong Ave,Mount Barker,Aston Hills,Kestrel 24,Mia,2025-09-22,384500
+2381,Martin family,32 Kestrel Way,Buckland Park,Riverlea,Banksia 26,Tom,2025-11-21,448200
+2383,Smith family,43 Banksia Tce,Munno Para,Playford Alive,Kestrel 24,Aisha,2026-05-23,374600
+2384,Tran family,49 Wattle St,Lightsview,Lightsview,Wattle 30,Daniel,2026-03-21,499800
+2387,Walker family,42 Pelican Pde,Penfield,Eyre,Hills 28,Mia,2026-01-02,486200
+2388,Rossi family,55 Bottlebrush Ct,Munno Para,Playford Alive,Kestrel 24,Tom,2026-06-12,389600
+2390,Thompson family,25 Saltbush Cres,Seaford Heights,Seaford Heights,Kestrel 24,Aisha,2026-01-27,364100
+2392,Thompson family,66 Bottlebrush Ct,Penfield,Eyre,Coast 21,Daniel,2025-10-01,339900
+2395,Walker family,25 Quandong Ave,Mount Barker,Aston Hills,Banksia 26,Mia,2025-10-22,467500
+2397,Tran family,5 Mallee Dr,Hackham,Onkaparinga Heights,Wattle 30,Tom,2025-09-24,462100
+2399,Brown family,82 Ironbark Cl,Penfield,Eyre,Kestrel 24,Aisha,2025-11-13,400200
+2401,Tran family,75 Bottlebrush Ct,Mount Barker,Aston Hills,Mallee 23,Daniel,2026-02-22,373500
+2402,Ahmed family,73 Emu Ln,Seaford Heights,Seaford Heights,Coast 21,Mia,2025-09-17,317800
+2404,Wilson family,9 Bottlebrush Ct,Aldinga Beach,Aldinga Beach,Hills 28,Tom,2025-11-05,459800
+2406,O'Brien family,76 Saltbush Cres,Aldinga Beach,Aldinga Beach,Wattle 30,Aisha,2025-09-30,510900
+2408,Rossi family,6 Samphire St,Gawler East,Springwood,Urban 19,Daniel,2026-05-29,319800
+2411,Taylor family,5 Banksia Tce,Aldinga Beach,Aldinga Beach,Urban 19,Mia,2025-12-12,296200
+2412,Wilson family,65 Saltbush Cres,Penfield,Eyre,Wattle 30,Tom,2025-12-15,456400
+2414,Lee family,39 Ironbark Cl,Gawler East,Springwood,Kestrel 24,Aisha,2025-09-02,409600
+2417,Kowalski family,58 Wattle St,Aldinga Beach,Aldinga Beach,Urban 19,Daniel,2025-11-13,289800
+2419,Hall family,46 Wattle St,Penfield,Eyre,Coast 21,Mia,2025-10-23,338700
+2420,Clarke family,42 Quandong Ave,Mount Barker,Aston Hills,Coast 21,Tom,2025-12-20,355000
+2423,Kowalski family,31 Ironbark Cl,Buckland Park,Riverlea,Mallee 23,Aisha,2025-10-14,357000
+2424,Clarke family,49 Mallee Dr,Lightsview,Lightsview,Coast 21,Daniel,2026-03-29,348000
+2426,Papadopoulos family,85 Bottlebrush Ct,Munno Para,Playford Alive,Kestrel 24,Mia,2026-01-25,374000
+2429,Hall family,86 Mallee Dr,Aldinga Beach,Aldinga Beach,Coast 21,Tom,2025-10-16,347200
+2430,Taylor family,25 Emu Ln,Mount Barker,Aston Hills,Urban 19,Aisha,2025-12-17,322200
+2432,Papadopoulos family,32 Ironbark Cl,Penfield,Eyre,Hills 28,Daniel,2026-04-17,428100
+2434,Walker family,46 Bottlebrush Ct,Aldinga Beach,Aldinga Beach,Mallee 23,Mia,2025-11-15,354000
+2437,Kowalski family,76 Kestrel Way,Aldinga Beach,Aldinga Beach,Coast 21,Tom,2026-06-13,331400
+2439,Smith family,9 Banksia Tce,Seaford Heights,Seaford Heights,Kestrel 24,Aisha,2025-11-06,415100
+2441,Papadopoulos family,59 Quandong Ave,Munno Para,Playford Alive,Wattle 30,Daniel,2026-07-09,496400
+2443,Kaur family,35 Emu Ln,Seaford Heights,Seaford Heights,Hills 28,Mia,2026-02-05,490300
+2445,Kowalski family,30 Pelican Pde,Penfield,Eyre,Mallee 23,Tom,2025-12-26,371300
+2447,Tran family,44 Banksia Tce,Aldinga Beach,Aldinga Beach,Coast 21,Aisha,2026-03-19,333900
+2448,Clarke family,30 Wattle St,Penfield,Eyre,Coast 21,Daniel,2025-09-12,336200
+2450,Taylor family,49 Samphire St,Buckland Park,Riverlea,Banksia 26,Mia,2025-11-18,395300
+2453,Clarke family,65 Redgum Rd,Gawler East,Springwood,Hills 28,Tom,2026-06-06,491100
+2454,O'Brien family,83 Redgum Rd,Gawler East,Springwood,Mallee 23,Aisha,2025-12-21,361300
+2457,Chen family,21 Wattle St,Penfield,Eyre,Mallee 23,Daniel,2026-01-04,384400
+2459,Rossi family,24 Bottlebrush Ct,Munno Para,Playford Alive,Hills 28,Mia,2025-09-07,450700
+2460,Kowalski family,71 Wattle St,Hackham,Onkaparinga Heights,Urban 19,Tom,2026-03-07,295700
+2463,Wilson family,26 Mallee Dr,Buckland Park,Riverlea,Coast 21,Aisha,2025-11-11,327700
+2464,Russo family,77 Bottlebrush Ct,Aldinga Beach,Aldinga Beach,Banksia 26,Daniel,2025-12-03,401600
+2466,Hall family,51 Samphire St,Lightsview,Lightsview,Mallee 23,Mia,2025-12-27,387900
+2468,Patel family,54 Redgum Rd,Penfield,Eyre,Coast 21,Tom,2025-10-30,335800
+2471,Thompson family,40 Redgum Rd,Gawler East,Springwood,Wattle 30,Aisha,2026-04-13,525900
+2473,Rossi family,35 Samphire St,Gawler East,Springwood,Coast 21,Daniel,2026-03-14,327400
+2474,Anderson family,41 Samphire St,Hackham,Onkaparinga Heights,Wattle 30,Mia,2025-10-23,514300
+2476,Lee family,43 Bottlebrush Ct,Aldinga Beach,Aldinga Beach,Wattle 30,Tom,2025-10-21,488900
+2478,Chen family,71 Pelican Pde,Penfield,Eyre,Urban 19,Aisha,2025-09-17,317200
