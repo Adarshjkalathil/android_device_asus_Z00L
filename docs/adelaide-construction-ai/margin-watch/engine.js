@@ -112,16 +112,18 @@ var MW = (function () {
     { key: "supplier_invoices", label: "Supplier invoices", file: "supplier_invoices.csv", from: "Accounts payable bills (e.g. Xero bills tracked by job)",
       match: /invoice|bill|payable|\bap\b/i,
       cols: [
-        ["invoice_id", 1, "Your internal bill ID", ["id", "billid", "billno", "billnumber", "entryno"]],
-        ["supplier", 1, "Supplier or trade", ["vendor", "subcontractor", "contact", "suppliername"]],
-        ["supplier_invoice_no", 0, "Supplier's invoice number", ["invoiceno", "invoicenumber", "reference", "ref", "supplierref"]],
-        ["job_id", 1, "Job number", ["job", "jobno", "jobnumber", "jobid", "tracking", "trackingcategory"]],
-        ["cost_code", 0, "Cost code", ["code", "costcode", "costcentre", "account"]],
-        ["po_id", 0, "Matching PO number", ["po", "ponumber", "pono", "ordernumber"]],
+        ["invoice_id", 0, "Your internal bill ID (made up from the supplier and invoice number if missing)", ["id", "billid", "billno", "billnumber", "entryno"]],
+        ["supplier", 1, "Supplier or trade", ["vendor", "subcontractor", "contact", "contactname", "suppliername"]],
+        ["supplier_invoice_no", 0, "Supplier's invoice number", ["invoiceno", "invoicenumber", "supplierref", "supplierinvoice"]],
+        ["job_id", 1, "Job number (in Xero, usually a tracking option)", ["job", "jobno", "jobnumber", "jobid", "tracking", "trackingcategory", "trackingoption1", "trackingoption", "trackingoption2"]],
+        ["cost_code", 0, "Cost code", ["code", "costcode", "costcentre", "account", "accountcode"]],
+        ["po_id", 0, "Matching PO number (Xero: the Reference field)", ["po", "ponumber", "pono", "ordernumber", "reference", "ref"]],
         ["invoice_date", 1, "Invoice date", ["date", "invoicedate", "billdate"]],
         ["due_date", 0, "Due date", ["due", "duedate"]],
-        ["amount", 1, "Invoice amount", ["total", "value", "invoiceamount", "amountexgst"]],
-        ["paid_date", 0, "Date paid (blank if unpaid)", ["paid", "datepaid", "paymentdate"]]
+        ["amount", 1, "Invoice amount (or Quantity and UnitAmount per line)", ["total", "value", "invoiceamount", "amountexgst", "lineamount", "subtotal"]],
+        ["quantity", 0, "Line quantity (Xero line exports)", ["qty"]],
+        ["unit_amount", 0, "Line unit price (Xero line exports)", ["unitamount", "unitprice", "rate"]],
+        ["paid_date", 0, "Date paid (blank if unpaid)", ["paid", "datepaid", "paymentdate", "fullypaidondate"]]
       ] },
     { key: "variations", label: "Variations", file: "variations.csv", from: "Variation register",
       match: /variation|change/i,
@@ -157,7 +159,7 @@ var MW = (function () {
         ["text", 1, "Note text", ["note", "notes", "comment", "body", "details", "description"]]
       ] }
   ];
-  var MONEY_FIELDS = { contract_value: 1, budget: 1, amount: 1, pct: 1 };
+  var MONEY_FIELDS = { contract_value: 1, budget: 1, amount: 1, pct: 1, quantity: 1, unit_amount: 1 };
   var DATE_FIELDS = { contract_date: 1, planned_start: 1, planned_end: 1, actual_start: 1, actual_end: 1, po_date: 1, invoice_date: 1, due_date: 1, paid_date: 1, request_date: 1, signed_date: 1, date: 1 };
 
   // ---------- synthetic data ----------
@@ -441,7 +443,11 @@ var MW = (function () {
     if (!rows.length) return { key: key, rows: [], warnings: ["The file is empty."], matched: [] };
     var headers = rows[0], map = mapHeaders(spec, headers), warnings = [];
     var matched = Object.keys(map).map(function (k) { return map[k]; });
-    spec.cols.forEach(function (c) { if (c[1] && matched.indexOf(c[0]) < 0) warnings.push("Missing required column “" + c[0] + "”."); });
+    spec.cols.forEach(function (c) {
+      if (!c[1] || matched.indexOf(c[0]) >= 0) return;
+      if (key === "supplier_invoices" && c[0] === "amount" && matched.indexOf("unit_amount") >= 0) return;
+      warnings.push("Missing required column “" + c[0] + "”.");
+    });
     var outRows = rows.slice(1).map(function (r) {
       var o = {};
       spec.cols.forEach(function (c) { o[c[0]] = ""; });
@@ -450,8 +456,37 @@ var MW = (function () {
         if (MONEY_FIELDS[k]) o[k] = parseMoney(v); else if (DATE_FIELDS[k]) o[k] = parseDate(v); else o[k] = v;
       });
       return o;
-    }).filter(function (o) { return o.job_id || o.po_id || o.invoice_id; });
+    }).filter(function (o) { return o.job_id || o.po_id || o.invoice_id || o.supplier; });
+    if (key === "supplier_invoices") outRows = mergeBillLines(outRows, matched, headers, map, warnings);
     return { key: key, rows: outRows, warnings: warnings, matched: matched, headers: headers };
+  }
+  // Accounting exports often have one row per bill line. Merge them into one bill per supplier invoice.
+  function mergeBillLines(rows, matched, headers, map, warnings) {
+    var amountHeader = ""; Object.keys(map).forEach(function (i) { if (map[i] === "amount") amountHeader = norm(headers[i]); });
+    var groups = {}, order = [];
+    var useLines = matched.indexOf("unit_amount") >= 0 && rows.some(function (r) { return r.unit_amount; });
+    if (useLines) { amountHeader = "lines"; warnings.push("Bill amounts use Quantity × UnitAmount per line. Check your export's amounts are GST-exclusive, like the rest of your data."); }
+    rows.forEach(function (r, k) {
+      if (useLines && r.unit_amount) r.amount = (r.quantity || 1) * r.unit_amount;
+      var key = r.invoice_id ? "id|" + r.invoice_id : (r.supplier_invoice_no ? norm(r.supplier) + "|" + norm(r.supplier_invoice_no) + "|" + r.invoice_date : "row|" + k);
+      if (!groups[key]) { groups[key] = []; order.push(key); }
+      groups[key].push(r);
+    });
+    var merged = 0;
+    var out = order.map(function (key, k) {
+      var g = groups[key], first = {}; Object.keys(g[0]).forEach(function (f) { first[f] = g[0][f]; });
+      if (g.length > 1) {
+        merged += g.length - 1;
+        var same = g.every(function (x) { return x.amount === g[0].amount; });
+        first.amount = same && amountHeader === "total" ? g[0].amount : g.reduce(function (t, x) { return t + (x.amount || 0); }, 0);
+        if (!first.job_id) first.job_id = (g.filter(function (x) { return x.job_id; })[0] || {}).job_id || "";
+      }
+      if (!first.invoice_id) first.invoice_id = "B" + (k + 1);
+      delete first.quantity; delete first.unit_amount;
+      return first;
+    });
+    if (merged) warnings.push("Merged " + merged + " bill lines into " + out.length + " bills.");
+    return out;
   }
 
   // ---------- analysis ----------
