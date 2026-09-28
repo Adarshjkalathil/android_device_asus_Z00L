@@ -219,18 +219,20 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
     <div class="toc-label">Sheet index</div>
     <ol>
       <li><a href="#summary"><span>00</span>Summary</a></li>
-      <li><a href="#market"><span>01</span>The Adelaide market</a></li>
-      <li><a href="#players"><span>02</span>Who builds Adelaide</a></li>
-      <li><a href="#gaps"><span>03</span>Where time and money leak</a></li>
-      <li><a href="#landscape"><span>04</span>What AI can do today</a></li>
-      <li><a href="#products"><span>05</span>Products to build</a></li>
-      <li><a href="#demo"><span>06</span>The demo</a></li>
-      <li><a href="#data"><span>07</span>Data you can use</a></li>
-      <li><a href="#roi"><span>08</span>ROI model</a></li>
-      <li><a href="#gtm"><span>09</span>Selling in Adelaide</a></li>
-      <li><a href="#risks"><span>10</span>Legal and risk</a></li>
-      <li><a href="#roadmap"><span>11</span>Roadmap</a></li>
-      <li><a href="#sources"><span>12</span>Sources</a></li>
+      <li><a href="#flagship"><span>01</span>Flagship: Margin Watch</a></li>
+      <li><a href="#market"><span>02</span>The Adelaide market</a></li>
+      <li><a href="#players"><span>03</span>Who builds Adelaide</a></li>
+      <li><a href="#gaps"><span>04</span>Where time and money leak</a></li>
+      <li><a href="#landscape"><span>05</span>What AI can do today</a></li>
+      <li><a href="#products"><span>06</span>Products to build</a></li>
+      <li><a href="#demo"><span>07</span>The demo</a></li>
+      <li><a href="#data"><span>08</span>Data you can use</a></li>
+      <li><a href="#roi"><span>09</span>ROI model</a></li>
+      <li><a href="#gtm"><span>10</span>Selling in Adelaide</a></li>
+      <li><a href="#risks"><span>11</span>Legal and risk</a></li>
+      <li><a href="#roadmap"><span>12</span>Roadmap</a></li>
+      <li><a href="#research-log"><span>13</span>Research log</a></li>
+      <li><a href="#sources"><span>14</span>Sources</a></li>
     </ol>
   </nav>
 
@@ -245,7 +247,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
         <div class="tb-cell"><span class="lbl">Project</span><b>AI for Adelaide builders</b></div>
         <div class="tb-cell"><span class="lbl">Sheet</span><b>A-00 Strategy</b></div>
         <div class="tb-cell"><span class="lbl">Date</span><b>28 Sep 2026</b></div>
-        <div class="tb-cell"><span class="lbl">Revision</span><b>A — first issue</b></div>
+        <div class="tb-cell"><span class="lbl">Revision</span><b>B — after 3 research rounds</b></div>
         <div class="tb-cell"><span class="lbl">Status</span><b>For discussion</b></div>
       </div>
     </header>
@@ -254,6 +256,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
       <summary>Sheet index</summary>
       <ol start="0">
         <li><a href="#summary">Summary</a></li>
+        <li><a href="#flagship">Flagship: Margin Watch</a></li>
         <li><a href="#market">The Adelaide market</a></li>
         <li><a href="#players">Who builds Adelaide</a></li>
         <li><a href="#gaps">Where time and money leak</a></li>
@@ -265,6 +268,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
         <li><a href="#gtm">Selling in Adelaide</a></li>
         <li><a href="#risks">Legal and risk</a></li>
         <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#research-log">Research log</a></li>
         <li><a href="#sources">Sources</a></li>
       </ol>
     </details>
@@ -281,21 +285,103 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
         <li><b>Builders already own AI. They haven't connected it.</b> In Deloitte's 2026 survey of construction businesses in Australia and Asia-Pacific, 46% use AI tools, but only 16% have advanced digital capability and a quarter still run mainly on paper.<a class="ref" href="#s42">[42]</a> The gap is integration: AI connected to the systems builders already run (ClickHome, Databuild, Xero, spreadsheets) and to SA rules (the Planning and Design Code, CBS licensing, building indemnity insurance).</li>
       </ul>
       <div class="callout">
-        <div class="lbl">Recommendation</div>
-        <h3>Be the local AI integration partner for Adelaide builders, and lead with one product that shows results in eight weeks</h3>
+        <div class="lbl">Recommendation (revision B)</div>
+        <h3>Lead with Margin Watch: live WIP, margin and cash control that builders already pay accountants to produce</h3>
         <ol>
-          <li>Build <b>Build Command</b>, a demo over synthetic job data enriched with real SA planning zones and Bureau of Meteorology weather. Personalise it with each prospect's own published home designs and estates (<a href="#demo">§06</a>).</li>
-          <li>Sell a paid <b>pilot of SiteVoice</b>, a supervisor voice diary plus drafted homeowner updates, to a builder doing 100–400 starts a year. It uses data they already have, it shows results in weeks, and people approve every AI output before it goes out (<a href="#products">§05</a>).</li>
-          <li>Offer <b>Sub Check</b> (subcontractor licence and insurance verification) as a cheap entry product. The January 2026 penalties make it an easy yes.</li>
-          <li>Expand each account into <b>Margin Watch</b> (job cost and cash early warning) and <b>Trade Flow</b> (delay risk and trade booking). Then move into commercial builders with <b>Tender Reader</b>.</li>
+          <li><b>Show the working demo</b> (<a href="https://claude.ai/artifact/7nSi5TBkzgVFK5ieN35ZtS">Margin Watch</a>). It runs on a fictional 60-job Adelaide builder and on a real builder's CSV exports, which never leave their browser (<a href="#flagship">§01</a>).</li>
+          <li><b>Sell a 6-week paid pilot</b> to a builder doing 50–400 homes a year, using exports only. Success is measured in cash collected sooner, overcharges stopped and margin fade caught before job close.</li>
+          <li><b>Price it below a fractional CFO</b> ($3k–$8k a month for construction): $990–$3,900 a month by active jobs, plus onboarding.</li>
+          <li><b>Add products on the same data:</b> SiteVoice (supervisor diary and homeowner updates), Sub Check (licence and insurance checks), then Trade Flow. Commercial builders follow with Tender Reader.</li>
         </ol>
+        <p class="small">Why the change from revision A: three research rounds found the strongest evidence of willingness to pay in construction finance automation. Cash flow is the most cited cause of construction insolvency, national research asks for early-warning tools, and US startup Adaptive raised US$30m in September 2026 for AI construction accounting with 750+ customers (<a href="#research-log">research log</a>).</p>
         <p class="small">Scale of the prize: cutting two weeks from an average build across SA's 14,130 yearly completions frees capacity equal to roughly 470 extra homes a year with the same workforce (14,130 × 2 ÷ 59.6 weeks). This is arithmetic, not a forecast.</p>
       </div>
     </section>
 
+    <!-- 01 FLAGSHIP -->
+    <section id="flagship">
+      <h2><span class="num">01</span>Flagship product: Margin Watch</h2>
+      <p class="lede">Margin Watch gives an owner a live work-in-progress schedule, margin forecast, money-leak list and 13-week cash forecast. It automates reporting that builders already pay accountants and fractional CFOs to produce, it goes straight at the most common cause of builder failure, and it runs on exports a builder can hand over on day one.</p>
+      <div class="callout">
+        <div class="lbl">Working demo</div>
+        <h3><a href="https://claude.ai/artifact/7nSi5TBkzgVFK5ieN35ZtS">Open Margin Watch</a></h3>
+        <p>Loaded with a fictional Adelaide builder: 60 jobs across Riverlea, Eyre, Playford Alive, Springwood, Bluestone, Aldinga and more. Under <b>Your data</b>, load a real builder's CSV exports (Xero bill exports included) and every screen recalculates in the browser. AI features use Claude on the viewer's own account and send only the excerpt each button describes.</p>
+      </div>
+
+      <h3>What it does</h3>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Screen</th><th>What the builder gets</th><th>AI's part</th></tr></thead>
+        <tbody>
+          <tr><td><b>Overview</b></td><td>Business health traffic lights (cash runway, margin fade, work not yet claimed, overdue clients, trades paid on time, fixed-price exposure, next BAS), the week's biggest money items, margin fade by job</td><td>Claude writes the owner's Monday brief from the figures</td></tr>
+          <tr><td><b>WIP schedule</b></td><td>Cost-to-cost percent complete, earned revenue, over/(under) billing, margin at contract vs forecast for every job; drill into cost codes, stage claims, variations and site notes</td><td>"Explain with Claude" says why a job's margin moved and what to do</td></tr>
+          <tr><td><b>Money leaks</b></td><td>Claims not sent, overdue payments, signed variations not invoiced, variations awaiting signature, bills above PO, duplicate bills, supplier bills past due, bills without a PO, codes over budget</td><td>Claude reads every site note to find extra work nobody priced, and drafts each claim, reminder or supplier query</td></tr>
+          <tr><td><b>Check a bill</b></td><td>Before a bill is paid: matched to job, cost code and PO; flags duplicates, amounts above the PO, unstarted stages and short terms</td><td>Claude reads a pasted or photographed invoice</td></tr>
+          <tr><td><b>Cash</b></td><td>13-week forecast with stage claims at forecast dates, supplier bills, orders, overheads and BAS; compares "act this week" with "nothing changes"</td><td>—</td></tr>
+          <tr><td><b>Ask</b></td><td>Plain-English questions about jobs, claims, suppliers and cash</td><td>Claude answers from the data and can look up any job</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>What the demo finds for a 60-job builder (synthetic data)</h3>
+      <div class="stats">
+        <div class="stat"><span class="lbl">Margin fade</span><span class="v">14.5→12.1%</span><span class="c">$589k lost since contract on $23.75m of work in progress</span></div>
+        <div class="stat"><span class="lbl">Cash to collect now</span><span class="v">$800k</span><span class="c">5 claims not sent, 4 overdue, 10 signed variations not invoiced</span></div>
+        <div class="stat"><span class="lbl">Overcharges to stop</span><span class="v">$44k</span><span class="c">2 duplicate bills and 6 bills above their purchase orders</span></div>
+        <div class="stat"><span class="lbl">Cash dip</span><span class="v">26 Oct</span><span class="c">Below zero that week if nothing changes: month-end supplier run plus a $210k BAS</span></div>
+      </div>
+
+      <h3>Why this product</h3>
+      <ul>
+        <li><b>Cash kills builders.</b> In ASIC data, inadequate cash flow is the most cited cause of construction insolvency every year (about 16–20% of cases), and poor financial control appears in 11–15%.<a class="ref" href="#s71">[71]</a></li>
+        <li><b>Research asks for exactly this.</b> The Building 4.0 CRC's 2025 study of residential builder insolvency found construction made up 26% of national insolvencies in FY24, margins sit around 5%, and the sector lacks early-warning indicators. It recommends traffic-light toolkits and real-time tracking of financial health.<a class="ref" href="#s70">[70]</a></li>
+        <li><b>SA law makes claiming discipline matter.</b> Domestic deposits are capped at 5% and progress payments can be requested only for work already performed.<a class="ref" href="#s72">[72]</a> A finished stage with no claim is the builder lending money to the client.</li>
+        <li><b>Builders already pay for it.</b> Fractional CFOs charge construction firms $3k–$8k a month for WIP, cost-to-complete and 13-week cash forecasting.<a class="ref" href="#s76">[76]</a> In the US, Adaptive's AI agents for construction job costing, bills and WIP reporting serve 750+ contractors and raised US$30m in September 2026.<a class="ref" href="#s74">[74]</a></li>
+      </ul>
+
+      <h3>Competition and price anchors</h3>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Option</th><th>What it is</th><th class="num">Price</th><th>Margin Watch's angle</th></tr></thead>
+        <tbody>
+          <tr><td><b>Fractional CFO</b></td><td>Part-time finance lead doing WIP, cost to complete and cash forecasts</td><td class="num">$3k–$8k/month<a class="ref" href="#s76">[76]</a></td><td>Weekly instead of monthly, at a third of the price. Also makes the CFO faster.</td></tr>
+          <tr><td><b>Adaptive</b> (US)</td><td>AI-native construction accounting agents across 10+ ERPs</td><td class="num">Month-to-month<a class="ref" href="#s74">[74]</a></td><td>Not built for Australia: no Xero-first flow, SA claim rules, BII or BAS.</td></tr>
+          <tr><td><b>Premier Construction Software</b></td><td>Construction ERP with job costing, WIP and cash forecasting</td><td class="num">From $349/user/month<a class="ref" href="#s77">[77]</a></td><td>No system replacement. Margin Watch sits on the tools the builder already has.</td></tr>
+          <tr><td><b>Buildxact, Built Simple, Buildern</b></td><td>Estimating and job management with cost tracking</td><td class="num">$79–$522/month<a class="ref" href="#s47">[47]</a><a class="ref" href="#s78">[78]</a></td><td>Owner-level early warning across all jobs, plus AI for notes and bills.</td></tr>
+          <tr><td><b>Procore</b></td><td>Enterprise construction platform</td><td class="num">~0.1–0.2% of volume<a class="ref" href="#s56">[56]</a></td><td>Built for commercial head contractors, priced by volume.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Pricing</h3>
+      <div class="tbl"><table class="w-mid">
+        <thead><tr><th>Plan</th><th>For</th><th class="num">Price (ex GST)</th></tr></thead>
+        <tbody>
+          <tr><td><b>6-week pilot</b></td><td>Exports only; weekly WIP pack and leak list; KPI review at week 6. Fee credited to the first year.</td><td class="num">$7,500</td></tr>
+          <tr><td><b>Starter</b></td><td>Up to 25 active jobs</td><td class="num">$990/month</td></tr>
+          <tr><td><b>Growth</b></td><td>Up to 100 active jobs, Xero connection</td><td class="num">$1,990/month</td></tr>
+          <tr><td><b>Volume</b></td><td>Up to 300 active jobs, construction system connection</td><td class="num">$3,900/month</td></tr>
+          <tr><td><b>Onboarding</b></td><td>Data mapping, connectors, first month's review with the builder's accountant</td><td class="num">$5k–$15k once</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">These are suggested prices, anchored below fractional CFO fees and within Australian SME AI project costs.<a class="ref" href="#s57">[57]</a> On the demo builder's numbers, collecting the $800k a few weeks earlier and stopping $44k of overcharges covers a year of the Growth plan many times over. Confirm willingness to pay in the first ten builder interviews.</p>
+
+      <h3>Pilot with a real builder</h3>
+      <div class="plan">
+        <div class="plan-row"><span class="when">Week 0</span><div>NDA and data request: jobs, schedule, estimate by cost code, purchase orders, Xero bills, variations, stage claims, site notes (<a href="https://claude.ai/artifact/7nSi5TBkzgVFK5ieN35ZtS">templates in the demo</a>). Agree three KPIs.</div></div>
+        <div class="plan-row"><span class="when">Week 1</span><div>Load exports, fix mappings, reconcile totals with the builder's accountant. Record the baseline: days from stage completion to claim, overdue debtors, supplier bills past due, month-end margin forecast.</div></div>
+        <div class="plan-row"><span class="when">Weeks 2–5</span><div>Weekly WIP pack and leak list every Monday. Owner brief. The team marks items done; you track dollars collected, overcharges stopped and extras priced.</div></div>
+        <div class="plan-row"><span class="when">Week 6</span><div>Review against baseline and the month-end accounts. Convert to subscription, and scope the Xero and construction-system connections.</div></div>
+      </div>
+
+      <h3>Going live technically</h3>
+      <ul>
+        <li><b>Xero:</b> developer pricing changed on 2 March 2026. Starter is free for up to 5 connected businesses (pilots), Core is $35 a month for 50, Plus $245 for 1,000, and Advanced $1,445 for 10,000. Every tier needs app certification.<a class="ref" href="#s85">[85]</a> Xero's bill import and export use ContactName, InvoiceNumber, InvoiceDate, DueDate, line Quantity, UnitAmount and AccountCode, with jobs usually in a tracking category. The demo's importer already reads that layout.<a class="ref" href="#s96">[96]</a></li>
+        <li><b>Xero's AI rule:</b> the updated developer terms prohibit using data from Xero's APIs to train or contribute to the creation of AI or machine-learning models.<a class="ref" href="#s86">[86]</a> Keep the engine rules-based, send the model only request-time excerpts, store no embeddings of Xero data, and confirm the design with Xero during certification.</li>
+        <li><b>ClickHome:</b> integrates through the ClickHome API, ClickHome Plus or Zapier, and already connects to Databuild and several accounting systems.<a class="ref" href="#s87">[87]</a></li>
+        <li><b>Privacy:</b> follow the OAIC's guidance on commercially available AI products (October 2024)<a class="ref" href="#s88">[88]</a>. From 10 December 2026, disclose automated decisions in the privacy policy<a class="ref" href="#s67">[67]</a>. Host in Australia, keep one database per builder, and never train on customer data.</li>
+      </ul>
+    </section>
+
     <!-- 01 MARKET -->
     <section id="market">
-      <h2><span class="num">01</span>The Adelaide market in numbers</h2>
+      <h2><span class="num">02</span>The Adelaide market in numbers</h2>
       <div class="stats">
         <div class="stat"><span class="lbl">Dwellings approved</span><span class="v">15,308</span><span class="c">12 months to July 2026. Highest run since 1985.<a class="ref" href="#s2">[2]</a><a class="ref" href="#s1">[1]</a></span></div>
         <div class="stat"><span class="lbl">Homes completed</span><span class="v">14,130</span><span class="c">Year to March 2026, up 16.5%. State target is 13,500 a year.<a class="ref" href="#s2">[2]</a></span></div>
@@ -353,7 +439,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
     <!-- 02 PLAYERS -->
     <section id="players">
-      <h2><span class="num">02</span>Who builds Adelaide, and what they run on</h2>
+      <h2><span class="num">03</span>Who builds Adelaide, and what they run on</h2>
       <p>The HIA Housing 100 builders started 5,349 SA homes in 2024-25, just 40% of the state's starts.<a class="ref" href="#s23">[23]</a> The other 60% comes from mid-size and small builders. Mid-size builders are the sweet spot: big enough to feel the pain and pay for a fix, small enough to decide within weeks.</p>
       <div class="tbl"><table class="w-wide">
         <thead><tr><th>Segment</th><th>Adelaide examples</th><th>Scale signals</th><th>Systems in use</th><th>Biggest pains</th><th>Best AI entry</th></tr></thead>
@@ -370,7 +456,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
     <!-- 03 GAPS -->
     <section id="gaps">
-      <h2><span class="num">03</span>Where time and money leak, stage by stage</h2>
+      <h2><span class="num">04</span>Where time and money leak, stage by stage</h2>
       <p>A residential job moves through fixed stages, and each handover is a place where time is lost:</p>
       <div class="flow" aria-label="Residential build stages">
         <span>Enquiry</span><i>→</i><span>Contract</span><i>→</i><span>Pre-site</span><i>→</i><span>Base / slab</span><i>→</i><span>Frame</span><i>→</i><span>Lock-up</span><i>→</i><span>Fixing</span><i>→</i><span>Practical completion</span><i>→</i><span>Maintenance period</span>
@@ -391,7 +477,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
     <!-- 04 LANDSCAPE -->
     <section id="landscape">
-      <h2><span class="num">04</span>What AI can do today, and what to build yourself</h2>
+      <h2><span class="num">05</span>What AI can do today, and what to build yourself</h2>
       <p>Tools already exist for most of the gaps above. Adelaide builders mostly lack someone to connect them to their real data and to SA's rules. Build where local knowledge is the product. Integrate or resell where a global vendor already leads.</p>
       <div class="stats">
         <div class="stat"><span class="lbl">Firms using AI/ML tools (AU &amp; APAC)</span><span class="v">46%</span><span class="c">Up from ~25% in 2023. Only 16% have advanced capability; a quarter still rely mainly on paper. Deloitte survey of 954 firms in six markets, July 2026.<a class="ref" href="#s42">[42]</a></span></div>
@@ -410,20 +496,20 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
           <tr><td><b>Safety and WHS</b></td><td>HammerTech, Sitemate, computer-vision PPE detection</td><td>Mature vendors</td><td><b>Buy or partner</b> later. Hardware-heavy with long sales cycles.</td></tr>
         </tbody>
       </table></div>
-      <p class="small">Local proof point: Adelaide firm Digital Constructors built "ConstructAI", a camera-based inspection model, with engineers from the Australian Institute for Machine Learning (AIML) through the state-funded Industrial AI program.<a class="ref" href="#s62">[62]</a> You can use the same route (see <a href="#gtm">§09</a>).</p>
+      <p class="small">Local proof point: Adelaide firm Digital Constructors built "ConstructAI", a camera-based inspection model, with engineers from the Australian Institute for Machine Learning (AIML) through the state-funded Industrial AI program.<a class="ref" href="#s62">[62]</a> You can use the same route (see <a href="#gtm">§10</a>).</p>
     </section>
 
     <!-- 05 PRODUCTS -->
     <section id="products">
-      <h2><span class="num">05</span>Products to build</h2>
+      <h2><span class="num">06</span>Products to build</h2>
       <p>Eight products share one data layer: jobs, schedules, costs, documents and people. Build that layer once. Each new product then costs weeks, not months. Priority reflects value to the builder, build effort, how easily you can get the data, and how fast the first result shows.</p>
 
       <div class="tbl"><table class="w-wide">
         <thead><tr><th>Code</th><th>Product</th><th>Buyer</th><th>Value</th><th>Build effort</th><th>Data access</th><th>First result</th><th>Priority</th></tr></thead>
         <tbody>
-          <tr><td>P1</td><td><b>SiteVoice</b></td><td>Construction manager</td><td>High</td><td>Low–medium</td><td>Easy</td><td>2–4 weeks</td><td><span class="chip pri">1 · Pilot</span></td></tr>
-          <tr><td>P2</td><td><b>Sub Check</b></td><td>Operations / compliance</td><td>Medium</td><td>Low</td><td>Easy</td><td>1–2 weeks</td><td><span class="chip pri">2 · Entry</span></td></tr>
-          <tr><td>P3</td><td><b>Margin Watch</b></td><td>Owner / CFO</td><td>Very high</td><td>Medium</td><td>Medium</td><td>4–6 weeks</td><td><span class="chip pri">3</span></td></tr>
+          <tr><td>P1</td><td><b>SiteVoice</b></td><td>Construction manager</td><td>High</td><td>Low–medium</td><td>Easy</td><td>2–4 weeks</td><td><span class="chip pri">2 · Add-on</span></td></tr>
+          <tr><td>P2</td><td><b>Sub Check</b></td><td>Operations / compliance</td><td>Medium</td><td>Low</td><td>Easy</td><td>1–2 weeks</td><td><span class="chip pri">3 · Entry</span></td></tr>
+          <tr><td>P3</td><td><b><a href="#flagship">Margin Watch</a></b></td><td>Owner / CFO</td><td>Very high</td><td>Medium</td><td>Easy (exports)</td><td>1–2 weeks</td><td><span class="chip pri">1 · Flagship, built</span></td></tr>
           <tr><td>P4</td><td><b>Trade Flow</b></td><td>Construction manager</td><td>High</td><td>Medium–high</td><td>Medium</td><td>6–10 weeks</td><td><span class="chip pri">4</span></td></tr>
           <tr><td>P5</td><td><b>Precon Desk</b></td><td>Pre-construction manager</td><td>High</td><td>Medium</td><td>Medium</td><td>4–8 weeks</td><td><span class="chip pri">5</span></td></tr>
           <tr><td>P6</td><td><b>Plan to Price</b></td><td>Estimating manager</td><td>High</td><td>High (partner)</td><td>Easy</td><td>6–10 weeks</td><td><span class="chip pri">5</span></td></tr>
@@ -434,7 +520,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
       <div class="products">
         <article class="product" id="p1">
-          <div class="p-head"><span class="p-code">P1</span><h3>SiteVoice — supervisor diary and homeowner updates</h3><span class="chip pri">Lead pilot</span></div>
+          <div class="p-head"><span class="p-code">P1</span><h3>SiteVoice — supervisor diary and homeowner updates</h3><span class="chip pri">Add-on</span></div>
           <div class="p-body">
             <dl>
               <dt>Problem</dt><dd>Supervisors running 10–15 builds spend evenings on diaries, texts and calls. Homeowners ring because they can't see progress. Communication is the most common complaint in reviews.</dd>
@@ -473,7 +559,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
         </article>
 
         <article class="product" id="p3">
-          <div class="p-head"><span class="p-code">P3</span><h3>Margin Watch — job cost and cash early warning</h3><span class="chip pri">Owner's product</span></div>
+          <div class="p-head"><span class="p-code">P3</span><h3>Margin Watch — job cost and cash early warning</h3><span class="chip pri">Flagship · <a href="https://claude.ai/artifact/7nSi5TBkzgVFK5ieN35ZtS">demo</a></span></div>
           <div class="p-body">
             <dl>
               <dt>Problem</dt><dd>Fixed-price contracts meet 5.1% trade price rises in six months.<a class="ref" href="#s7">[7]</a> Margin fade shows up at job close, too late. Variations go unsigned or unbilled, and stage claims go out days late. That cash squeeze is how Qattro failed.<a class="ref" href="#s27">[27]</a></dd>
@@ -485,7 +571,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
               </ul></dd>
               <dt>Data needed</dt><dd>Accounting (Xero or MYOB), estimating and purchasing exports (e.g. Databuild), and the job schedule.</dd>
               <dt>AI underneath</dt><dd>Invoice and PO extraction, cost-code matching, anomaly detection, a simple forecasting model, and LLM-written explanations with links to the source documents.</dd>
-              <dt>Price guide</dt><dd>$1.5k–$4k a month after a $10k–$20k setup.</dd>
+              <dt>Price guide</dt><dd>$990–$3,900 a month by active jobs, plus $5k–$15k onboarding. See <a href="#flagship">§01</a>.</dd>
               <dt>Proof metric</dt><dd>Weeks between a margin issue appearing and being flagged; unbilled variations recovered; days from stage completion to invoice.</dd>
             </dl>
           </div>
@@ -570,7 +656,8 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
     <!-- 06 DEMO -->
     <section id="demo">
-      <h2><span class="num">06</span>The demo that gets a builder to pay</h2>
+      <h2><span class="num">07</span>The demo that gets a builder to pay</h2>
+      <p class="small"><b>Revision B:</b> the demo that was built is <a href="#flagship">Margin Watch (§01)</a>. The Build Command concept below remains the plan for the operations suite (SiteVoice, Trade Flow, Precon Desk).</p>
       <p class="lede">Show a builder their own business running better. <b>Build Command</b> is a web app loaded with a realistic synthetic portfolio of 60 jobs in the builder's real estates, using their real published designs, real SA planning data and real Adelaide weather. It shows four moments in 20 minutes.</p>
 
       <h3>Screen A · Portfolio board</h3>
@@ -681,7 +768,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
     <!-- 07 DATA -->
     <section id="data">
-      <h2><span class="num">07</span>Data you can use now</h2>
+      <h2><span class="num">08</span>Data you can use now</h2>
       <p>Start with open government data, which is licensed for reuse. Use scraped or third-party data carefully and only for the purpose shown.</p>
       <div class="tbl"><table class="w-wide">
         <thead><tr><th>Source</th><th>What you get</th><th>Access and licence</th><th>Use it for</th></tr></thead>
@@ -706,7 +793,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
     <!-- 08 ROI -->
     <section id="roi">
-      <h2><span class="num">08</span>ROI model to take into the meeting</h2>
+      <h2><span class="num">09</span>ROI model to take into the meeting</h2>
       <p>Replace the example values with the builder's own numbers during the meeting. Every line is simple arithmetic you can explain on a whiteboard. The pilot's job is to measure the real figures.</p>
       <form class="calc" id="roi-form" autocomplete="off">
         <div class="calc-inputs">
@@ -758,7 +845,7 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
     <!-- 09 GTM -->
     <section id="gtm">
-      <h2><span class="num">09</span>Selling in Adelaide</h2>
+      <h2><span class="num">10</span>Selling in Adelaide</h2>
 
       <h3>Who to approach first</h3>
       <div class="tbl"><table class="w-wide">
@@ -809,18 +896,35 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
       </table></div>
 
       <h3>Funding to extend your runway</h3>
-      <ul>
-        <li><b>R&amp;D Tax Incentive:</b> a refundable offset (currently 43.5% for eligible companies under $20m turnover) for genuine experimental work such as the forecasting and plan-reading models. Get an adviser to confirm eligibility.</li>
-        <li><b>Industry Growth Program:</b> early-stage commercialisation grants of $50k–$250k for SMEs in National Reconstruction Fund priority areas.<a class="ref" href="#s65">[65]</a> Check fit before applying.</li>
-        <li><b>SA Seed-Start:</b> state grants for innovative early-stage SA startups commercialising a product.<a class="ref" href="#s64">[64]</a></li>
-        <li><b>SA's new $50m Research and Development Productivity Fund</b> (2026 budget; details still emerging).<a class="ref" href="#s63">[63]</a></li>
-        <li><b>AIML Industrial AI SME program:</b> engineering support in kind.<a class="ref" href="#s61">[61]</a></li>
-      </ul>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Program</th><th>What you get</th><th>Key conditions</th><th>Fit for Margin Watch</th></tr></thead>
+        <tbody>
+          <tr><td><b>SA Seed-Start</b><a class="ref" href="#s80">[80]</a></td><td>Seed Grant $50k–$100k at 2:1 (government:you). Start Grant over $100k up to $500k at 1:1.</td><td>SA-based, turnover under $1m in each of the last three years.<a class="ref" href="#s64">[64]</a> Cash match only; other government grants don't count. EOI first, then a full application with a case manager. Grants over $100k are repaid by a 3% royalty on revenue above an agreed threshold.</td><td>Strong. Commercialising a scalable product with SA jobs. Apply for a Seed Grant once one pilot is signed.</td></tr>
+          <tr><td><b>Industry Growth Program</b><a class="ref" href="#s65">[65]</a></td><td>Early-stage commercialisation grants of $50k–$250k; growth grants of $100k–$5m</td><td>Advisory Service first. Matched dollar for dollar. Turnover under $20m. Must fit a National Reconstruction Fund priority area; "enabling capabilities" is the likely fit.</td><td>Possible. Test the fit in the free advisory session.</td></tr>
+          <tr><td><b>R&amp;D Tax Incentive</b><a class="ref" href="#s83">[83]</a></td><td>Refundable offset of your company tax rate plus 18.5 points (43.5% for a 25% base-rate company) on eligible R&amp;D</td><td>From 1 July 2028 the refundable threshold rises from $20m to $50m turnover, the minimum spend rises to $50k, and supporting R&amp;D is removed.<a class="ref" href="#s82">[82]</a></td><td>For genuinely experimental work, such as forecasting stage durations or reading site notes and bills. Keep contemporaneous records.</td></tr>
+          <tr><td><b>AIML Industrial AI SME program</b><a class="ref" href="#s84">[84]</a></td><td>Access to AIML machine learning engineers (support in kind, no cash)</td><td>SA SMEs; launched June 2025; state-funded</td><td>Good for Trade Flow forecasting or note classification.</td></tr>
+          <tr><td><b>SA R&amp;D Productivity Fund</b><a class="ref" href="#s63">[63]</a></td><td>$50m fund from the 2026-27 State Budget</td><td>Details still emerging</td><td>Watch for rounds.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Where to meet builders and investors</h3>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>When</th><th>Event</th><th>Where</th><th>Why go</th></tr></thead>
+        <tbody>
+          <tr><td>28–29 Oct 2026</td><td>Construction Technology Leaders Summit<a class="ref" href="#s93">[93]</a></td><td>Sydney</td><td>See what contractors buy; meet vendors to partner with</td></tr>
+          <tr><td>14 Nov 2026</td><td>HIA SA Housing and Kitchen &amp; Bathroom Awards<a class="ref" href="#s89">[89]</a></td><td>Adelaide Convention Centre ($320 members, $370 non-members)</td><td>The SA home-building community in one room</td></tr>
+          <tr><td>Ongoing</td><td>Stone &amp; Chalk Adelaide Startup Hub events<a class="ref" href="#s91">[91]</a></td><td>Lot Fourteen</td><td>Founder community, investor mixers, AI programs (an AI Solopreneur Accelerator ran Jul–Aug 2026)</td></tr>
+          <tr><td>17–18 Mar 2027</td><td>SOUTHSTART<a class="ref" href="#s90">[90]</a></td><td>Adelaide</td><td>SA's startup festival: pitches, investors, 1,000+ attendees in 2026</td></tr>
+          <tr><td>May (2026 edition 4–5 May)</td><td>SA Major Projects Conference<a class="ref" href="#s92">[92]</a></td><td>Adelaide Convention Centre</td><td>Tier-1 and government pipeline; commercial builders</td></tr>
+          <tr><td>11–12 May 2027</td><td>FCON27 Future of Construction Summit<a class="ref" href="#s94">[94]</a></td><td>Brisbane</td><td>National construction innovation audience</td></tr>
+          <tr><td>Annual</td><td>Master Builders SA Building Excellence Awards<a class="ref" href="#s97">[97]</a></td><td>Adelaide</td><td>1,500+ builders and trades</td></tr>
+        </tbody>
+      </table></div>
     </section>
 
     <!-- 10 RISKS -->
     <section id="risks">
-      <h2><span class="num">10</span>Legal, privacy and delivery risks</h2>
+      <h2><span class="num">11</span>Legal, privacy and delivery risks</h2>
       <div class="tbl"><table class="w-wide">
         <thead><tr><th>Risk</th><th>What applies</th><th>What to do</th></tr></thead>
         <tbody>
@@ -837,19 +941,41 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
 
     <!-- 11 ROADMAP -->
     <section id="roadmap">
-      <h2><span class="num">11</span>Roadmap: first 24 months</h2>
+      <h2><span class="num">12</span>Roadmap: first 24 months</h2>
       <div class="plan">
-        <div class="plan-row"><span class="when">Weeks 0–3</span><div><b>Demo and list.</b> Build Build Command. Research 40 prospects and prepare personalised demos for the top 10.</div></div>
-        <div class="plan-row"><span class="when">Months 1–4</span><div><b>First revenue.</b> 20 demos, 2–3 paid audits, 1–2 SiteVoice pilots, and Sub Check live for small builders. Apply to the AIML program and check Industry Growth Program eligibility.</div></div>
-        <div class="plan-row"><span class="when">Months 4–9</span><div><b>Prove and expand.</b> Convert pilots to subscriptions. Publish a case study with measured KPIs. Add Margin Watch. Build reusable connectors for ClickHome, estimating exports and Xero.</div></div>
+        <div class="plan-row"><span class="when">Weeks 0–3</span><div><b>Demo and list.</b> Margin Watch demo is built. Research 40 prospects, run 10 discovery interviews on how WIP, claims and bills are handled today, and personalise demos for the top 10.</div></div>
+        <div class="plan-row"><span class="when">Months 1–4</span><div><b>First revenue.</b> 20 demos, 2–3 paid Margin Watch pilots on exports, and Sub Check live for small builders. Submit a Seed-Start EOI once a pilot is signed; book an Industry Growth Program advisory session.</div></div>
+        <div class="plan-row"><span class="when">Months 4–9</span><div><b>Prove and expand.</b> Convert pilots to subscriptions. Publish a case study with measured KPIs. Certify the Xero app and build ClickHome and estimating connectors. Add SiteVoice for existing customers.</div></div>
         <div class="plan-row"><span class="when">Months 9–15</span><div><b>Speed products.</b> Trade Flow forecasting (with AIML if accepted), Precon Desk and Plan to Price. Target 5–10 builder clients.</div></div>
         <div class="plan-row"><span class="when">Months 12–24</span><div><b>New segments.</b> Tender Reader for mid-tier commercial builders. Compliance packs for SA subcontractors chasing Osborne, T2D and hospital work. Take the proven playbook to other states' mid-size builders.</div></div>
       </div>
     </section>
 
+    <!-- RESEARCH LOG -->
+    <section id="research-log">
+      <h2><span class="num">13</span>Research log: three rounds</h2>
+      <p>After the first issue, the brief was to build the most valuable demo and then research three more times, using papers, industry and government reports, grants and events. Each round fed changes back into the demo.</p>
+      <div class="tbl"><table class="w-wide">
+        <thead><tr><th>Round</th><th>Question</th><th>What we found</th><th>What changed in Margin Watch</th></tr></thead>
+        <tbody>
+          <tr><td><b>1</b></td><td>Why do builders fail, and what should they watch weekly?</td><td>Cash flow is the most cited cause of construction insolvency; the sector lacks early-warning indicators; traffic-light toolkits and real-time financial tracking are recommended<a class="ref" href="#s70">[70]</a><a class="ref" href="#s71">[71]</a>. SA caps deposits at 5% and allows claims only for work done<a class="ref" href="#s72">[72]</a>. Quarterly BAS lands on 28 Oct, 28 Feb, 28 Apr and 28 Jul<a class="ref" href="#s73">[73]</a>. Text mining of daily logs is an established research field<a class="ref" href="#s95">[95]</a>.</td><td>v2: Business health panel with seven traffic lights; supplier-bills-past-due check; BAS in the cash forecast; evidence on the Method tab.</td></tr>
+          <tr><td><b>2</b></td><td>Who pays for this now, how much, and what funding exists for you?</td><td>Adaptive (US) raised US$30m in Sep 2026 for AI construction accounting, with 750+ customers<a class="ref" href="#s74">[74]</a>. Fractional CFOs charge $3k–$8k a month<a class="ref" href="#s76">[76]</a>. AU construction finance software costs $79–$522 a month, or $349 per user for ERP<a class="ref" href="#s77">[77]</a><a class="ref" href="#s78">[78]</a>. Investment in AI construction startups reached US$616m in H1 2026<a class="ref" href="#s79">[79]</a>. Seed-Start, IGP and R&amp;D terms confirmed<a class="ref" href="#s80">[80]</a><a class="ref" href="#s82">[82]</a>.</td><td>v3: "Check a bill" (supplier bill processing is what builders already pay to automate). Pricing tiers and funding plan added here.</td></tr>
+          <tr><td><b>3</b></td><td>Can it run on a builder's real data, and where are the buyers?</td><td>Xero's new developer tiers, app certification, and its ban on using API data to train AI models<a class="ref" href="#s85">[85]</a><a class="ref" href="#s86">[86]</a>. Xero bill layout<a class="ref" href="#s96">[96]</a>. ClickHome API and Zapier<a class="ref" href="#s87">[87]</a>. OAIC AI privacy guidance<a class="ref" href="#s88">[88]</a>. Adelaide event calendar<a class="ref" href="#s89">[89]</a><a class="ref" href="#s90">[90]</a>.</td><td>v4: Xero line-level exports import directly (tracking as job, Reference as PO, lines merged); go-live guide; data-handling section; pilot plan and events in this playbook.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Open questions to test in the first ten builder interviews</h3>
+      <ul>
+        <li>Who produces the WIP report today, how often, and what does it cost (accountant, CFO, spreadsheet)?</li>
+        <li>Where do variations live: in the construction system, in email or on paper? How many are agreed on site and never signed?</li>
+        <li>Which accounting system is used (Xero, MYOB, Databuild accounting, Sage), and are jobs tracked on bills?</li>
+        <li>How many days pass between a stage finishing and its claim going out? Who decides?</li>
+        <li>Would the owner pay $990–$3,900 a month for weekly WIP, leaks and cash, and who signs off on that?</li>
+      </ul>
+    </section>
+
     <!-- 12 SOURCES -->
     <section id="sources">
-      <h2><span class="num">12</span>Sources</h2>
+      <h2><span class="num">14</span>Sources</h2>
       <p class="small">Figures were checked against these sources in September 2026. Some official SA pages block automated access, so a few figures come from search summaries of those pages. Confirm key numbers before putting them in a proposal.</p>
       <ol class="sources">
         <li id="s1"><a href="https://www.dhud.sa.gov.au/news/south-australia-continues-40-year-home-approval-high">DHUD — South Australia continues 40-year home approval high</a></li>
@@ -921,10 +1047,38 @@ footer { font-family: var(--f-mono); font-size: 0.75rem; color: var(--ink-3); bo
         <li id="s67"><a href="https://www.legislation.gov.au/C2024A00128/asmade">Privacy and Other Legislation Amendment Act 2024</a>; <a href="https://aicura.com.au/frameworks/privacy-act-adm-transparency/">summary of ADM transparency duties</a></li>
         <li id="s68"><a href="https://secure.cbs.sa.gov.au/OccLicPubReg/LicenceSearch.php">CBS — Occupational licence public register</a></li>
         <li id="s69"><a href="https://www.ibisworld.com/australia/company/mcmahon-services-australia-pty-ltd/450440/">IBISWorld — McMahon Services Australia</a></li>
+        <li id="s70"><a href="https://building4pointzero.org/wp-content/uploads/2025/10/CRC80_Project-Report_Final-Version-for-publication.pdf">Building 4.0 CRC — Project #80: Why are insolvencies so high in the residential construction industry and what can be done about it? (2025)</a></li>
+        <li id="s71"><a href="https://www.mdpi.com/1911-8074/19/7/474">Insolvency in the Construction Sector: Global Research Insights and Empirical Evidence from Australia — Journal of Risk and Financial Management (2026)</a></li>
+        <li id="s72"><a href="https://www.lawhandbook.sa.gov.au/ch23s11s02.php">SA Law Handbook — Building work contracts (deposits and progress payments)</a></li>
+        <li id="s73"><a href="https://www.ato.gov.au/businesses-and-organisations/preparing-lodging-and-paying/business-activity-statements-bas/due-dates-for-lodging-and-paying-your-bas">ATO — Due dates for lodging and paying your BAS</a></li>
+        <li id="s74"><a href="https://www.alleywatch.com/2026/09/adaptive-agentic-accounting-construction-ai-project-accountant-platform-matt-calvano/">AlleyWatch — Adaptive raises $30M for AI construction accounting (Sep 2026)</a></li>
+        <li id="s75"><a href="https://www.prnewswire.com/news-releases/adaptive-closes-19m-series-a-to-transform-construction-finance-with-ai-and-automation-302196928.html">PR Newswire — Adaptive closes $19M Series A (2024)</a></li>
+        <li id="s76"><a href="https://www.scalesuite.com.au/resources/fractional-cfo-for-construction-companies-in-australia">ScaleSuite — Fractional CFO for construction companies in Australia (2026)</a></li>
+        <li id="s77"><a href="https://www.capterra.com.au/software/133101/premier">Capterra AU — Premier Construction Software pricing</a></li>
+        <li id="s78"><a href="https://builtsimple.com.au/blog/construction-estimating-software-australia-buyers-guide-2026/">Built Simple — Construction software buyer's guide 2026 (pricing)</a></li>
+        <li id="s79"><a href="https://memoori.com/investment-ai-aec-startups-doubles-to-616m-h1-2026/">Memoori — Investment in AI AEC startups, H1 2026</a></li>
+        <li id="s80"><a href="https://cms.business.sa.gov.au/assets/uploads/downloads/DSD/255143-RI-Seed-Start-Guidelines-06.pdf">Department of State Development — Seed-Start Grant Program Guidelines (Nov 2025)</a></li>
+        <li id="s81"><a href="https://www.industry.gov.au/science-technology-and-innovation/industry-innovation/industry-growth-program">Department of Industry — Industry Growth Program</a></li>
+        <li id="s82"><a href="https://www.startupdaily.net/topic/politics-news-analysis/budget-2026-rd-tax-incentive-startups/">Startup Daily — Budget 2026 R&amp;D tax incentive changes</a></li>
+        <li id="s83"><a href="https://www.ato.gov.au/businesses-and-organisations/income-deductions-and-concessions/incentives-and-concessions/research-and-development-tax-incentive/r-d-tax-incentive-rates-and-entitlements/rates-of-r-d-tax-incentive-offset">ATO — Rates of R&amp;D tax incentive offset</a></li>
+        <li id="s84"><a href="https://www.adelaide.edu.au/aiml/news/list/2025/06/05/aiml-launches-industrial-ai-sme-grant-program-to-accelerate-south-australian">AIML — Industrial AI SME Grant Program launch (June 2025)</a></li>
+        <li id="s85"><a href="https://developer.xero.com/pricing">Xero Developer — Pricing</a></li>
+        <li id="s86"><a href="https://developer.xero.com/faq/pricing-and-policy-updates">Xero Developer — Pricing and policy updates FAQ (AI/ML data use)</a></li>
+        <li id="s87"><a href="https://support.clickhome.com.au/support/solutions/articles/3000118329-clickhome-api-integration">ClickHome — Integration via API, ClickHome Plus or Zapier</a></li>
+        <li id="s88"><a href="https://www.oaic.gov.au/privacy/privacy-guidance-for-organisations-and-government-agencies/guidance-on-privacy-and-the-use-of-commercially-available-ai-products">OAIC — Guidance on privacy and the use of commercially available AI products</a></li>
+        <li id="s89"><a href="https://hia.com.au/awards-and-events/events/housing-awards/south-australia/2026/hia-housing-awards-adelaide-nov15">HIA — SA Housing and Kitchen &amp; Bathroom Awards 2026</a></li>
+        <li id="s90"><a href="https://southstart.co/">SOUTHSTART</a></li>
+        <li id="s91"><a href="https://www.stoneandchalk.com.au/events">Stone &amp; Chalk — Events</a></li>
+        <li id="s92"><a href="https://www.saconference.com.au/">South Australian Major Projects Conference</a></li>
+        <li id="s93"><a href="https://constructiontechnologyleaders.com/">Construction Technology Leaders Summit 2026</a></li>
+        <li id="s94"><a href="https://futureofconstructionsummit.com/">FCON27 Future of Construction Summit</a></li>
+        <li id="s95"><a href="https://www.frontiersin.org/journals/built-environment/articles/10.3389/fbuil.2026.1815172/full">Frontiers in Built Environment — Text mining and NLP in construction research (2026)</a></li>
+        <li id="s96"><a href="https://central.xero.com/0/article/Import-bills-and-credit-notes-GL">Xero Central — Import bills and credit notes</a></li>
+        <li id="s97"><a href="https://mbasa.com.au/bea2026/">Master Builders SA — Building Excellence Awards 2026</a></li>
       </ol>
     </section>
 
-    <footer>Adelaide Construction AI Playbook · Rev A · 28 Sep 2026 · Synthetic examples are marked; all other figures link to sources.</footer>
+    <footer>Adelaide Construction AI Playbook · Rev B · 28 Sep 2026 · Synthetic examples are marked; all other figures link to sources.</footer>
   </main>
 </div>
 
